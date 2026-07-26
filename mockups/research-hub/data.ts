@@ -466,7 +466,7 @@ const wigvo: ResearchProject = {
       eyebrow: "Conference field notes",
       title: "What people asked when the paper left the page",
       lead:
-        "WIGVO was presented at ACL 2026 System Demonstrations in San Diego through a booth focused on the paper, architecture and recorded workflow. We did not run live phone-call demonstrations on the conference floor.",
+        "WIGVO was presented at ACL 2026 System Demonstrations in San Diego through a booth focused on the paper, architecture and recorded workflow.",
       paragraphs: [
         "The most useful part of the booth was the technical discussion. Researchers and engineers, including visitors from NVIDIA and Apple, asked about echo control on a real line, end-to-end latency and whether the architecture could run inside their own infrastructure.",
         "We treat those conversations as qualitative feedback, not product adoption or company endorsement. They did, however, show that the difficult parts documented in the paper were the same parts practitioners wanted to examine.",
@@ -484,7 +484,7 @@ const wigvo: ResearchProject = {
           src: "/images/projects/wigvo-acl-2026-booth.jpeg",
           alt: "WIGVO paper discussion at the ACL 2026 booth",
           caption:
-            "Discussion at the ACL 2026 booth around the WIGVO paper, architecture and recorded system workflow. The booth did not run live phone-call demonstrations.",
+            "Discussion at the ACL 2026 booth around the WIGVO paper, architecture and recorded system workflow.",
         },
         {
           src: "/images/projects/wigvo-iwslt-2026-talk.jpeg",
