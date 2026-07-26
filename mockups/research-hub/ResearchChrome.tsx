@@ -1,12 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
+import { assetPath } from "@/lib/site";
 
 export function ResearchWordmark() {
   return (
     <Link href="/" aria-label="WIGTN Research home" className="inline-flex items-center gap-3">
       <Image
-        src="/images/WIGTN_LOGO_WHITE.png"
+        src={assetPath("/images/WIGTN_LOGO_WHITE.png")}
         alt="WIGTN"
         width={141}
         height={32}

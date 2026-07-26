@@ -15,6 +15,10 @@ concurrency:
   group: pages
   cancel-in-progress: false
 
+env:
+  NEXT_PUBLIC_BASE_PATH: /wigtn-tech-report
+  NEXT_PUBLIC_SITE_URL: https://wigtn.github.io/wigtn-tech-report
+
 jobs:
   build:
     runs-on: ubuntu-latest

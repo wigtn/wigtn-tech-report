@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
-
-const siteUrl = "https://research.wigtn.com";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -9,7 +8,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "WIGTN Research",
     template: "%s | WIGTN Research",
@@ -17,13 +16,13 @@ export const metadata: Metadata = {
   description:
     "Research papers, model reports and engineering notes with the protocols, failure modes and artifacts behind each claim.",
   alternates: {
-    canonical: siteUrl,
+    canonical: SITE_URL,
   },
   openGraph: {
     title: "WIGTN Research",
     description:
       "Methods, measurements and failure modes from AI systems built by WIGTN.",
-    url: siteUrl,
+    url: SITE_URL,
     siteName: "WIGTN Research",
     type: "website",
   },

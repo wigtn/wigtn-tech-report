@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/site";
 import { ResearchProjectPage } from "@/mockups/research-hub/ResearchProjectPage";
 import {
   RESEARCH_PROJECTS,
@@ -21,7 +22,7 @@ export async function generateMetadata({
     return {};
   }
 
-  const canonical = `https://research.wigtn.com/${project.slug}/`;
+  const canonical = `${SITE_URL}/${project.slug}/`;
 
   return {
     title: project.shortTitle,

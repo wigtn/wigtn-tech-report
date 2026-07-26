@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/site";
 import { ResearchHubPage } from "@/mockups/research-hub/ResearchHubPage";
 
 export const metadata: Metadata = {
   title: "WIGTN Research",
   alternates: {
-    canonical: "https://research.wigtn.com/",
+    canonical: `${SITE_URL}/`,
   },
 };
 

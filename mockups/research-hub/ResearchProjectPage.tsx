@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, ArrowUpRight, Play } from "lucide-react";
+import { assetPath } from "@/lib/site";
 import {
   RESEARCH_PROJECTS,
   getResearchProject,
@@ -38,7 +39,7 @@ function Figure({ figure }: { figure: ResearchFigure }) {
         }`}
       >
         <Image
-          src={figure.src}
+          src={assetPath(figure.src)}
           alt={figure.alt}
           fill
           sizes="(min-width: 1024px) 736px, 100vw"
