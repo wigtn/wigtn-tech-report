@@ -27,28 +27,12 @@ export function ResearchSiteHeader() {
     <header className="sticky top-0 z-50 border-b border-white/10 bg-[#15151E]/95 text-white backdrop-blur-md">
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-5 px-5 md:px-8">
         <ResearchWordmark />
-        <div className="flex items-center gap-4 font-mono text-[9px] uppercase tracking-[0.12em] text-[#A8A6B8] sm:gap-6">
-          <Link href="/#projects" className="hidden transition-colors hover:text-white sm:inline">
-            Projects
-          </Link>
-          <Link href="/#standards" className="hidden transition-colors hover:text-white sm:inline">
-            Standards
-          </Link>
-          <a
-            href="https://wigtn.com/tech-reports/"
-            className="hidden transition-colors hover:text-white md:inline"
-          >
-            WIGTN index
-          </a>
-          <a
-            href="https://github.com/wigtn"
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-1.5 text-white transition-opacity hover:opacity-65"
-          >
-            GitHub <ArrowUpRight size={11} />
-          </a>
-        </div>
+        <a
+          href="https://wigtn.com/"
+          className="inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.12em] text-white transition-opacity hover:opacity-65"
+        >
+          Back to WIGTN <ArrowUpRight size={11} />
+        </a>
       </nav>
     </header>
   );

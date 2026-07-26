@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import {
   RESEARCH_PROJECTS,
   researchHref,
@@ -100,45 +100,6 @@ export function ResearchHubPage() {
         </div>
       </section>
 
-      <section id="standards" className="scroll-mt-24">
-        <div className="mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-24">
-          <div className="grid gap-12 lg:grid-cols-[20rem_minmax(0,1fr)]">
-            <div>
-              <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-[#6B2EAA]">
-                Evidence standard
-              </span>
-              <h2 className="mt-3 font-display text-3xl font-semibold leading-tight tracking-[-0.04em]">
-                Different pages make different promises.
-              </h2>
-            </div>
-            <div className="grid gap-px border border-[#D9D6CF] bg-[#D9D6CF] sm:grid-cols-2">
-              {[
-                ["Peer reviewed", "Venue, full protocol, results, limitations and citation."],
-                ["Open model", "Weights or code plus released evaluation artifacts."],
-                ["Measured system", "Live or offline metrics with an explicit sample and evaluator."],
-                ["Engineering note", "Architecture and implementation facts without comparative performance claims."],
-              ].map(([title, body]) => (
-                <div key={title} className="bg-[#F7F6F2] p-6">
-                  <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-[#6B2EAA]">
-                    {title}
-                  </span>
-                  <p className="mt-3 text-sm leading-6 text-[#5E5C68]">{body}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="mt-10 flex justify-end">
-            <a
-              href="https://github.com/wigtn"
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-2 border-b border-[#1E1E28] pb-1 text-sm font-medium"
-            >
-              Browse WIGTN source <ArrowUpRight size={14} />
-            </a>
-          </div>
-        </div>
-      </section>
     </ResearchShell>
   );
 }
