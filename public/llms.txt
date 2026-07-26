@@ -1,0 +1,17 @@
+# WIGTN Research
+
+> Methods, measurements and failure modes from AI systems built by WIGTN.
+
+## Reports
+
+- [WigtnOCR](https://research.wigtn.com/wigtnocr/): A 2B Korean government-document parser distilled from a 30B teacher and evaluated from parsing through retrieval.
+- [WIGVO](https://research.wigtn.com/wigvo/): Real-time Korean–English translation over ordinary PSTN phone calls with dual-session echo gating.
+- [WIGSS](https://research.wigtn.com/wigss/): A browser visual-editing architecture that turns spatial intent into reviewable source diffs.
+- [WIGTN Coding](https://research.wigtn.com/wigtn-coding/): A staged multi-agent workflow with explicit engineering artifacts and release gates.
+- [WIGTN Flake](https://research.wigtn.com/wigtn-flake/): A purpose-driven multi-agent analysis case study built with Snowflake Cortex.
+
+## Links
+
+- [WIGTN](https://wigtn.com)
+- [GitHub](https://github.com/wigtn)
+- [Hugging Face](https://huggingface.co/Wigtn)
