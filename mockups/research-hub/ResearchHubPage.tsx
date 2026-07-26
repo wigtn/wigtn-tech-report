@@ -71,7 +71,7 @@ export function ResearchHubPage() {
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-end">
             <div>
               <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#6B2EAA]">
-                WIGTN Research
+                WIGTN Tech
               </span>
               <h1 className="mt-3 max-w-5xl font-display text-[clamp(2.6rem,5vw,4.5rem)] font-semibold leading-[0.96] tracking-[-0.055em]">
                 Research archive

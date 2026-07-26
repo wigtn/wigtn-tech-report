@@ -128,7 +128,7 @@ export function ResearchProjectPage({ slug }: { slug: string }) {
   return (
     <ResearchShell>
       <header className="border-b border-[#D9D6CF]">
-        <div className="mx-auto max-w-6xl px-5 pb-10 pt-8 md:px-8 md:pb-14 md:pt-10">
+        <div className="mx-auto max-w-7xl px-5 pb-10 pt-8 md:px-8 md:pb-14 md:pt-10">
           <Link
             href="/"
             className="inline-flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.13em] text-[#777584] transition-colors hover:text-[#6B2EAA]"

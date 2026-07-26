@@ -10,8 +10,8 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "WIGTN Research",
-    template: "%s | WIGTN Research",
+    default: "WIGTN Tech",
+    template: "%s | WIGTN Tech",
   },
   description:
     "Research papers, model reports and engineering notes with the protocols, failure modes and artifacts behind each claim.",
@@ -19,11 +19,11 @@ export const metadata: Metadata = {
     canonical: SITE_URL,
   },
   openGraph: {
-    title: "WIGTN Research",
+    title: "WIGTN Tech",
     description:
       "Methods, measurements and failure modes from AI systems built by WIGTN.",
     url: SITE_URL,
-    siteName: "WIGTN Research",
+    siteName: "WIGTN Tech",
     type: "website",
   },
 };

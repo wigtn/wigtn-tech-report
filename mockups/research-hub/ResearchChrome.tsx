@@ -1,11 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
 import { assetPath } from "@/lib/site";
 
 export function ResearchWordmark() {
   return (
-    <Link href="/" aria-label="WIGTN Research home" className="inline-flex items-center gap-3">
+    <Link href="/" aria-label="WIGTN Tech home" className="inline-flex items-center gap-3">
       <Image
         src={assetPath("/images/WIGTN_LOGO_WHITE.png")}
         alt="WIGTN"
@@ -16,7 +15,7 @@ export function ResearchWordmark() {
       />
       <span className="h-4 w-px bg-white/20" />
       <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#B7B4C2]">
-        Research
+        Tech
       </span>
     </Link>
   );
@@ -27,12 +26,6 @@ export function ResearchSiteHeader() {
     <header className="sticky top-0 z-50 border-b border-white/10 bg-[#15151E]/95 text-white backdrop-blur-md">
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-5 px-5 md:px-8">
         <ResearchWordmark />
-        <a
-          href="https://wigtn.com/"
-          className="inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.12em] text-white transition-opacity hover:opacity-65"
-        >
-          Back to WIGTN <ArrowUpRight size={11} />
-        </a>
       </nav>
     </header>
   );
