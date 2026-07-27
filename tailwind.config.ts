@@ -33,6 +33,8 @@ const config: Config = {
         /* Real mono so index numbers / dates / labels stop falling back to the
          * OS default (Menlo vs Consolas) — this is the research-lab texture. */
         mono: ["JetBrains Mono", "ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "monospace"],
+        report: ["IBM Plex Sans", "Pretendard Variable", "Pretendard", "-apple-system", "BlinkMacSystemFont", "system-ui", "sans-serif"],
+        "report-mono": ["IBM Plex Mono", "ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "monospace"],
       },
     },
   },
