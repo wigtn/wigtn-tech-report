@@ -652,6 +652,14 @@ const wigtnCoding: ResearchProject = {
   format: "Workflow architecture",
   date: "2026.03.28",
   authors: "WIGTN Engineering",
+  heroFigure: {
+    src: "/images/projects/wigtn-coding-workflow.svg",
+    alt: "WIGTN Coding six-stage delivery workflow",
+    caption:
+      "The released workflow moves from PRD definition through independent review, bounded implementation and an explicit release decision.",
+    contain: true,
+  },
+  heroSectionId: "workflow",
   links: [
     {
       label: "Source repository",
