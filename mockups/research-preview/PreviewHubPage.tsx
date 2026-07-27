@@ -7,69 +7,81 @@ export function PreviewHubPage() {
   return (
     <PreviewShell>
       <header className="border-b border-[#D8DDE5]">
-        <div className="mx-auto grid max-w-[1180px] gap-8 px-5 py-16 md:grid-cols-[minmax(0,1fr)_18rem] md:px-8 md:py-24">
+        <div className="mx-auto max-w-[1180px] px-5 py-14 md:px-8 md:py-20">
+          <div className="flex items-center justify-between border-b border-[#D8DDE5] pb-4 font-report-mono text-[9px] uppercase tracking-[0.1em]">
+            <span className="text-[#1457D9]">WIGTN Tech</span>
+            <span className="text-[#667085]">
+              {String(RESEARCH_PROJECTS.length).padStart(2, "0")} reports
+            </span>
+          </div>
           <div>
-            <p className="font-report-mono text-[10px] uppercase tracking-[0.12em] text-[#1457D9]">
-              WIGTN Tech
-            </p>
-            <h1 className="mt-4 max-w-3xl text-[clamp(2.75rem,6vw,5.25rem)] font-medium leading-[0.96] tracking-[-0.055em]">
+            <h1 className="mt-8 max-w-3xl text-[clamp(2.75rem,5vw,4.5rem)] font-medium leading-[0.98] tracking-[-0.055em]">
               Technical reports
             </h1>
+            <p className="mt-5 max-w-[46rem] text-[16px] leading-7 text-[#475467]">
+              Papers, model reports and engineering notes with protocols, failure modes and
+              artifacts behind each claim.
+            </p>
           </div>
-          <p className="self-end text-[15px] leading-7 text-[#475467]">
-            Papers, model reports and engineering notes with protocols, failure modes and
-            artifacts behind each claim.
-          </p>
         </div>
       </header>
 
       <section aria-labelledby="report-index-title">
         <div className="mx-auto max-w-[1180px] px-5 py-14 md:px-8 md:py-20">
-          <div className="mb-5 flex items-center justify-between border-b-2 border-[#111827] pb-3">
+          <div className="mb-8 flex items-center justify-between">
             <h2
               id="report-index-title"
               className="font-report-mono text-[10px] font-medium uppercase tracking-[0.1em]"
             >
-              Report index
+              Report archive
             </h2>
             <span className="font-report-mono text-[9px] text-[#667085]">
-              {String(RESEARCH_PROJECTS.length).padStart(2, "0")} entries
+              01—{String(RESEARCH_PROJECTS.length).padStart(2, "0")}
             </span>
           </div>
 
-          <div>
+          <div className="grid border-t-2 border-[#111827] md:grid-cols-2">
             {RESEARCH_PROJECTS.map((project, index) => (
-              <article key={project.slug} className="group border-b border-[#D8DDE5]">
+              <article
+                key={project.slug}
+                className={`group border-b border-[#D8DDE5] ${
+                  index % 2 === 0 ? "md:border-r md:pr-8" : "md:pl-8"
+                }`}
+              >
                 <Link
                   href={previewHref(project.slug)}
-                  className="grid gap-4 py-7 transition-colors hover:bg-[#F7F8FA] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1457D9] md:grid-cols-[4rem_10rem_minmax(0,1fr)_7rem_1.5rem] md:items-start md:px-2"
+                  className="flex min-h-[21rem] flex-col py-8 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1457D9] md:py-10"
                 >
-                  <span className="font-report-mono text-[10px] text-[#667085]">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <div className="font-report-mono text-[9px] uppercase leading-5 tracking-[0.07em]">
-                    <span className="block text-[#1457D9]">{project.status}</span>
-                    <span className="block text-[#667085]">{project.format}</span>
+                  <div className="flex items-start justify-between gap-4 font-report-mono text-[9px] uppercase leading-5 tracking-[0.07em]">
+                    <span>
+                      <span className="text-[#1457D9]">{project.status}</span>
+                      <span className="ml-4 text-[#667085]">{project.format}</span>
+                    </span>
+                    <span className="text-[#667085]">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
                   </div>
-                  <div>
-                    <h3 className="text-2xl font-medium leading-tight tracking-[-0.035em]">
-                      {project.shortTitle}
-                    </h3>
-                    <p className="mt-1 text-[15px] font-medium text-[#344054]">
-                      {project.title}
-                    </p>
-                    <p className="mt-3 max-w-[68ch] text-sm leading-6 text-[#667085]">
-                      {project.dek}
-                    </p>
+
+                  <h3 className="mt-8 text-3xl font-medium leading-tight tracking-[-0.045em]">
+                    {project.shortTitle}
+                  </h3>
+                  <p className="mt-2 max-w-[32rem] text-lg font-medium leading-7 tracking-[-0.02em] text-[#344054]">
+                    {project.title}
+                  </p>
+                  <p className="mt-5 max-w-[34rem] text-sm leading-6 text-[#667085]">
+                    {project.dek}
+                  </p>
+
+                  <div className="mt-auto flex items-end justify-between gap-5 pt-10">
+                    <time className="font-report-mono text-[9px] text-[#667085]">
+                      {project.date}
+                    </time>
+                    <ArrowRight
+                      aria-hidden
+                      size={16}
+                      className="text-[#1457D9] transition-transform group-hover:translate-x-1"
+                    />
                   </div>
-                  <time className="font-report-mono text-[9px] text-[#667085]">
-                    {project.date}
-                  </time>
-                  <ArrowRight
-                    aria-hidden
-                    size={16}
-                    className="hidden text-[#1457D9] transition-transform group-hover:translate-x-1 md:block"
-                  />
                 </Link>
               </article>
             ))}
