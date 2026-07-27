@@ -121,132 +121,135 @@ export function PreviewProjectPage({ slug }: { slug: string }) {
             <ArrowLeft aria-hidden size={12} /> Report index
           </Link>
 
-          <div className="mt-12 grid gap-10 lg:grid-cols-[minmax(0,1fr)_15rem]">
-            <div>
+          <div className="mt-12 border-t-2 border-[#111827] pt-6 lg:grid lg:grid-cols-[9rem_minmax(0,1fr)] lg:gap-10">
+            <aside className="font-report-mono text-[9px] uppercase leading-5 tracking-[0.07em] text-[#667085]">
+              <span className="block text-[#1457D9]">{project.status}</span>
+              <span className="mt-2 block">{project.format}</span>
+              <span className="block">{project.track}</span>
+            </aside>
+
+            <div className="mt-9 lg:mt-0 lg:border-l lg:border-[#D8DDE5] lg:pl-10">
               <div className="flex flex-wrap gap-x-4 gap-y-2 font-report-mono text-[9px] uppercase tracking-[0.08em]">
-                <span className="text-[#1457D9]">{project.status}</span>
-                <span className="text-[#475467]">{project.track}</span>
-                <span className="text-[#667085]">{project.format}</span>
+                <span className="text-[#1457D9]">{project.shortTitle}</span>
+                {project.venue && <span className="text-[#667085]">{project.venue}</span>}
               </div>
-              <p className="mt-8 text-base font-semibold text-[#1457D9]">
-                {project.shortTitle}
-              </p>
-              <h1 className="mt-3 max-w-[900px] text-balance text-[clamp(2.6rem,5.8vw,5.35rem)] font-medium leading-[0.96] tracking-[-0.06em]">
+              <h1 className="mt-5 max-w-[880px] text-balance text-[clamp(2.5rem,5.2vw,5rem)] font-medium leading-[0.98] tracking-[-0.055em]">
                 {project.title}
               </h1>
               <p className="mt-7 max-w-[68ch] text-[17px] leading-8 text-[#475467]">
                 {project.dek}
               </p>
-            </div>
 
-            <dl className="border-t-2 border-[#111827] pt-4 font-report-mono text-[9px] leading-5 text-[#667085] lg:self-end">
-              <div className="grid grid-cols-[4.5rem_1fr] gap-3">
-                <dt>Author</dt>
-                <dd className="text-[#344054]">{project.authors}</dd>
-              </div>
-              <div className="mt-2 grid grid-cols-[4.5rem_1fr] gap-3">
-                <dt>Date</dt>
-                <dd className="text-[#344054]">{project.date}</dd>
-              </div>
-              {project.venue && (
-                <div className="mt-2 grid grid-cols-[4.5rem_1fr] gap-3">
-                  <dt>Venue</dt>
-                  <dd className="text-[#1457D9]">{project.venue}</dd>
+              <dl className="mt-10 grid gap-5 border-t border-[#D8DDE5] pt-5 font-report-mono text-[9px] leading-5 text-[#667085] sm:grid-cols-[minmax(0,2fr)_minmax(7rem,1fr)]">
+                <div>
+                  <dt className="uppercase tracking-[0.07em]">Author</dt>
+                  <dd className="mt-1 text-[#344054]">{project.authors}</dd>
                 </div>
-              )}
-            </dl>
-          </div>
+                <div>
+                  <dt className="uppercase tracking-[0.07em]">Date</dt>
+                  <dd className="mt-1 text-[#344054]">{project.date}</dd>
+                </div>
+              </dl>
 
-          <div className="mt-10 flex flex-wrap gap-2 border-t border-[#D8DDE5] pt-5">
-            {project.links.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                target="_blank"
-                rel="noreferrer"
-                className={`inline-flex items-center gap-2 border px-4 py-2.5 font-report-mono text-[9px] font-medium uppercase tracking-[0.05em] transition-colors ${
-                  link.primary
-                    ? "border-[#111827] bg-[#111827] text-white hover:bg-[#1457D9]"
-                    : "border-[#98A2B3] text-[#344054] hover:border-[#1457D9] hover:text-[#1457D9]"
-                }`}
-              >
-                {link.href.includes("youtube.com") && <Play aria-hidden size={11} fill="currentColor" />}
-                {link.label} <ArrowUpRight aria-hidden size={11} />
-              </a>
-            ))}
+              <div className="mt-7 flex flex-wrap gap-x-5 gap-y-3">
+                {project.links.map((link) => (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 border-b border-[#98A2B3] pb-1 font-report-mono text-[9px] font-medium uppercase tracking-[0.05em] text-[#344054] transition-colors hover:border-[#1457D9] hover:text-[#1457D9]"
+                  >
+                    {link.href.includes("youtube.com") && (
+                      <Play aria-hidden size={10} fill="currentColor" />
+                    )}
+                    {link.label} <ArrowUpRight aria-hidden size={10} />
+                  </a>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </header>
 
-      <section className="border-b border-[#D8DDE5] bg-[#F7F8FA]">
-        <div className="mx-auto grid max-w-[1180px] sm:grid-cols-2 lg:grid-cols-4">
-          {project.metrics.map((metric, index) => (
-            <div
-              key={metric.label}
-              className={`px-5 py-7 md:px-8 ${
-                index > 0 ? "border-t border-[#D8DDE5] sm:border-l sm:border-t-0" : ""
-              } ${index === 2 ? "sm:border-l-0 lg:border-l" : ""}`}
-            >
-              <strong className="text-3xl font-medium tracking-[-0.04em] text-[#1457D9]">
-                {metric.value}
-              </strong>
-              <span className="mt-3 block text-sm font-medium">{metric.label}</span>
-              <span className="mt-1 block text-xs leading-5 text-[#667085]">{metric.detail}</span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <nav className="sticky top-14 z-40 border-b border-[#D8DDE5] bg-white/95 backdrop-blur">
-        <div className="mx-auto flex max-w-[1180px] gap-x-5 overflow-x-auto px-5 py-3 font-report-mono text-[9px] uppercase tracking-[0.06em] text-[#667085] md:px-8">
-          {project.sections.map((section) => (
-            <a key={section.id} href={`#${section.id}`} className="shrink-0 hover:text-[#1457D9]">
-              {section.index} {section.eyebrow}
-            </a>
-          ))}
-          <a href="#limitations" className="shrink-0 hover:text-[#1457D9]">
-            {String(project.sections.length + 1).padStart(2, "0")} Limitations
-          </a>
-          <a href="#sources" className="shrink-0 hover:text-[#1457D9]">
-            {String(project.sections.length + 2).padStart(2, "0")} Sources
-          </a>
-        </div>
-      </nav>
-
-      <div className="mx-auto max-w-[1180px] px-5 py-16 md:px-8 md:py-24">
-        <div className="grid gap-16 lg:grid-cols-[10rem_minmax(0,46rem)] lg:justify-between">
-          <aside className="hidden lg:block">
-            <div className="sticky top-28">
-              <span className="font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#667085]">
-                Contents
-              </span>
-              <ol className="mt-5 border-t border-[#D8DDE5]">
-                {project.sections.map((section) => (
-                  <li key={section.id} className="border-b border-[#E4E7EC]">
-                    <a
-                      href={`#${section.id}`}
-                      className="grid grid-cols-[1.5rem_1fr] gap-2 py-3 font-report-mono text-[9px] leading-4 text-[#667085] hover:text-[#1457D9]"
-                    >
-                      <span>{section.index}</span>
-                      <span>{section.eyebrow}</span>
-                    </a>
-                  </li>
-                ))}
-              </ol>
-            </div>
-          </aside>
-
-          <article className="min-w-0">
+      <div className="mx-auto max-w-[1180px] px-5 py-14 md:px-8 md:py-20">
+        <section className="grid gap-7 border-b border-[#98A2B3] pb-14 lg:grid-cols-[9rem_minmax(0,1fr)] lg:gap-10">
+          <header className="font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#667085]">
+            Contents
+          </header>
+          <ol className="grid border-t-2 border-[#111827] sm:grid-cols-2 sm:gap-x-10">
             {project.sections.map((section) => (
-              <section
-                key={section.id}
-                id={section.id}
-                className="scroll-mt-28 border-t border-[#98A2B3] py-14 first:pt-0 md:py-20"
-              >
-                <div className="mb-8 flex gap-3 font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#667085]">
+              <li key={section.id} className="border-b border-[#D8DDE5]">
+                <a
+                  href={`#${section.id}`}
+                  className="grid grid-cols-[1.75rem_1fr] gap-3 py-4 font-report-mono text-[9px] uppercase leading-4 tracking-[0.05em] text-[#475467] hover:text-[#1457D9]"
+                >
                   <span className="text-[#1457D9]">{section.index}</span>
                   <span>{section.eyebrow}</span>
-                </div>
+                </a>
+              </li>
+            ))}
+            <li className="border-b border-[#D8DDE5]">
+              <a
+                href="#limitations"
+                className="grid grid-cols-[1.75rem_1fr] gap-3 py-4 font-report-mono text-[9px] uppercase leading-4 tracking-[0.05em] text-[#475467] hover:text-[#1457D9]"
+              >
+                <span className="text-[#1457D9]">
+                  {String(project.sections.length + 1).padStart(2, "0")}
+                </span>
+                <span>Limitations</span>
+              </a>
+            </li>
+            <li className="border-b border-[#D8DDE5]">
+              <a
+                href="#sources"
+                className="grid grid-cols-[1.75rem_1fr] gap-3 py-4 font-report-mono text-[9px] uppercase leading-4 tracking-[0.05em] text-[#475467] hover:text-[#1457D9]"
+              >
+                <span className="text-[#1457D9]">
+                  {String(project.sections.length + 2).padStart(2, "0")}
+                </span>
+                <span>Sources</span>
+              </a>
+            </li>
+          </ol>
+        </section>
+
+        <section className="grid gap-7 border-b border-[#98A2B3] py-14 lg:grid-cols-[9rem_minmax(0,1fr)] lg:gap-10">
+          <header className="font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#667085]">
+            Key results
+          </header>
+          <div className="grid border-t-2 border-[#111827] sm:grid-cols-2 sm:gap-x-10">
+            {project.metrics.map((metric) => (
+              <div
+                key={metric.label}
+                className="grid grid-cols-[7rem_1fr] gap-5 border-b border-[#D8DDE5] py-5"
+              >
+                <strong className="text-2xl font-medium tracking-[-0.04em] text-[#1457D9]">
+                  {metric.value}
+                </strong>
+                <span>
+                  <span className="block text-sm font-medium">{metric.label}</span>
+                  <span className="mt-1 block text-xs leading-5 text-[#667085]">
+                    {metric.detail}
+                  </span>
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <article>
+          {project.sections.map((section) => (
+            <section
+              key={section.id}
+              id={section.id}
+              className="grid scroll-mt-20 gap-7 border-b border-[#98A2B3] py-14 md:py-20 lg:grid-cols-[9rem_minmax(0,46rem)] lg:gap-10"
+            >
+              <header className="font-report-mono text-[9px] uppercase leading-5 tracking-[0.08em] text-[#667085]">
+                <span className="block text-[#1457D9]">{section.index}</span>
+                <span className="mt-2 block">{section.eyebrow}</span>
+              </header>
+              <div className="min-w-0">
                 <h2 className="max-w-[680px] text-[clamp(2rem,4vw,3.35rem)] font-medium leading-[1.02] tracking-[-0.05em]">
                   {section.title}
                 </h2>
@@ -256,7 +259,10 @@ export function PreviewProjectPage({ slug }: { slug: string }) {
                   </p>
                 )}
                 {section.paragraphs?.map((paragraph) => (
-                  <p key={paragraph} className="mt-6 max-w-[68ch] text-[16px] leading-8 text-[#475467]">
+                  <p
+                    key={paragraph}
+                    className="mt-6 max-w-[68ch] text-[16px] leading-8 text-[#475467]"
+                  >
                     {paragraph}
                   </p>
                 ))}
@@ -308,37 +314,44 @@ export function PreviewProjectPage({ slug }: { slug: string }) {
                     <span className="font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#1457D9]">
                       {section.callout.label}
                     </span>
-                    <p className="mt-3 text-[16px] leading-7 text-[#344054]">{section.callout.text}</p>
+                    <p className="mt-3 text-[16px] leading-7 text-[#344054]">
+                      {section.callout.text}
+                    </p>
                   </aside>
                 )}
-              </section>
-            ))}
-
-            {embedUrl && (
-              <section className="border-t border-[#98A2B3] py-14 md:py-20">
-                <div className="mb-6 font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#667085]">
-                  System video
-                </div>
-                <div className="aspect-video max-w-[42rem] overflow-hidden border border-[#98A2B3] bg-[#111827]">
-                  <iframe
-                    src={embedUrl}
-                    title={`${project.shortTitle} system video`}
-                    className="h-full w-full"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    referrerPolicy="strict-origin-when-cross-origin"
-                    allowFullScreen
-                  />
-                </div>
-              </section>
-            )}
-
-            <section id="limitations" className="scroll-mt-28 border-t border-[#98A2B3] py-14 md:py-20">
-              <div className="mb-8 flex gap-3 font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#667085]">
-                <span className="text-[#1457D9]">
-                  {String(project.sections.length + 1).padStart(2, "0")}
-                </span>
-                <span>Limitations</span>
               </div>
+            </section>
+          ))}
+
+          {embedUrl && (
+            <section className="grid gap-7 border-b border-[#98A2B3] py-14 md:py-20 lg:grid-cols-[9rem_minmax(0,46rem)] lg:gap-10">
+              <header className="font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#667085]">
+                System video
+              </header>
+              <div className="aspect-video overflow-hidden border border-[#98A2B3] bg-[#111827]">
+                <iframe
+                  src={embedUrl}
+                  title={`${project.shortTitle} system video`}
+                  className="h-full w-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allowFullScreen
+                />
+              </div>
+            </section>
+          )}
+
+          <section
+            id="limitations"
+            className="grid scroll-mt-20 gap-7 border-b border-[#98A2B3] py-14 md:py-20 lg:grid-cols-[9rem_minmax(0,46rem)] lg:gap-10"
+          >
+            <header className="font-report-mono text-[9px] uppercase leading-5 tracking-[0.08em] text-[#667085]">
+              <span className="block text-[#1457D9]">
+                {String(project.sections.length + 1).padStart(2, "0")}
+              </span>
+              <span className="mt-2 block">Limitations</span>
+            </header>
+            <div>
               <h2 className="text-3xl font-medium tracking-[-0.04em]">Where the claim stops</h2>
               <ul className="mt-8 border-t-2 border-[#111827]">
                 {project.limitations.map((limitation, index) => (
@@ -353,15 +366,20 @@ export function PreviewProjectPage({ slug }: { slug: string }) {
                   </li>
                 ))}
               </ul>
-            </section>
+            </div>
+          </section>
 
-            <section id="sources" className="scroll-mt-28 border-t border-[#98A2B3] py-14 md:py-20">
-              <div className="mb-8 flex gap-3 font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#667085]">
-                <span className="text-[#1457D9]">
-                  {String(project.sections.length + 2).padStart(2, "0")}
-                </span>
-                <span>Sources & citation</span>
-              </div>
+          <section
+            id="sources"
+            className="grid scroll-mt-20 gap-7 py-14 md:py-20 lg:grid-cols-[9rem_minmax(0,46rem)] lg:gap-10"
+          >
+            <header className="font-report-mono text-[9px] uppercase leading-5 tracking-[0.08em] text-[#667085]">
+              <span className="block text-[#1457D9]">
+                {String(project.sections.length + 2).padStart(2, "0")}
+              </span>
+              <span className="mt-2 block">Sources & citation</span>
+            </header>
+            <div>
               <div className="border-t-2 border-[#111827]">
                 {project.links.map((link) => (
                   <a
@@ -393,9 +411,9 @@ export function PreviewProjectPage({ slug }: { slug: string }) {
                   {project.citation}
                 </code>
               </div>
-            </section>
-          </article>
-        </div>
+            </div>
+          </section>
+        </article>
       </div>
 
       <section className="border-t border-[#D8DDE5] bg-[#F7F8FA]">
