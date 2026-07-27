@@ -1,27 +1,35 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { assetPath } from "@/lib/site";
 
 export const previewHref = (slug: string) => `/preview/${slug}/`;
 
 export function PreviewHeader() {
   return (
-    <header className="sticky top-0 z-50 border-b border-[#D8DDE5] bg-white/95 backdrop-blur">
-      <nav className="mx-auto flex h-14 max-w-[1180px] items-center justify-between px-5 md:px-8">
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-[#15151E]/95 text-white backdrop-blur">
+      <nav className="mx-auto flex h-16 max-w-[1180px] items-center justify-between px-5 md:px-8">
         <Link
           href="/preview/"
           aria-label="WIGTN technical reports preview home"
-          className="inline-flex items-baseline gap-3 font-report focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1457D9]"
+          className="inline-flex items-center gap-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
         >
-          <span className="text-[15px] font-semibold tracking-[-0.02em] text-[#111827]">
-            WIGTN
-          </span>
-          <span className="font-report-mono text-[9px] uppercase tracking-[0.13em] text-[#667085]">
+          <Image
+            src={assetPath("/images/WIGTN_LOGO_WHITE.png")}
+            alt="WIGTN"
+            width={141}
+            height={32}
+            className="h-6 w-auto"
+            priority
+          />
+          <span className="h-4 w-px bg-white/20" />
+          <span className="font-report-mono text-[9px] uppercase tracking-[0.13em] text-[#B7B4C2]">
             Technical reports
           </span>
         </Link>
         <Link
           href="/"
-          className="inline-flex items-center gap-2 font-report-mono text-[9px] uppercase tracking-[0.1em] text-[#475467] transition-colors hover:text-[#1457D9] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1457D9]"
+          className="inline-flex items-center gap-2 font-report-mono text-[9px] uppercase tracking-[0.1em] text-[#B7B4C2] transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
         >
           Current design <ArrowRight aria-hidden size={12} />
         </Link>

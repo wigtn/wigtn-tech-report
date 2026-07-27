@@ -1,78 +1,100 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { assetPath } from "@/lib/site";
 import { RESEARCH_PROJECTS } from "@/mockups/research-hub/data";
 import { PreviewShell, previewHref } from "./PreviewChrome";
 
 export function PreviewHubPage() {
   return (
     <PreviewShell>
-      <header className="border-b border-[#D8DDE5]">
-        <div className="mx-auto max-w-[1180px] px-5 py-14 md:px-8 md:py-20">
-          <div className="flex items-center justify-between border-b border-[#D8DDE5] pb-4 font-report-mono text-[9px] uppercase tracking-[0.1em]">
-            <span className="text-[#1457D9]">WIGTN Tech</span>
-            <span className="text-[#667085]">
-              {String(RESEARCH_PROJECTS.length).padStart(2, "0")} reports
-            </span>
-          </div>
-          <div>
-            <h1 className="mt-8 max-w-3xl text-[clamp(2.75rem,5vw,4.5rem)] font-medium leading-[0.98] tracking-[-0.055em]">
-              Technical reports
-            </h1>
-            <p className="mt-5 max-w-[46rem] text-[16px] leading-7 text-[#475467]">
-              Papers, model reports and engineering notes with protocols, failure modes and
-              artifacts behind each claim.
-            </p>
-          </div>
+      <header className="border-b border-[#E4E7EC]">
+        <div className="mx-auto max-w-[1180px] px-5 py-16 text-center md:px-8 md:py-24">
+          <p className="font-report-mono text-[10px] uppercase tracking-[0.12em] text-[#1457D9]">
+            WIGTN Tech
+          </p>
+          <h1 className="mt-4 text-[clamp(2.75rem,5vw,4.75rem)] font-medium leading-[0.98] tracking-[-0.055em]">
+            Technical reports
+          </h1>
+          <p className="mx-auto mt-5 max-w-[42rem] text-[16px] leading-7 text-[#667085]">
+            Models, systems and engineering decisions documented with methods,
+            measurements and limitations.
+          </p>
         </div>
       </header>
 
       <section aria-labelledby="report-index-title">
         <div className="mx-auto max-w-[1180px] px-5 py-14 md:px-8 md:py-20">
-          <div className="mb-8 flex items-center justify-between">
+          <div className="mb-8 flex items-end justify-between">
             <h2
               id="report-index-title"
-              className="font-report-mono text-[10px] font-medium uppercase tracking-[0.1em]"
+              className="text-2xl font-medium tracking-[-0.035em]"
             >
-              Report archive
+              All reports
             </h2>
             <span className="font-report-mono text-[9px] text-[#667085]">
-              01—{String(RESEARCH_PROJECTS.length).padStart(2, "0")}
+              {String(RESEARCH_PROJECTS.length).padStart(2, "0")} articles
             </span>
           </div>
 
-          <div className="grid border-t-2 border-[#111827] md:grid-cols-2">
+          <div className="grid gap-x-7 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
             {RESEARCH_PROJECTS.map((project, index) => (
-              <article
-                key={project.slug}
-                className={`group border-b border-[#D8DDE5] ${
-                  index % 2 === 0 ? "md:border-r md:pr-8" : "md:pl-8"
-                }`}
-              >
+              <article key={project.slug} className="group">
                 <Link
                   href={previewHref(project.slug)}
-                  className="flex min-h-[21rem] flex-col py-8 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1457D9] md:py-10"
+                  className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1457D9]"
                 >
+                  <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-[#F2F4F7]">
+                    {project.heroFigure ? (
+                      <Image
+                        src={assetPath(project.heroFigure.src)}
+                        alt={project.heroFigure.alt}
+                        fill
+                        priority={index < 3}
+                        sizes="(min-width: 1024px) 370px, (min-width: 640px) 50vw, 100vw"
+                        className={`transition-transform duration-300 group-hover:scale-[1.02] ${
+                          project.heroFigure.contain ? "object-contain p-5" : "object-cover"
+                        }`}
+                      />
+                    ) : (
+                      <div className="flex h-full flex-col justify-between bg-[#EEF4FF] p-6">
+                        <span className="font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#1457D9]">
+                          Workflow architecture
+                        </span>
+                        <div className="grid grid-cols-3 gap-3">
+                          {project.metrics.slice(0, 3).map((metric) => (
+                            <div key={metric.label}>
+                              <strong className="block text-2xl font-medium tracking-[-0.04em]">
+                                {metric.value}
+                              </strong>
+                              <span className="mt-1 block text-[10px] leading-4 text-[#667085]">
+                                {metric.label}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
                   <div className="flex items-start justify-between gap-4 font-report-mono text-[9px] uppercase leading-5 tracking-[0.07em]">
-                    <span>
+                    <span className="mt-5">
                       <span className="text-[#1457D9]">{project.status}</span>
                       <span className="ml-4 text-[#667085]">{project.format}</span>
                     </span>
-                    <span className="text-[#667085]">
+                    <span className="mt-5 text-[#98A2B3]">
                       {String(index + 1).padStart(2, "0")}
                     </span>
                   </div>
 
-                  <h3 className="mt-8 text-3xl font-medium leading-tight tracking-[-0.045em]">
+                  <h3 className="mt-4 text-[1.65rem] font-medium leading-tight tracking-[-0.045em] transition-colors group-hover:text-[#1457D9]">
                     {project.shortTitle}
                   </h3>
-                  <p className="mt-2 max-w-[32rem] text-lg font-medium leading-7 tracking-[-0.02em] text-[#344054]">
+                  <p className="mt-2 max-w-[32rem] text-[15px] leading-6 text-[#475467]">
                     {project.title}
                   </p>
-                  <p className="mt-5 max-w-[34rem] text-sm leading-6 text-[#667085]">
-                    {project.dek}
-                  </p>
 
-                  <div className="mt-auto flex items-end justify-between gap-5 pt-10">
+                  <div className="mt-5 flex items-center justify-between gap-5">
                     <time className="font-report-mono text-[9px] text-[#667085]">
                       {project.date}
                     </time>
