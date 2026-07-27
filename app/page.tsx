@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/site";
-import { ResearchHubPage } from "@/mockups/research-hub/ResearchHubPage";
+import { ReportHubPage } from "@/components/technical-reports/ReportHubPage";
 
 export const metadata: Metadata = {
   title: "WIGTN Tech",
@@ -10,5 +10,5 @@ export const metadata: Metadata = {
 };
 
 export default function HomePage() {
-  return <ResearchHubPage />;
+  return <ReportHubPage />;
 }

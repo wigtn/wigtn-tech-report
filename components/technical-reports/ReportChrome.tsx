@@ -1,17 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 import { assetPath } from "@/lib/site";
 
-export const previewHref = (slug: string) => `/preview/${slug}/`;
+export const reportHref = (slug: string) => `/${slug}/`;
 
-export function PreviewHeader() {
+export function ReportHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-[#15151E]/95 text-white backdrop-blur">
       <nav className="mx-auto flex h-16 max-w-[1180px] items-center justify-between px-5 md:px-8">
         <Link
-          href="/preview/"
-          aria-label="WIGTN technical reports preview home"
+          href="/"
+          aria-label="WIGTN technical reports home"
           className="inline-flex items-center gap-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
         >
           <Image
@@ -27,18 +26,12 @@ export function PreviewHeader() {
             Technical reports
           </span>
         </Link>
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 font-report-mono text-[9px] uppercase tracking-[0.1em] text-[#B7B4C2] transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
-        >
-          Current design <ArrowRight aria-hidden size={12} />
-        </Link>
       </nav>
     </header>
   );
 }
 
-export function PreviewFooter() {
+export function ReportFooter() {
   return (
     <footer className="border-t border-[#D8DDE5] bg-[#F7F8FA]">
       <div className="mx-auto flex max-w-[1180px] flex-col gap-3 px-5 py-8 font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#667085] sm:flex-row sm:items-center sm:justify-between md:px-8">
@@ -49,12 +42,12 @@ export function PreviewFooter() {
   );
 }
 
-export function PreviewShell({ children }: { children: React.ReactNode }) {
+export function ReportShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-white font-report text-[#111827] selection:bg-[#1457D9]/15">
-      <PreviewHeader />
+      <ReportHeader />
       <main>{children}</main>
-      <PreviewFooter />
+      <ReportFooter />
     </div>
   );
 }

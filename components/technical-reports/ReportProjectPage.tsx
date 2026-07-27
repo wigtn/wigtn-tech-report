@@ -12,10 +12,10 @@ import {
   getResearchProject,
   type ResearchFigure,
   type ResearchTable,
-} from "@/mockups/research-hub/data";
-import { PreviewShell, previewHref } from "./PreviewChrome";
+} from "./data";
+import { ReportShell, reportHref } from "./ReportChrome";
 
-function PreviewFigure({ figure }: { figure: ResearchFigure }) {
+function ReportFigure({ figure }: { figure: ResearchFigure }) {
   return (
     <figure className={`my-8 ${figure.portrait ? "max-w-[34rem]" : "max-w-[46rem]"}`}>
       <div
@@ -40,7 +40,7 @@ function PreviewFigure({ figure }: { figure: ResearchFigure }) {
   );
 }
 
-function PreviewTable({ table }: { table: ResearchTable }) {
+function ReportTable({ table }: { table: ResearchTable }) {
   return (
     <div className="my-8">
       <p className="mb-3 font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#667085]">
@@ -87,22 +87,24 @@ function youtubeEmbedUrl(url: string) {
   return id ? `https://www.youtube-nocookie.com/embed/${id}?rel=0` : undefined;
 }
 
-export function PreviewProjectPage({ slug }: { slug: string }) {
+export function ReportProjectPage({ slug }: { slug: string }) {
   const project = getResearchProject(slug);
 
   if (!project) {
     return (
-      <PreviewShell>
+      <ReportShell>
         <div className="mx-auto max-w-3xl px-5 py-32 text-center">
-          <h1 className="text-4xl font-medium tracking-[-0.04em]">Report not found</h1>
+          <h1 className="font-report-display text-4xl font-semibold tracking-[-0.02em]">
+            Report not found
+          </h1>
           <Link
-            href="/preview/"
+            href="/"
             className="mt-8 inline-flex items-center gap-2 text-sm text-[#1457D9]"
           >
             <ArrowLeft aria-hidden size={14} /> Back to report index
           </Link>
         </div>
-      </PreviewShell>
+      </ReportShell>
     );
   }
 
@@ -111,11 +113,11 @@ export function PreviewProjectPage({ slug }: { slug: string }) {
   const related = RESEARCH_PROJECTS.filter((candidate) => candidate.slug !== slug).slice(0, 3);
 
   return (
-    <PreviewShell>
+    <ReportShell>
       <header>
         <div className="mx-auto max-w-[780px] px-5 pb-12 pt-10 md:px-8 md:pb-14 md:pt-16">
           <Link
-            href="/preview/"
+            href="/"
             className="inline-flex items-center gap-2 font-report-mono text-[9px] uppercase tracking-[0.09em] text-[#667085] transition-colors hover:text-[#1457D9]"
           >
             <ArrowLeft aria-hidden size={12} /> Report index
@@ -128,7 +130,7 @@ export function PreviewProjectPage({ slug }: { slug: string }) {
               <span className="text-[#667085]">{project.track}</span>
               {project.venue && <span className="text-[#667085]">{project.venue}</span>}
             </div>
-            <h1 className="mt-5 text-balance text-[clamp(2.35rem,4.25vw,4rem)] font-medium leading-[1.04] tracking-[-0.045em]">
+            <h1 className="mt-5 text-balance font-report-display text-[clamp(2.35rem,4.25vw,4rem)] font-semibold leading-[1.08] tracking-[-0.022em]">
               {project.title}
             </h1>
             <p className="mt-6 max-w-[64ch] text-[17px] leading-7 text-[#475467]">
@@ -174,7 +176,7 @@ export function PreviewProjectPage({ slug }: { slug: string }) {
                 <span>{section.eyebrow}</span>
               </header>
               <div className="mt-4 min-w-0">
-                <h2 className="max-w-[660px] text-[clamp(1.75rem,3vw,2.5rem)] font-medium leading-[1.12] tracking-[-0.035em]">
+                <h2 className="max-w-[660px] font-report-display text-[clamp(1.75rem,3vw,2.5rem)] font-semibold leading-[1.16] tracking-[-0.018em]">
                   {section.title}
                 </h2>
                 {section.lead && (
@@ -192,7 +194,7 @@ export function PreviewProjectPage({ slug }: { slug: string }) {
                 ))}
 
                 {project.heroFigure && project.heroSectionId === section.id && (
-                  <PreviewFigure figure={project.heroFigure} />
+                  <ReportFigure figure={project.heroFigure} />
                 )}
 
                 {section.steps && (
@@ -213,9 +215,9 @@ export function PreviewProjectPage({ slug }: { slug: string }) {
                 )}
 
                 {section.figures?.map((figure) => (
-                  <PreviewFigure key={figure.src} figure={figure} />
+                  <ReportFigure key={figure.src} figure={figure} />
                 ))}
-                {section.table && <PreviewTable table={section.table} />}
+                {section.table && <ReportTable table={section.table} />}
 
                 {section.bullets && (
                   <ul className="mt-8 border-t border-[#98A2B3]">
@@ -276,7 +278,7 @@ export function PreviewProjectPage({ slug }: { slug: string }) {
               <span>Limitations</span>
             </header>
             <div className="mt-5">
-              <h2 className="text-[clamp(1.75rem,3vw,2.5rem)] font-medium leading-[1.12] tracking-[-0.035em]">
+              <h2 className="font-report-display text-[clamp(1.75rem,3vw,2.5rem)] font-semibold leading-[1.16] tracking-[-0.018em]">
                 Where the claim stops
               </h2>
               <ul className="mt-7 border-t border-[#98A2B3]">
@@ -348,7 +350,7 @@ export function PreviewProjectPage({ slug }: { slug: string }) {
             <span className="font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#667085]">
               Continue reading
             </span>
-            <Link href="/preview/" className="text-xs font-medium text-[#1457D9]">
+            <Link href="/" className="text-xs font-medium text-[#1457D9]">
               All reports
             </Link>
           </div>
@@ -356,13 +358,13 @@ export function PreviewProjectPage({ slug }: { slug: string }) {
             {related.map((candidate) => (
               <Link
                 key={candidate.slug}
-                href={previewHref(candidate.slug)}
+                href={reportHref(candidate.slug)}
                 className="group border-b border-[#D8DDE5] py-6 md:border-b-0 md:border-r md:px-6 md:first:pl-0 md:last:border-r-0"
               >
                 <span className="font-report-mono text-[9px] uppercase tracking-[0.06em] text-[#1457D9]">
                   {candidate.status}
                 </span>
-                <h3 className="mt-3 text-xl font-medium tracking-[-0.03em]">
+                <h3 className="mt-3 font-report-display text-[1.35rem] font-semibold tracking-[-0.015em]">
                   {candidate.shortTitle}
                 </h3>
                 <p className="mt-2 text-sm leading-6 text-[#667085]">{candidate.title}</p>
@@ -379,6 +381,6 @@ export function PreviewProjectPage({ slug }: { slug: string }) {
           </div>
         </div>
       </section>
-    </PreviewShell>
+    </ReportShell>
   );
 }

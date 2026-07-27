@@ -2,18 +2,18 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { assetPath } from "@/lib/site";
-import { RESEARCH_PROJECTS } from "@/mockups/research-hub/data";
-import { PreviewShell, previewHref } from "./PreviewChrome";
+import { RESEARCH_PROJECTS } from "./data";
+import { ReportShell, reportHref } from "./ReportChrome";
 
-export function PreviewHubPage() {
+export function ReportHubPage() {
   return (
-    <PreviewShell>
+    <ReportShell>
       <header className="border-b border-[#E4E7EC]">
         <div className="mx-auto max-w-[1180px] px-5 py-16 text-center md:px-8 md:py-24">
           <p className="font-report-mono text-[10px] uppercase tracking-[0.12em] text-[#1457D9]">
             WIGTN Tech
           </p>
-          <h1 className="mt-4 text-[clamp(2.75rem,5vw,4.75rem)] font-medium leading-[0.98] tracking-[-0.055em]">
+          <h1 className="mt-4 font-report-display text-[clamp(2.75rem,5vw,4.75rem)] font-semibold leading-[1.02] tracking-[-0.025em]">
             Technical reports
           </h1>
           <p className="mx-auto mt-5 max-w-[42rem] text-[16px] leading-7 text-[#667085]">
@@ -28,7 +28,7 @@ export function PreviewHubPage() {
           <div className="mb-8 flex items-end justify-between">
             <h2
               id="report-index-title"
-              className="text-2xl font-medium tracking-[-0.035em]"
+              className="font-report-display text-[1.75rem] font-semibold tracking-[-0.02em]"
             >
               All reports
             </h2>
@@ -41,7 +41,7 @@ export function PreviewHubPage() {
             {RESEARCH_PROJECTS.map((project, index) => (
               <article key={project.slug} className="group">
                 <Link
-                  href={previewHref(project.slug)}
+                  href={reportHref(project.slug)}
                   className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1457D9]"
                 >
                   <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-[#F2F4F7]">
@@ -87,7 +87,7 @@ export function PreviewHubPage() {
                     </span>
                   </div>
 
-                  <h3 className="mt-4 text-[1.65rem] font-medium leading-tight tracking-[-0.045em] transition-colors group-hover:text-[#1457D9]">
+                  <h3 className="mt-4 font-report-display text-[1.75rem] font-semibold leading-tight tracking-[-0.02em] transition-colors group-hover:text-[#1457D9]">
                     {project.shortTitle}
                   </h3>
                   <p className="mt-2 max-w-[32rem] text-[15px] leading-6 text-[#475467]">
@@ -110,6 +110,6 @@ export function PreviewHubPage() {
           </div>
         </div>
       </section>
-    </PreviewShell>
+    </ReportShell>
   );
 }

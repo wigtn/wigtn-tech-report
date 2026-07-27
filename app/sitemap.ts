@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/site";
-import { RESEARCH_PROJECTS } from "@/mockups/research-hub/data";
+import { RESEARCH_PROJECTS } from "@/components/technical-reports/data";
 
 export const dynamic = "force-static";
 

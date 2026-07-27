@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/site";
-import { ResearchProjectPage } from "@/mockups/research-hub/ResearchProjectPage";
+import { ReportProjectPage } from "@/components/technical-reports/ReportProjectPage";
 import {
   RESEARCH_PROJECTS,
   getResearchProject,
-} from "@/mockups/research-hub/data";
+} from "@/components/technical-reports/data";
 
 export function generateStaticParams() {
   return RESEARCH_PROJECTS.map((project) => ({ slug: project.slug }));
@@ -47,5 +47,5 @@ export default async function ResearchProjectRoute({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  return <ResearchProjectPage slug={slug} />;
+  return <ReportProjectPage slug={slug} />;
 }

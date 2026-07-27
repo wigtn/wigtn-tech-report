@@ -1,3 +1,4 @@
+// Shared content model for the technical report index and detail routes.
 export type ResearchStatus =
   | "Peer reviewed"
   | "Open model"
