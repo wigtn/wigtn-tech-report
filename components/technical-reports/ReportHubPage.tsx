@@ -39,7 +39,11 @@ export function ReportHubPage() {
 
           <div className="grid gap-x-7 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
             {RESEARCH_PROJECTS.map((project, index) => (
-              <article key={project.slug} className="group">
+              <article
+                key={project.slug}
+                lang={project.language ?? "en"}
+                className="group"
+              >
                 <Link
                   href={reportHref(project.slug)}
                   className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1457D9]"

@@ -67,6 +67,7 @@ export type ResearchProject = {
   shortTitle: string;
   title: string;
   dek: string;
+  language?: "en" | "ko";
   track: ResearchTrack;
   status: ResearchStatus;
   format: string;
@@ -84,6 +85,261 @@ export type ResearchProject = {
 };
 
 export const researchHref = (slug: string) => `/${slug}/`;
+
+const codexSelectiveHarness: ResearchProject = {
+  slug: "codex-selective-harness",
+  shortTitle: "WIGTN Plugin for Codex",
+  title: "Re-evaluating an implementation harness on GPT-5.6 Sol",
+  dek: "On two SWE-bench Verified tasks, GPT-5.6 Sol resolved 4/4 runs in each condition, with and without the legacy WIGTN harness. The harness increased median wall time by 151.7%, output tokens by 141.2%, and command count by 32.0%. We used this result to redesign WIGTN around selective, task-dependent intervention.",
+  language: "en",
+  track: "Agentic engineering",
+  status: "Measured system",
+  format: "Evaluation report",
+  date: "2026.07.28",
+  authors: "Hyeonsang Kim",
+  heroFigure: {
+    src: "/images/projects/codex-selective-harness-eval.svg",
+    alt: "Task resolution and execution cost for Bare Codex and the legacy WIGTN harness",
+    caption:
+      "GPT-5.6 Sol on the SWE-bench Verified development sample. Bare Codex and the legacy harness each resolved 4/4 runs, while the legacy-harness condition increased median wall time, output tokens and command count.",
+    contain: true,
+  },
+  heroSectionId: "results",
+  links: [
+    {
+      label: "Source repository",
+      href: "https://github.com/wigtn/wigtn-plugins-codex",
+      primary: true,
+    },
+    {
+      label: "Source report (Korean)",
+      href: "https://github.com/wigtn/wigtn-plugins-codex/blob/14ac417c42b6196e6ef2ab3116701828dc9cea4c/docs/TECHNICAL-REPORT-DRAFT-2026-07-28-KO.md",
+    },
+    {
+      label: "External evaluation protocol",
+      href: "https://github.com/wigtn/wigtn-plugins-codex/blob/14ac417c42b6196e6ef2ab3116701828dc9cea4c/docs/EXTERNAL-EVAL-PROTOCOL-2026-07-28-KO.md",
+    },
+    {
+      label: "Machine-readable SWE-bench results",
+      href: "https://github.com/wigtn/wigtn-plugins-codex/blob/14ac417c42b6196e6ef2ab3116701828dc9cea4c/tests/external/swe-bench-verified/results-2026-07-28.json",
+    },
+    {
+      label: "FeatureBench integrity audit",
+      href: "https://github.com/wigtn/wigtn-plugins-codex/blob/14ac417c42b6196e6ef2ab3116701828dc9cea4c/docs/FEATUREBENCH-LIFT-PILOT-2026-07-28-KO.md",
+    },
+    {
+      label: "Routine coding noninterference gate",
+      href: "https://github.com/wigtn/wigtn-plugins-codex/blob/14ac417c42b6196e6ef2ab3116701828dc9cea4c/docs/ORDINARY-NONINTERFERENCE-GATE-2026-07-28-KO.md",
+    },
+    {
+      label: "WorkGraph pilot",
+      href: "https://github.com/wigtn/wigtn-plugins-codex/blob/14ac417c42b6196e6ef2ab3116701828dc9cea4c/docs/WORKGRAPH-PILOT-2026-07-28-KO.md",
+    },
+    {
+      label: "Follow-up research plan",
+      href: "https://github.com/wigtn/wigtn-plugins-codex/blob/14ac417c42b6196e6ef2ab3116701828dc9cea4c/docs/RESEARCH-ROUND2-2026-07-28-KO.md",
+    },
+  ],
+  metrics: [
+    {
+      value: "4/4 = 4/4",
+      label: "Resolved tasks",
+      detail: "Bare Codex and legacy WIGTN harness",
+    },
+    {
+      value: "+151.7%",
+      label: "Median wall time",
+      detail: "120.21s to 302.62s",
+    },
+    {
+      value: "+141.2%",
+      label: "Median output tokens",
+      detail: "3,613 to 8,715.5",
+    },
+    {
+      value: "0",
+      label: "Repeatable quality lifts",
+      detail: "After integrity exclusions",
+    },
+  ],
+  sections: [
+    {
+      id: "question",
+      index: "01",
+      eyebrow: "Problem",
+      title: "When the model improves, the harness needs another evaluation",
+      lead:
+        "WIGTN Plugin made recurring product-development practices—requirements, verification and release decisions—reusable in Codex. As repository exploration, implementation planning, code changes and testing became native model behaviors, we needed to test whether the older workflow still added value.",
+      paragraphs: [
+        "Here, a harness means the task order, inspection steps and completion rules placed around the model. Rather than port the Claude Code workflow unchanged, we held the model and tasks constant and measured whether its additional machinery improved the outcome.",
+      ],
+      callout: {
+        label: "Evaluation question",
+        text: "Does the previous, heavier implementation harness improve the output of a strong coding model, or does it repeat work the model already performs and add cost?",
+      },
+    },
+    {
+      id: "method",
+      index: "02",
+      eyebrow: "Method",
+      title: "We changed the harness, not the model or the task",
+      lead:
+        "To avoid mixing model-generation effects with harness effects, we held GPT-5.6 Sol constant. The Bare condition used Codex without the plugin; the legacy-harness condition added the previous, heavier WIGTN implementation process.",
+      steps: [
+        {
+          label: "Arm 01",
+          title: "Bare",
+          body: "Codex explores the repository, makes the change and runs the relevant existing tests.",
+        },
+        {
+          label: "Arm 02",
+          title: "Legacy harness",
+          body: "The same model and task receive the legacy WIGTN harness, including planning, verification and completion records.",
+        },
+        {
+          label: "Tasks",
+          title: "SWE-bench Verified",
+          body: "Fixed real-world bug-fix tasks from Astropy and Pytest.",
+        },
+        {
+          label: "Trials",
+          title: "2 × 2",
+          body: "Two trials per condition for each task, with execution order reversed between repetitions.",
+        },
+      ],
+      paragraphs: [
+        "Every run started from a clean workspace inside a task-specific Docker environment. We fixed the problem statement and base commit, then preflighted both the expected failure and the reference patch. A run counted as resolved only when the official tests covering the new and existing behavior passed.",
+        "Each trial’s evaluation packet recorded wall-clock seconds, output tokens and tool or command calls. The table reports the median across the four runs in each condition. The released packet does not expose finer-grained timer boundaries, and the ARM host used x86 Docker emulation, so wall time is treated as an environment-sensitive secondary metric rather than a portable latency claim.",
+        "The sample contains only two tasks and two trials per condition. It does not establish that every harness becomes less useful as model capability increases. It tests one narrower question: with a strong model held constant, did the legacy harness add value?",
+      ],
+    },
+    {
+      id: "results",
+      index: "03",
+      eyebrow: "Results",
+      title: "The success rate held. The execution cost did not.",
+      lead:
+        "Bare Codex and the legacy harness each resolved all four runs—eight runs in total—with no discordant pair.",
+      paragraphs: [
+        "The additional cost came from separate planning, inspection and completion-record steps even for small bug fixes. In this sample, those steps did not change the code outcome.",
+      ],
+      table: {
+        caption: "GPT-5.6 Sol paired comparison — overall median",
+        headers: ["Metric", "Bare", "Legacy harness", "Delta"],
+        rows: [
+          {
+            cells: ["Resolved", "4/4", "4/4", "No difference"],
+            highlight: true,
+          },
+          {
+            cells: ["Wall time", "120.21 sec", "302.62 sec", "+151.7%"],
+          },
+          {
+            cells: ["Output tokens", "3,613", "8,715.5", "+141.2%"],
+          },
+          {
+            cells: ["Commands", "12.5", "16.5", "+32.0%"],
+          },
+        ],
+      },
+    },
+    {
+      id: "interpretation",
+      index: "04",
+      eyebrow: "Interpretation",
+      title: "The clearest benefit was enforcing team rules, not improving code outcomes",
+      lead:
+        "The FeatureBench pilot produced no intact, repeatable coding-performance lift. In a separate GPT-5.5 PRD-format evaluation, the plugin improved compliance with WIGTN’s predefined structure from 0/3 to 3/3.",
+      table: {
+        caption: "Evidence by task type",
+        headers: ["Evaluation", "Observed result", "What it supports"],
+        rows: [
+          {
+            cells: [
+              "SWE-bench Verified",
+              "Bare 4/4, legacy harness 4/4",
+              "No quality lift in the selected coding sample",
+            ],
+          },
+          {
+            cells: [
+              "FeatureBench pilot",
+              "0 intact, repeatable lifts",
+              "No general coding-quality claim",
+            ],
+          },
+          {
+            cells: [
+              "PRD format (GPT-5.5)",
+              "Bare 0/3 → Plugin 3/3",
+              "Reproducible team-defined document structure",
+            ],
+            highlight: true,
+          },
+        ],
+      },
+      paragraphs: [
+        "The PRD evaluation measured format compliance—not overall document quality—across requirement IDs, unresolved decisions and acceptance criteria. It supports a narrower benefit: applying team rules the model cannot infer on its own.",
+        "We invalidated the first successful Seaborn Plugin run in FeatureBench after discovering that it had read an installed copy of the same project outside the workspace. The incident made one principle explicit: passing tests is not enough to trust an evaluation. Access to reference implementations and hidden tests must be audited as part of the result.",
+      ],
+    },
+    {
+      id: "decision",
+      index: "05",
+      eyebrow: "Product decision",
+      title: "Keep routine implementation light. Add structure where failure is expensive.",
+      lead:
+        "After the evaluation, we shifted the plugin from directing implementation to selectively applying requirements, verification and release rules. Low-risk local changes no longer follow the same path as work that requires durable requirements and evidence.",
+      steps: [
+        {
+          label: "Fast",
+          title: "Routine implementation",
+          body: "Find the cause, make the smallest change, run focused tests and perform only the relevant checks. Small changes do not create a WorkGraph or requirements table.",
+        },
+        {
+          label: "Assurance",
+          title: "High-risk changes",
+          body: "For authorization, data structures, concurrency and migrations, connect requirements and risks to code locations and executed evidence.",
+        },
+        {
+          label: "State",
+          title: "WorkGraph",
+          body: "Create one only when interruption recovery or a durable plan is explicitly required. When a source changes, dependent work and checks return to stale.",
+        },
+        {
+          label: "Release",
+          title: "Separate authority",
+          body: "Keep verification state separate from authority to commit, push or open a PR. Recorded state never replaces the user’s current request.",
+        },
+      ],
+    },
+    {
+      id: "validation",
+      index: "06",
+      eyebrow: "Validation after redesign",
+      title: "We checked that the revised structure stayed out of routine coding",
+      lead:
+        "We kept the experiment that measured the legacy harness separate from validation of the current design. After the redesign, we independently tested routine-coding noninterference, WorkGraph state rules and fixed-input regression behavior.",
+      bullets: [
+        "Bare Codex and the current WIGTN configuration both passed 12/12 hidden tests across 12 synthetic Python, JavaScript and Ruby bug fixes.",
+        "There were zero out-of-scope edits, unsolicited PRDs, WorkGraphs or release states, and zero losses of user-authored drafts.",
+        "WorkGraphs in all 12 isolated repositories passed the final schema check; all 144 provenance, requirement, task, check, risk and protected-path fields passed as well.",
+        "We ran 67 fixed-input regression tests covering WorkGraph creation, change propagation, format migration, completion rules and release authority.",
+      ],
+      paragraphs: [
+        "The current evidence supports a narrower claim: in this development sample, the selective design did not turn routine coding into a full product workflow. We have not established that it produces better plans or better general coding outcomes than Bare Codex.",
+      ],
+    },
+  ],
+  limitations: [
+    "The primary comparison is a development sample limited to two SWE-bench Verified tasks and two trials per task.",
+    "Because GPT-5.6 Sol was held constant, the comparison does not establish that every harness becomes less useful as model capability increases.",
+    "We invalidated the FeatureBench run that accessed a reference implementation and observed no intact, repeatable lift in general coding quality.",
+    "Some raw execution packets are not included in a durable public repository, so this is not a complete third-party reproduction package.",
+  ],
+  citation:
+    'Kim, Hyeonsang. (2026). "Re-evaluating an implementation harness on GPT-5.6 Sol." WIGTN Technical Reports.',
+};
 
 const wigtnOcr: ResearchProject = {
   slug: "wigtnocr",
@@ -965,6 +1221,7 @@ const wigtnFlake: ResearchProject = {
 };
 
 export const RESEARCH_PROJECTS: ResearchProject[] = [
+  codexSelectiveHarness,
   wigtnOcr,
   wigvo,
   wigss,

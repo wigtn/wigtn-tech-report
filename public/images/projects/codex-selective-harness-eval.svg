@@ -1,0 +1,67 @@
+<svg width="1600" height="1000" viewBox="0 0 1600 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="1000" fill="#F7F8FA"/>
+
+  <text x="96" y="104" fill="#1457D9" font-family="IBM Plex Mono, monospace" font-size="22" letter-spacing="3">
+    WIGTN PLUGIN FOR CODEX
+  </text>
+  <text x="96" y="176" fill="#111827" font-family="Inter Tight, Arial, sans-serif" font-size="58" font-weight="600">
+    Same result. Heavier harness.
+  </text>
+  <text x="96" y="222" fill="#667085" font-family="Source Sans 3, Arial, sans-serif" font-size="25">
+    GPT-5.6 Sol · SWE-bench Verified · median execution cost
+  </text>
+
+  <rect x="96" y="302" width="620" height="472" rx="22" fill="white" stroke="#D8DDE5" stroke-width="2"/>
+  <text x="140" y="358" fill="#667085" font-family="IBM Plex Mono, monospace" font-size="18" letter-spacing="2">
+    RESOLVED TASKS
+  </text>
+  <text x="140" y="442" fill="#111827" font-family="Inter Tight, Arial, sans-serif" font-size="74" font-weight="600">
+    4 / 4
+  </text>
+  <text x="140" y="480" fill="#667085" font-family="Source Sans 3, Arial, sans-serif" font-size="22">
+    Bare Codex
+  </text>
+  <rect x="140" y="518" width="492" height="30" rx="15" fill="#D8DDE5"/>
+
+  <text x="140" y="642" fill="#111827" font-family="Inter Tight, Arial, sans-serif" font-size="74" font-weight="600">
+    4 / 4
+  </text>
+  <text x="140" y="680" fill="#667085" font-family="Source Sans 3, Arial, sans-serif" font-size="22">
+    Legacy WIGTN harness
+  </text>
+  <rect x="140" y="718" width="492" height="30" rx="15" fill="#1457D9"/>
+
+  <rect x="756" y="302" width="748" height="472" rx="22" fill="#111827"/>
+  <text x="804" y="358" fill="#98A2B3" font-family="IBM Plex Mono, monospace" font-size="18" letter-spacing="2">
+    MEDIAN OVERHEAD AT THE SAME SUCCESS RATE
+  </text>
+
+  <line x1="804" y1="478" x2="1456" y2="478" stroke="#344054"/>
+  <text x="804" y="438" fill="white" font-family="Inter Tight, Arial, sans-serif" font-size="58" font-weight="600">
+    +151.7%
+  </text>
+  <text x="1224" y="432" fill="#D0D5DD" font-family="Source Sans 3, Arial, sans-serif" font-size="24">
+    wall time
+  </text>
+
+  <line x1="804" y1="610" x2="1456" y2="610" stroke="#344054"/>
+  <text x="804" y="570" fill="white" font-family="Inter Tight, Arial, sans-serif" font-size="58" font-weight="600">
+    +141.2%
+  </text>
+  <text x="1224" y="564" fill="#D0D5DD" font-family="Source Sans 3, Arial, sans-serif" font-size="24">
+    output tokens
+  </text>
+
+  <text x="804" y="702" fill="white" font-family="Inter Tight, Arial, sans-serif" font-size="58" font-weight="600">
+    +32.0%
+  </text>
+  <text x="1224" y="696" fill="#D0D5DD" font-family="Source Sans 3, Arial, sans-serif" font-size="24">
+    commands
+  </text>
+
+  <line x1="96" y1="846" x2="1504" y2="846" stroke="#D8DDE5" stroke-width="2"/>
+  <text x="96" y="910" fill="#667085" font-family="IBM Plex Mono, monospace" font-size="18" letter-spacing="1">
+    2 TASKS × 2 TRIALS PER ARM · DEVELOPMENT SAMPLE, NOT A GENERAL QUALITY CLAIM
+  </text>
+  <circle cx="1484" cy="902" r="18" fill="#8B5CF6"/>
+</svg>

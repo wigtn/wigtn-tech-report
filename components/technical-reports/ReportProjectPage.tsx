@@ -17,7 +17,7 @@ import { ReportShell, reportHref } from "./ReportChrome";
 
 function ReportFigure({ figure }: { figure: ResearchFigure }) {
   return (
-    <figure className={`my-8 ${figure.portrait ? "max-w-[34rem]" : "max-w-[46rem]"}`}>
+    <figure className={`my-8 ${figure.portrait ? "max-w-[34rem]" : "max-w-[52rem]"}`}>
       <div
         className={`relative overflow-hidden border border-[#D8DDE5] bg-[#F7F8FA] ${
           figure.portrait ? "aspect-[4/5]" : "aspect-[16/9]"
@@ -27,7 +27,7 @@ function ReportFigure({ figure }: { figure: ResearchFigure }) {
           src={assetPath(figure.src)}
           alt={figure.alt}
           fill
-          sizes="(min-width: 1024px) 736px, 100vw"
+          sizes="(min-width: 1024px) 832px, 100vw"
           className={figure.contain ? "object-contain p-4 md:p-8" : "object-cover"}
           style={figure.focalPoint ? { objectPosition: figure.focalPoint } : undefined}
         />
@@ -114,84 +114,90 @@ export function ReportProjectPage({ slug }: { slug: string }) {
 
   return (
     <ReportShell>
-      <header>
-        <div className="mx-auto max-w-[780px] px-5 pb-12 pt-10 md:px-8 md:pb-14 md:pt-16">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 font-report-mono text-[9px] uppercase tracking-[0.09em] text-[#667085] transition-colors hover:text-[#1457D9]"
-          >
-            <ArrowLeft aria-hidden size={12} /> Report index
-          </Link>
+      <header lang={project.language ?? "en"}>
+        <div className="mx-auto w-full max-w-[960px] px-6 pb-10 pt-10 md:px-8 md:pb-12 md:pt-14">
+          <div className="mx-auto max-w-[820px]">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 font-report-mono text-[9px] uppercase tracking-[0.09em] text-[#667085] transition-colors hover:text-[#1457D9]"
+            >
+              <ArrowLeft aria-hidden size={12} /> Report index
+            </Link>
 
-          <div className="mt-10">
-            <div className="flex flex-wrap gap-x-4 gap-y-2 font-report-mono text-[9px] uppercase tracking-[0.08em]">
-              <span className="text-[#1457D9]">{project.status}</span>
-              <span className="text-[#667085]">{project.format}</span>
-              <span className="text-[#667085]">{project.track}</span>
-              {project.venue && <span className="text-[#667085]">{project.venue}</span>}
-            </div>
-            <h1 className="mt-5 text-balance font-report-display text-[clamp(2.35rem,4.25vw,4rem)] font-semibold leading-[1.08] tracking-[-0.022em]">
-              {project.title}
-            </h1>
-            <p className="mt-6 max-w-[64ch] text-[17px] leading-7 text-[#475467]">
-              {project.dek}
-            </p>
+            <div className="mt-8">
+              <div className="flex flex-wrap gap-x-4 gap-y-2 font-report-mono text-[9px] uppercase tracking-[0.08em]">
+                <span className="text-[#1457D9]">{project.status}</span>
+                <span className="text-[#667085]">{project.format}</span>
+                <span className="text-[#667085]">{project.track}</span>
+                {project.venue && <span className="text-[#667085]">{project.venue}</span>}
+              </div>
+              <h1 className="mt-5 text-balance font-report-display text-[clamp(2.25rem,4vw,3.5rem)] font-semibold leading-[1.08] tracking-[-0.022em]">
+                {project.title}
+              </h1>
+              <p className="mt-5 text-[16px] leading-7 text-[#475467]">
+                {project.dek}
+              </p>
 
-            <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm text-[#667085]">
-              <span>{project.authors}</span>
-              <span aria-hidden>·</span>
-              <time>{project.date}</time>
-            </div>
+              <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm text-[#667085]">
+                <span>{project.authors}</span>
+                <span aria-hidden>·</span>
+                <time>{project.date}</time>
+              </div>
 
-            <div className="mt-5 flex flex-wrap gap-x-5 gap-y-3">
-              {project.links.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 border-b border-[#98A2B3] pb-1 text-xs font-medium text-[#344054] transition-colors hover:border-[#1457D9] hover:text-[#1457D9]"
-                >
-                  {link.href.includes("youtube.com") && (
-                    <Play aria-hidden size={11} fill="currentColor" />
-                  )}
-                  {link.label} <ArrowUpRight aria-hidden size={11} />
-                </a>
-              ))}
+              <div className="mt-5 flex flex-wrap gap-x-5 gap-y-3">
+                {project.links.slice(0, 4).map((link) => (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 border-b border-[#98A2B3] pb-1 text-xs font-medium text-[#344054] transition-colors hover:border-[#1457D9] hover:text-[#1457D9]"
+                  >
+                    {link.href.includes("youtube.com") && (
+                      <Play aria-hidden size={11} fill="currentColor" />
+                    )}
+                    {link.label} <ArrowUpRight aria-hidden size={11} />
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </header>
 
-      <div className="mx-auto max-w-[780px] px-5 pb-12 md:px-8 md:pb-16">
+      <div
+        lang={project.language ?? "en"}
+        className="mx-auto w-full max-w-[960px] px-6 pb-12 md:px-8 md:pb-16"
+      >
         <article className="border-t border-[#D8DDE5]">
           {project.sections.map((section) => (
             <section
               key={section.id}
               id={section.id}
-              className="scroll-mt-20 border-b border-[#E4E7EC] py-10 md:py-14"
+              className="scroll-mt-20 border-b border-[#E4E7EC] py-9 md:py-12"
             >
-              <header className="flex gap-3 font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#667085]">
-                <span className="text-[#1457D9]">{section.index}</span>
-                <span>{section.eyebrow}</span>
-              </header>
-              <div className="mt-4 min-w-0">
-                <h2 className="max-w-[660px] font-report-display text-[clamp(1.75rem,3vw,2.5rem)] font-semibold leading-[1.16] tracking-[-0.018em]">
-                  {section.title}
-                </h2>
-                {section.lead && (
-                  <p className="mt-5 max-w-[64ch] text-[17px] leading-7 text-[#344054]">
-                    {section.lead}
-                  </p>
-                )}
-                {section.paragraphs?.map((paragraph) => (
-                  <p
-                    key={paragraph}
-                    className="mt-5 max-w-[64ch] text-[16px] leading-7 text-[#475467]"
-                  >
-                    {paragraph}
-                  </p>
-                ))}
+              <div className="mx-auto max-w-[820px]">
+                <header className="flex gap-3 font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#667085]">
+                  <span className="text-[#1457D9]">{section.index}</span>
+                  <span>{section.eyebrow}</span>
+                </header>
+                <div className="mt-4 min-w-0">
+                  <h2 className="font-report-display text-[clamp(1.7rem,2.6vw,2.25rem)] font-semibold leading-[1.18] tracking-[-0.018em]">
+                    {section.title}
+                  </h2>
+                  {section.lead && (
+                    <p className="mt-4 text-[16px] leading-7 text-[#344054]">
+                      {section.lead}
+                    </p>
+                  )}
+                  {section.paragraphs?.map((paragraph) => (
+                    <p
+                      key={paragraph}
+                      className="mt-4 text-[16px] leading-7 text-[#475467]"
+                    >
+                      {paragraph}
+                    </p>
+                  ))}
 
                 {project.heroFigure && project.heroSectionId === section.id && (
                   <ReportFigure figure={project.heroFigure} />
@@ -235,109 +241,116 @@ export function ReportProjectPage({ slug }: { slug: string }) {
                   </ul>
                 )}
 
-                {section.callout && (
-                  <aside className="mt-8 border-l-2 border-[#1457D9] pl-5">
-                    <span className="font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#1457D9]">
-                      {section.callout.label}
-                    </span>
-                    <p className="mt-2 text-[15px] leading-7 text-[#475467]">
-                      {section.callout.text}
-                    </p>
-                  </aside>
-                )}
+                  {section.callout && (
+                    <aside className="mt-8 border-l-2 border-[#1457D9] pl-5">
+                      <span className="font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#1457D9]">
+                        {section.callout.label}
+                      </span>
+                      <p className="mt-2 text-[15px] leading-7 text-[#475467]">
+                        {section.callout.text}
+                      </p>
+                    </aside>
+                  )}
+                </div>
               </div>
             </section>
           ))}
 
           {embedUrl && (
-            <section className="border-b border-[#E4E7EC] py-10 md:py-14">
-              <header className="mb-5 font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#667085]">
-                System video
-              </header>
-              <div className="aspect-video overflow-hidden rounded-lg bg-[#111827]">
-                <iframe
-                  src={embedUrl}
-                  title={`${project.shortTitle} system video`}
-                  className="h-full w-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  referrerPolicy="strict-origin-when-cross-origin"
-                  allowFullScreen
-                />
+            <section className="border-b border-[#E4E7EC] py-9 md:py-12">
+              <div className="mx-auto max-w-[820px]">
+                <header className="mb-5 font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#667085]">
+                  System video
+                </header>
+                <div className="aspect-video overflow-hidden rounded-lg bg-[#111827]">
+                  <iframe
+                    src={embedUrl}
+                    title={`${project.shortTitle} system video`}
+                    className="h-full w-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerPolicy="strict-origin-when-cross-origin"
+                    allowFullScreen
+                  />
+                </div>
               </div>
             </section>
           )}
 
           <section
             id="limitations"
-            className="scroll-mt-20 border-b border-[#E4E7EC] py-10 md:py-14"
+            className="scroll-mt-20 border-b border-[#E4E7EC] py-9 md:py-12"
           >
-            <header className="flex gap-3 font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#667085]">
-              <span className="text-[#1457D9]">
-                {String(project.sections.length + 1).padStart(2, "0")}
-              </span>
-              <span>Limitations</span>
-            </header>
-            <div className="mt-5">
-              <h2 className="font-report-display text-[clamp(1.75rem,3vw,2.5rem)] font-semibold leading-[1.16] tracking-[-0.018em]">
-                Where the claim stops
-              </h2>
-              <ul className="mt-7 border-t border-[#98A2B3]">
-                {project.limitations.map((limitation, index) => (
-                  <li
-                    key={limitation}
-                    className="grid grid-cols-[2.25rem_1fr] gap-4 border-b border-[#E4E7EC] py-4"
-                  >
-                    <span className="font-report-mono text-[9px] text-[#1457D9]">
-                      L{String(index + 1).padStart(2, "0")}
-                    </span>
-                    <span className="text-[15px] leading-7 text-[#475467]">{limitation}</span>
-                  </li>
-                ))}
-              </ul>
+            <div className="mx-auto max-w-[820px]">
+              <header className="flex gap-3 font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#667085]">
+                <span className="text-[#1457D9]">
+                  {String(project.sections.length + 1).padStart(2, "0")}
+                </span>
+                <span>Limitations</span>
+              </header>
+              <div className="mt-5">
+                <h2 className="font-report-display text-[clamp(1.7rem,2.6vw,2.25rem)] font-semibold leading-[1.18] tracking-[-0.018em]">
+                  Where the claim stops
+                </h2>
+                <ul className="mt-7 border-t border-[#98A2B3]">
+                  {project.limitations.map((limitation, index) => (
+                    <li
+                      key={limitation}
+                      className="grid grid-cols-[2.25rem_1fr] gap-4 border-b border-[#E4E7EC] py-4"
+                    >
+                      <span className="font-report-mono text-[9px] text-[#1457D9]">
+                        L{String(index + 1).padStart(2, "0")}
+                      </span>
+                      <span className="text-[15px] leading-7 text-[#475467]">{limitation}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </section>
 
           <section
             id="sources"
-            className="scroll-mt-20 py-10 md:py-14"
+            className="scroll-mt-20 py-9 md:py-12"
           >
-            <header className="flex gap-3 font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#667085]">
-              <span className="text-[#1457D9]">
-                {String(project.sections.length + 2).padStart(2, "0")}
-              </span>
-              <span>Sources & citation</span>
-            </header>
-            <div className="mt-5">
-              <div className="border-t border-[#98A2B3]">
-                {project.links.map((link) => (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="group flex items-center justify-between gap-5 border-b border-[#D8DDE5] py-5"
-                  >
-                    <span>
-                      <strong className="block text-sm font-medium">{link.label}</strong>
-                      <span className="mt-1 block break-all font-report-mono text-[9px] leading-4 text-[#667085]">
-                        {link.href}
-                      </span>
-                    </span>
-                    <ArrowUpRight
-                      aria-hidden
-                      size={14}
-                      className="shrink-0 text-[#1457D9] transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                    />
-                  </a>
-                ))}
-              </div>
-              <div className="mt-8 rounded-lg bg-[#F7F8FA] p-5">
-                <span className="font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#1457D9]">
-                  Suggested citation
+            <div className="mx-auto max-w-[820px]">
+              <header className="flex gap-3 font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#667085]">
+                <span className="text-[#1457D9]">
+                  {String(project.sections.length + 2).padStart(2, "0")}
                 </span>
-                <code className="mt-3 block whitespace-pre-wrap font-report-mono text-[10px] leading-6 text-[#475467]">
-                  {project.citation}
-                </code>
+                <span>Sources & citation</span>
+              </header>
+              <div className="mt-5">
+                <div className="border-t border-[#98A2B3]">
+                  {project.links.map((link) => (
+                    <a
+                      key={link.href}
+                      href={link.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="group flex items-center justify-between gap-5 border-b border-[#D8DDE5] py-5"
+                    >
+                      <span>
+                        <strong className="block text-sm font-medium">{link.label}</strong>
+                        <span className="mt-1 block break-all font-report-mono text-[9px] leading-4 text-[#667085]">
+                          {link.href}
+                        </span>
+                      </span>
+                      <ArrowUpRight
+                        aria-hidden
+                        size={14}
+                        className="shrink-0 text-[#1457D9] transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                      />
+                    </a>
+                  ))}
+                </div>
+                <div className="mt-8 rounded-lg bg-[#F7F8FA] p-5">
+                  <span className="font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#1457D9]">
+                    Suggested citation
+                  </span>
+                  <code className="mt-3 block whitespace-pre-wrap font-report-mono text-[10px] leading-6 text-[#475467]">
+                    {project.citation}
+                  </code>
+                </div>
               </div>
             </div>
           </section>
@@ -358,6 +371,7 @@ export function ReportProjectPage({ slug }: { slug: string }) {
             {related.map((candidate) => (
               <Link
                 key={candidate.slug}
+                lang={candidate.language ?? "en"}
                 href={reportHref(candidate.slug)}
                 className="group border-b border-[#D8DDE5] py-6 md:border-b-0 md:border-r md:px-6 md:first:pl-0 md:last:border-r-0"
               >
