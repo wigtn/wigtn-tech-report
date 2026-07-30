@@ -8,12 +8,48 @@ import {
 } from "lucide-react";
 import { assetPath } from "@/lib/site";
 import {
-  RESEARCH_PROJECTS,
-  getResearchProject,
   type ResearchFigure,
   type ResearchTable,
 } from "./data";
-import { ReportShell, reportHref } from "./ReportChrome";
+import {
+  getLocalizedResearchProject,
+  getResearchProjects,
+  type ReportLocale,
+} from "./localized-data";
+import {
+  ReportShell,
+  reportHomeHref,
+  reportHref,
+} from "./ReportChrome";
+
+const PROJECT_COPY = {
+  en: {
+    notFound: "Report not found",
+    backToIndex: "Back to report index",
+    reportIndex: "Report index",
+    systemVideo: "System video",
+    limitations: "Limitations",
+    claimStops: "Where the claim stops",
+    sources: "Sources & citation",
+    citation: "Suggested citation",
+    continue: "Continue reading",
+    allReports: "All reports",
+    readReport: "Read report",
+  },
+  ko: {
+    notFound: "리포트를 찾을 수 없습니다",
+    backToIndex: "리포트 목록으로 돌아가기",
+    reportIndex: "리포트 목록",
+    systemVideo: "시스템 영상",
+    limitations: "한계",
+    claimStops: "평가의 한계",
+    sources: "자료와 인용",
+    citation: "권장 인용 형식",
+    continue: "다른 리포트",
+    allReports: "전체 리포트",
+    readReport: "리포트 읽기",
+  },
+} as const;
 
 function ReportFigure({ figure }: { figure: ResearchFigure }) {
   return (
@@ -87,21 +123,28 @@ function youtubeEmbedUrl(url: string) {
   return id ? `https://www.youtube-nocookie.com/embed/${id}?rel=0` : undefined;
 }
 
-export function ReportProjectPage({ slug }: { slug: string }) {
-  const project = getResearchProject(slug);
+export function ReportProjectPage({
+  slug,
+  locale = "en",
+}: {
+  slug: string;
+  locale?: ReportLocale;
+}) {
+  const project = getLocalizedResearchProject(slug, locale);
+  const copy = PROJECT_COPY[locale];
 
   if (!project) {
     return (
-      <ReportShell>
+      <ReportShell locale={locale}>
         <div className="mx-auto max-w-3xl px-5 py-32 text-center">
           <h1 className="font-report-display text-4xl font-semibold tracking-[-0.02em]">
-            Report not found
+            {copy.notFound}
           </h1>
           <Link
-            href="/"
+            href={reportHomeHref(locale)}
             className="mt-8 inline-flex items-center gap-2 text-sm text-[#1457D9]"
           >
-            <ArrowLeft aria-hidden size={14} /> Back to report index
+            <ArrowLeft aria-hidden size={14} /> {copy.backToIndex}
           </Link>
         </div>
       </ReportShell>
@@ -110,18 +153,20 @@ export function ReportProjectPage({ slug }: { slug: string }) {
 
   const videoLink = project.links.find((link) => link.href.includes("youtube.com"));
   const embedUrl = videoLink ? youtubeEmbedUrl(videoLink.href) : undefined;
-  const related = RESEARCH_PROJECTS.filter((candidate) => candidate.slug !== slug).slice(0, 3);
+  const related = getResearchProjects(locale)
+    .filter((candidate) => candidate.slug !== slug)
+    .slice(0, 3);
 
   return (
-    <ReportShell>
-      <header lang={project.language ?? "en"}>
+    <ReportShell locale={locale} slug={slug}>
+      <header lang={locale}>
         <div className="mx-auto w-full max-w-[960px] px-6 pb-10 pt-10 md:px-8 md:pb-12 md:pt-14">
           <div className="mx-auto max-w-[820px]">
             <Link
-              href="/"
+              href={reportHomeHref(locale)}
               className="inline-flex items-center gap-2 font-report-mono text-[9px] uppercase tracking-[0.09em] text-[#667085] transition-colors hover:text-[#1457D9]"
             >
-              <ArrowLeft aria-hidden size={12} /> Report index
+              <ArrowLeft aria-hidden size={12} /> {copy.reportIndex}
             </Link>
 
             <div className="mt-8">
@@ -131,10 +176,28 @@ export function ReportProjectPage({ slug }: { slug: string }) {
                 <span className="text-[#667085]">{project.track}</span>
                 {project.venue && <span className="text-[#667085]">{project.venue}</span>}
               </div>
-              <h1 className="mt-5 text-balance font-report-display text-[clamp(2.25rem,4vw,3.5rem)] font-semibold leading-[1.08] tracking-[-0.022em]">
-                {project.title}
+              <h1
+                className={`mt-5 font-semibold ${
+                  locale === "ko"
+                    ? "max-w-[780px] font-sans text-[clamp(2rem,3.6vw,3.25rem)] leading-[1.18] tracking-[-0.035em] [word-break:keep-all] [text-wrap:pretty]"
+                    : "text-balance font-report-display text-[clamp(2.25rem,4vw,3.5rem)] leading-[1.08] tracking-[-0.022em]"
+                }`}
+              >
+                {locale === "ko" && project.titleLines
+                  ? project.titleLines.map((line) => (
+                      <span key={line} className="md:block">
+                        {line}{" "}
+                      </span>
+                    ))
+                  : project.title}
               </h1>
-              <p className="mt-5 text-[16px] leading-7 text-[#475467]">
+              <p
+                className={`mt-5 text-[16px] leading-7 text-[#475467] ${
+                  locale === "ko"
+                    ? "max-w-[760px] [word-break:keep-all] [text-wrap:pretty]"
+                    : ""
+                }`}
+              >
                 {project.dek}
               </p>
 
@@ -166,7 +229,7 @@ export function ReportProjectPage({ slug }: { slug: string }) {
       </header>
 
       <div
-        lang={project.language ?? "en"}
+        lang={locale}
         className="mx-auto w-full max-w-[960px] px-6 pb-12 md:px-8 md:pb-16"
       >
         <article className="border-t border-[#D8DDE5]">
@@ -182,18 +245,30 @@ export function ReportProjectPage({ slug }: { slug: string }) {
                   <span>{section.eyebrow}</span>
                 </header>
                 <div className="mt-4 min-w-0">
-                  <h2 className="font-report-display text-[clamp(1.7rem,2.6vw,2.25rem)] font-semibold leading-[1.18] tracking-[-0.018em]">
+                  <h2
+                    className={`font-semibold ${
+                      locale === "ko"
+                        ? "max-w-[760px] font-sans text-[clamp(1.65rem,2.35vw,2.15rem)] leading-[1.3] tracking-[-0.028em] [word-break:keep-all] [text-wrap:pretty]"
+                        : "font-report-display text-[clamp(1.7rem,2.6vw,2.25rem)] leading-[1.18] tracking-[-0.018em]"
+                    }`}
+                  >
                     {section.title}
                   </h2>
                   {section.lead && (
-                    <p className="mt-4 text-[16px] leading-7 text-[#344054]">
+                    <p
+                      className={`mt-4 text-[16px] leading-7 text-[#344054] ${
+                        locale === "ko" ? "[word-break:keep-all]" : ""
+                      }`}
+                    >
                       {section.lead}
                     </p>
                   )}
                   {section.paragraphs?.map((paragraph) => (
                     <p
                       key={paragraph}
-                      className="mt-4 text-[16px] leading-7 text-[#475467]"
+                      className={`mt-4 text-[16px] leading-7 text-[#475467] ${
+                        locale === "ko" ? "[word-break:keep-all]" : ""
+                      }`}
                     >
                       {paragraph}
                     </p>
@@ -260,7 +335,7 @@ export function ReportProjectPage({ slug }: { slug: string }) {
             <section className="border-b border-[#E4E7EC] py-9 md:py-12">
               <div className="mx-auto max-w-[820px]">
                 <header className="mb-5 font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#667085]">
-                  System video
+                  {copy.systemVideo}
                 </header>
                 <div className="aspect-video overflow-hidden rounded-lg bg-[#111827]">
                   <iframe
@@ -285,11 +360,17 @@ export function ReportProjectPage({ slug }: { slug: string }) {
                 <span className="text-[#1457D9]">
                   {String(project.sections.length + 1).padStart(2, "0")}
                 </span>
-                <span>Limitations</span>
+                <span>{copy.limitations}</span>
               </header>
               <div className="mt-5">
-                <h2 className="font-report-display text-[clamp(1.7rem,2.6vw,2.25rem)] font-semibold leading-[1.18] tracking-[-0.018em]">
-                  Where the claim stops
+                <h2
+                  className={`font-semibold ${
+                    locale === "ko"
+                      ? "font-sans text-[clamp(1.65rem,2.35vw,2.15rem)] leading-[1.3] tracking-[-0.028em] [word-break:keep-all]"
+                      : "font-report-display text-[clamp(1.7rem,2.6vw,2.25rem)] leading-[1.18] tracking-[-0.018em]"
+                  }`}
+                >
+                  {copy.claimStops}
                 </h2>
                 <ul className="mt-7 border-t border-[#98A2B3]">
                   {project.limitations.map((limitation, index) => (
@@ -317,7 +398,7 @@ export function ReportProjectPage({ slug }: { slug: string }) {
                 <span className="text-[#1457D9]">
                   {String(project.sections.length + 2).padStart(2, "0")}
                 </span>
-                <span>Sources & citation</span>
+                <span>{copy.sources}</span>
               </header>
               <div className="mt-5">
                 <div className="border-t border-[#98A2B3]">
@@ -345,7 +426,7 @@ export function ReportProjectPage({ slug }: { slug: string }) {
                 </div>
                 <div className="mt-8 rounded-lg bg-[#F7F8FA] p-5">
                   <span className="font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#1457D9]">
-                    Suggested citation
+                    {copy.citation}
                   </span>
                   <code className="mt-3 block whitespace-pre-wrap font-report-mono text-[10px] leading-6 text-[#475467]">
                     {project.citation}
@@ -361,10 +442,13 @@ export function ReportProjectPage({ slug }: { slug: string }) {
         <div className="mx-auto max-w-[1180px] px-5 py-12 md:px-8 md:py-16">
           <div className="mb-5 flex items-center justify-between border-b-2 border-[#111827] pb-3">
             <span className="font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#667085]">
-              Continue reading
+              {copy.continue}
             </span>
-            <Link href="/" className="text-xs font-medium text-[#1457D9]">
-              All reports
+            <Link
+              href={reportHomeHref(locale)}
+              className="text-xs font-medium text-[#1457D9]"
+            >
+              {copy.allReports}
             </Link>
           </div>
           <div className="grid md:grid-cols-3">
@@ -372,7 +456,7 @@ export function ReportProjectPage({ slug }: { slug: string }) {
               <Link
                 key={candidate.slug}
                 lang={candidate.language ?? "en"}
-                href={reportHref(candidate.slug)}
+                href={reportHref(candidate.slug, locale)}
                 className="group border-b border-[#D8DDE5] py-6 md:border-b-0 md:border-r md:px-6 md:first:pl-0 md:last:border-r-0"
               >
                 <span className="font-report-mono text-[9px] uppercase tracking-[0.06em] text-[#1457D9]">
@@ -383,7 +467,7 @@ export function ReportProjectPage({ slug }: { slug: string }) {
                 </h3>
                 <p className="mt-2 text-sm leading-6 text-[#667085]">{candidate.title}</p>
                 <span className="mt-5 inline-flex items-center gap-2 text-xs font-medium text-[#1457D9]">
-                  Read report{" "}
+                  {copy.readReport}{" "}
                   <ArrowRight
                     aria-hidden
                     size={13}

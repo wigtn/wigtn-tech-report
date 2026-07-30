@@ -6,6 +6,10 @@ export const metadata: Metadata = {
   title: "WIGTN Tech",
   alternates: {
     canonical: `${SITE_URL}/`,
+    languages: {
+      en: `${SITE_URL}/`,
+      ko: `${SITE_URL}/ko/`,
+    },
   },
 };
 

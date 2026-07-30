@@ -12,6 +12,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 1,
     },
+    {
+      url: `${SITE_URL}/ko/`,
+      lastModified: new Date("2026-07-31"),
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
     ...RESEARCH_PROJECTS.map((project) => ({
       url: `${SITE_URL}/${project.slug}/`,
       lastModified: new Date(
@@ -21,6 +27,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
       ),
       changeFrequency: "monthly" as const,
       priority: project.featured ? 0.9 : 0.8,
+    })),
+    ...RESEARCH_PROJECTS.map((project) => ({
+      url: `${SITE_URL}/ko/${project.slug}/`,
+      lastModified: new Date(
+        /^\d{4}\.\d{2}\.\d{2}$/.test(project.date)
+          ? project.date.replaceAll(".", "-")
+          : "2026-07-31",
+      ),
+      changeFrequency: "monthly" as const,
+      priority: project.featured ? 0.85 : 0.75,
     })),
   ];
 }

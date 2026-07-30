@@ -4,12 +4,20 @@ export type ResearchStatus =
   | "Open model"
   | "Measured system"
   | "Engineering note"
-  | "Case study";
+  | "Case study"
+  | "동료 심사"
+  | "오픈 모델"
+  | "실측 시스템"
+  | "엔지니어링 노트"
+  | "사례 연구";
 
 export type ResearchTrack =
   | "Models & evaluation"
   | "AI systems"
-  | "Agentic engineering";
+  | "Agentic engineering"
+  | "모델 및 평가"
+  | "AI 시스템"
+  | "에이전틱 엔지니어링";
 
 export type ResearchLink = {
   label: string;
@@ -66,6 +74,7 @@ export type ResearchProject = {
   slug: string;
   shortTitle: string;
   title: string;
+  titleLines?: string[];
   dek: string;
   language?: "en" | "ko";
   track: ResearchTrack;
@@ -169,7 +178,7 @@ const codexSelectiveHarness: ResearchProject = {
       eyebrow: "Problem",
       title: "When the model improves, the harness needs another evaluation",
       lead:
-        "WIGTN Plugin made recurring product-development practices—requirements, verification and release decisions—reusable in Codex. As repository exploration, implementation planning, code changes and testing became native model behaviors, we needed to test whether the older workflow still added value.",
+        "WIGTN Plugin made recurring product-development practices reusable in Codex, including requirements, verification and release decisions. As repository exploration, implementation planning, code changes and testing became native model behaviors, we needed to test whether the older workflow still added value.",
       paragraphs: [
         "Here, a harness means the task order, inspection steps and completion rules placed around the model. Rather than port the Claude Code workflow unchanged, we held the model and tasks constant and measured whether its additional machinery improved the outcome.",
       ],
@@ -184,7 +193,7 @@ const codexSelectiveHarness: ResearchProject = {
       eyebrow: "Method",
       title: "We changed the harness, not the model or the task",
       lead:
-        "To avoid mixing model-generation effects with harness effects, we held GPT-5.6 Sol constant. The Bare condition used Codex without the plugin; the legacy-harness condition added the previous, heavier WIGTN implementation process.",
+        "We held GPT-5.6 Sol constant so that changes in the model would not be confused with changes in the harness. The Bare condition used Codex without the plugin; the legacy-harness condition added the previous, heavier WIGTN implementation process.",
       steps: [
         {
           label: "Arm 01",
@@ -199,7 +208,7 @@ const codexSelectiveHarness: ResearchProject = {
         {
           label: "Tasks",
           title: "SWE-bench Verified",
-          body: "Fixed real-world bug-fix tasks from Astropy and Pytest.",
+          body: "Two fixed bug-report tasks from the Astropy and Pytest repositories.",
         },
         {
           label: "Trials",
@@ -217,14 +226,14 @@ const codexSelectiveHarness: ResearchProject = {
       id: "results",
       index: "03",
       eyebrow: "Results",
-      title: "The success rate held. The execution cost did not.",
+      title: "Both conditions solved every run, but the legacy harness cost more",
       lead:
-        "Bare Codex and the legacy harness each resolved all four runs—eight runs in total—with no discordant pair.",
+        "Bare Codex and the legacy harness each resolved all four runs. Across the eight runs, no matched pair differed in resolution.",
       paragraphs: [
-        "The additional cost came from separate planning, inspection and completion-record steps even for small bug fixes. In this sample, those steps did not change the code outcome.",
+        "The additional cost came from separate planning, inspection and completion logging, even for small bug fixes. In this sample, those steps did not change the code outcome.",
       ],
       table: {
-        caption: "GPT-5.6 Sol paired comparison — overall median",
+        caption: "GPT-5.6 Sol paired comparison, overall median",
         headers: ["Metric", "Bare", "Legacy harness", "Delta"],
         rows: [
           {
@@ -279,7 +288,7 @@ const codexSelectiveHarness: ResearchProject = {
         ],
       },
       paragraphs: [
-        "The PRD evaluation measured format compliance—not overall document quality—across requirement IDs, unresolved decisions and acceptance criteria. It supports a narrower benefit: applying team rules the model cannot infer on its own.",
+        "The PRD evaluation measured format compliance rather than overall document quality. It checked requirement IDs, unresolved decisions and acceptance criteria. The result supports a narrower benefit: applying team rules the model cannot infer on its own.",
         "We invalidated the first successful Seaborn Plugin run in FeatureBench after discovering that it had read an installed copy of the same project outside the workspace. The incident made one principle explicit: passing tests is not enough to trust an evaluation. Access to reference implementations and hidden tests must be audited as part of the result.",
       ],
     },
@@ -414,7 +423,7 @@ const wigtnOcr: ResearchProject = {
       id: "method",
       index: "02",
       eyebrow: "Method",
-      title: "Large-model supervision, paid once",
+      title: "Use the 30B teacher offline and serve the 2B student",
       lead:
         "The practical decision was to spend the large-model budget during data creation, not on every document served. The 30B model creates structured supervision offline; production inference runs through the 2B student.",
       steps: [
@@ -466,7 +475,7 @@ const wigtnOcr: ResearchProject = {
         },
       ],
       table: {
-        caption: "OmniDocBench — selected metrics",
+        caption: "OmniDocBench selected metrics",
         headers: ["Parser", "Text NED ↓", "Table TEDS ↑", "Formula CDM ↑", "Order NED ↓", "Skip ↓"],
         rows: [
           { cells: ["Qwen3-VL-30B", "0.289", "0.523", "0.939", "0.227", "5.5%"] },
@@ -504,7 +513,7 @@ const wigtnOcr: ResearchProject = {
         },
       ],
       table: {
-        caption: "KoGovDoc retrieval — 564 queries",
+        caption: "KoGovDoc retrieval, 564 queries",
         headers: ["Parser", "Hit@1 ↑", "Hit@5 ↑", "MRR@10 ↑", "nDCG@10 ↑"],
         rows: [
           { cells: ["WigtnOCR-2B", "0.739", "0.855", "0.788", "0.437"], highlight: true },
@@ -682,7 +691,7 @@ const wigvo: ResearchProject = {
       id: "evaluation",
       index: "04",
       eyebrow: "Field evaluation",
-      title: "Then we took it through 155 Korean–English calls",
+      title: "Then we took it through 155 Korean-English calls",
       lead:
         "The evaluation contains 155 calls, 148 instrumented calls and 147 completed calls across voice-to-voice, text-to-voice and full-agent modes.",
       figures: [
@@ -721,7 +730,7 @@ const wigvo: ResearchProject = {
       id: "conference",
       index: "05",
       eyebrow: "Conference field notes",
-      title: "What people asked when the paper left the page",
+      title: "Questions from ACL and IWSLT",
       lead:
         "WIGVO was presented at ACL 2026 System Demonstrations in San Diego through a booth focused on the paper, architecture and recorded workflow.",
       paragraphs: [
@@ -757,7 +766,7 @@ const wigvo: ResearchProject = {
     },
   ],
   limitations: [
-    "The field study covers Korean–English calls over PSTN, not wideband app-to-app audio or a broad language matrix.",
+    "The field study covers Korean-English calls over PSTN, not wideband app-to-app audio or a broad language matrix.",
     "Session B latency remains ASR-bound and its P95 is not yet acceptable for every conversational setting.",
     "COMET uses offline LLM references rather than human translations, and no formal user study is reported.",
     "Cost reflects one provider configuration and pricing period.",
@@ -901,7 +910,7 @@ const wigss: ResearchProject = {
 
 const wigtnCoding: ResearchProject = {
   slug: "wigtn-coding",
-  shortTitle: "WIGTN Coding",
+  shortTitle: "WIGTN Plugin",
   title: "A staged multi-agent workflow for software delivery",
   dek: "An engineering note on the coordination problem behind multi-agent coding: separating roles is easy; keeping assumptions, contracts and release evidence shared is the hard part.",
   track: "Agentic engineering",
@@ -911,7 +920,7 @@ const wigtnCoding: ResearchProject = {
   authors: "WIGTN Engineering",
   heroFigure: {
     src: "/images/projects/wigtn-coding-workflow.svg",
-    alt: "WIGTN Coding six-stage delivery workflow",
+    alt: "WIGTN Plugin six-stage delivery workflow",
     caption:
       "The released workflow moves from PRD definition through independent review, bounded implementation and an explicit release decision.",
     contain: true,
@@ -951,10 +960,10 @@ const wigtnCoding: ResearchProject = {
       id: "problem",
       index: "01",
       eyebrow: "Problem",
-      title: "One context should not own every engineering decision",
+      title: "Do not make every engineering decision in one context",
       paragraphs: [
         "We started from a recurring failure mode: one coding session mixes requirements, architecture, implementation and review until early assumptions become invisible. Later reviewers then inherit decisions they never independently checked.",
-        "WIGTN Coding separates those responsibilities into named stages with explicit artifacts. Parallelism is useful only when it creates independent scrutiny and bounded ownership, not when it merely increases the number of agents on screen.",
+        "WIGTN Plugin separates those responsibilities into named stages with explicit artifacts. Parallelism is useful only when it creates independent scrutiny and bounded ownership, not when it merely increases the number of agents on screen.",
       ],
       callout: {
         label: "Working principle",
@@ -1041,7 +1050,7 @@ const wigtnCoding: ResearchProject = {
     "The current benchmark matrix is incomplete and must not be summarized as a result.",
   ],
   citation:
-    'WIGTN Engineering. (2026). "WIGTN Coding: A Staged Multi-Agent Workflow for Software Delivery." WIGTN Research.',
+    'WIGTN Engineering. (2026). "WIGTN Plugin: A Staged Multi-Agent Workflow for Software Delivery." WIGTN Research.',
 };
 
 const wigtnFlake: ResearchProject = {
@@ -1198,7 +1207,7 @@ const wigtnFlake: ResearchProject = {
       id: "evidence",
       index: "04",
       eyebrow: "Evidence status",
-      title: "An awarded working system, not a decision-quality benchmark",
+      title: "The award recognizes a working system, not measured decision quality",
       paragraphs: [
         "The working demo and second-place award support the system case study. They do not establish that five agents recommend better locations than one agent, an analyst or a statistical baseline.",
       ],
