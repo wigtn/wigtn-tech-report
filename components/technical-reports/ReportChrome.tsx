@@ -1,7 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { assetPath } from "@/lib/site";
 import type { ReportLocale } from "./localized-data";
+
+/* This site is deployed separately from wigtn.com, so browser-back is the only
+ * route home and it breaks on direct/shared entry. A real link always works. */
+const WIGTN_HOME = "https://wigtn.com";
 
 export const reportHomeHref = (locale: ReportLocale) =>
   locale === "ko" ? "/ko/" : "/";
@@ -21,7 +26,7 @@ export function ReportHeader({
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-[#15151E]/95 text-white backdrop-blur">
-      <nav className="mx-auto flex h-16 max-w-[1180px] items-center justify-between px-5 md:px-8">
+      <nav className="mx-auto flex h-16 max-w-[1180px] items-center justify-between gap-4 px-5 md:px-8">
         <Link
           href={reportHomeHref(locale)}
           aria-label="WIGTN technical reports home"
@@ -32,41 +37,56 @@ export function ReportHeader({
             alt="WIGTN"
             width={141}
             height={32}
-            className="h-6 w-auto"
+            /* Matches the wigtn.com header wordmark (h-7 md:h-8). */
+            className="h-7 w-auto md:h-8"
             priority
           />
-          <span className="h-4 w-px bg-white/20" />
-          <span className="font-report-mono text-[9px] uppercase tracking-[0.13em] text-[#B7B4C2]">
+          {/* Hidden below sm: with the larger logo, larger mono and the new
+              back-link, keeping this on a phone squeezes the flex row until
+              the nav text wraps mid-word ("한 / 국 / 어"). */}
+          <span className="hidden h-4 w-px bg-white/20 sm:block" />
+          <span className="hidden whitespace-nowrap font-report-mono text-xs uppercase tracking-[0.13em] text-[#B7B4C2] sm:inline">
             Technical reports
           </span>
         </Link>
-        <div
-          className="flex items-center gap-3 font-report-mono text-[9px] uppercase tracking-[0.1em]"
-          aria-label={locale === "ko" ? "언어 선택" : "Language"}
-        >
-          <Link
-            href={englishHref}
-            hrefLang="en"
-            className={
-              locale === "en"
-                ? "text-white"
-                : "text-[#8D8998] transition-colors hover:text-white"
-            }
+        <div className="flex shrink-0 items-center gap-4 font-report-mono text-[10px] uppercase tracking-[0.1em] sm:gap-6 sm:text-xs">
+          <a
+            href={WIGTN_HOME}
+            className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap text-[#8D8998] transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
           >
-            EN
-          </Link>
-          <span className="h-3 w-px bg-white/20" aria-hidden />
-          <Link
-            href={koreanHref}
-            hrefLang="ko"
-            className={
-              locale === "ko"
-                ? "text-white"
-                : "text-[#8D8998] transition-colors hover:text-white"
-            }
+            <ArrowLeft aria-hidden size={13} />
+            wigtn.com
+          </a>
+          <span className="hidden h-3 w-px bg-white/20 sm:block" aria-hidden />
+          <div
+            role="group"
+            className="flex items-center gap-3"
+            aria-label={locale === "ko" ? "언어 선택" : "Language"}
           >
-            한국어
-          </Link>
+            <Link
+              href={englishHref}
+              hrefLang="en"
+              className={`whitespace-nowrap ${
+                locale === "en"
+                  ? "text-white"
+                  : "text-[#8D8998] transition-colors hover:text-white"
+              }`}
+            >
+              EN
+            </Link>
+            <span className="h-3 w-px bg-white/20" aria-hidden />
+            <Link
+              href={koreanHref}
+              hrefLang="ko"
+              className={`whitespace-nowrap ${
+                locale === "ko"
+                  ? "text-white"
+                  : "text-[#8D8998] transition-colors hover:text-white"
+              }`}
+            >
+              한국어
+            </Link>
+          </div>
         </div>
       </nav>
     </header>

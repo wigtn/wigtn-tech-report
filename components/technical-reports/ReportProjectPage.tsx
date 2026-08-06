@@ -171,7 +171,10 @@ export function ReportProjectPage({
 
             <div className="mt-8">
               <div className="flex flex-wrap gap-x-4 gap-y-2 font-report-mono text-[9px] uppercase tracking-[0.08em]">
-                <span className="text-[#1457D9]">{project.status}</span>
+                <span className="normal-case tracking-[0.02em] text-[#1457D9]">
+                  {project.shortTitle}
+                </span>
+                <span className="text-[#667085]">{project.status}</span>
                 <span className="text-[#667085]">{project.format}</span>
                 <span className="text-[#667085]">{project.track}</span>
                 {project.venue && <span className="text-[#667085]">{project.venue}</span>}
@@ -459,13 +462,21 @@ export function ReportProjectPage({
                 href={reportHref(candidate.slug, locale)}
                 className="group border-b border-[#D8DDE5] py-6 md:border-b-0 md:border-r md:px-6 md:first:pl-0 md:last:border-r-0"
               >
-                <span className="font-report-mono text-[9px] uppercase tracking-[0.06em] text-[#1457D9]">
-                  {candidate.status}
+                <span className="flex flex-wrap gap-x-3 font-report-mono text-[9px] uppercase tracking-[0.06em]">
+                  <span className="normal-case tracking-[0.02em] text-[#1457D9]">
+                    {candidate.shortTitle}
+                  </span>
+                  <span className="text-[#667085]">{candidate.status}</span>
                 </span>
-                <h3 className="mt-3 font-report-display text-[1.35rem] font-semibold tracking-[-0.015em]">
-                  {candidate.shortTitle}
+                <h3
+                  className={`mt-3 font-semibold ${
+                    locale === "ko"
+                      ? "font-sans text-[1.15rem] leading-[1.35] tracking-[-0.03em] [word-break:keep-all]"
+                      : "text-balance font-report-display text-[1.25rem] leading-[1.25] tracking-[-0.015em]"
+                  }`}
+                >
+                  {candidate.title}
                 </h3>
-                <p className="mt-2 text-sm leading-6 text-[#667085]">{candidate.title}</p>
                 <span className="mt-5 inline-flex items-center gap-2 text-xs font-medium text-[#1457D9]">
                   {copy.readReport}{" "}
                   <ArrowRight
