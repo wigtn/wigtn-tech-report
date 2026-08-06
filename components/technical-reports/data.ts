@@ -1229,6 +1229,11 @@ const wigtnFlake: ResearchProject = {
     'WIGTN. (2026). "WIGTN Flake: Start from the decision, not the dataset." WIGTN Research.',
 };
 
+/* Ordered by publication date, newest first, rather than by hand. `date` is
+ * zero-padded "YYYY.MM" or "YYYY.MM.DD", so a plain string compare is already
+ * chronological; a month-only entry sorts just after the same month's dated
+ * ones, which is what we want. Sorting the exported array (not just the index)
+ * keeps the hub, the related-reports rail and the sitemap in one order. */
 export const RESEARCH_PROJECTS: ResearchProject[] = [
   codexSelectiveHarness,
   wigtnOcr,
@@ -1236,7 +1241,7 @@ export const RESEARCH_PROJECTS: ResearchProject[] = [
   wigss,
   wigtnCoding,
   wigtnFlake,
-];
+].sort((a, b) => b.date.localeCompare(a.date));
 
 export function getResearchProject(slug: string) {
   return RESEARCH_PROJECTS.find((project) => project.slug === slug);
