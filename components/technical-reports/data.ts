@@ -98,7 +98,7 @@ export const researchHref = (slug: string) => `/${slug}/`;
 const codexSelectiveHarness: ResearchProject = {
   slug: "codex-selective-harness",
   shortTitle: "WIGTN Plugin for Codex",
-  title: "Re-evaluating an implementation harness on GPT-5.6 Sol",
+  title: "The harness stopped earning its cost on GPT-5.6 Sol",
   dek: "On two SWE-bench Verified tasks, GPT-5.6 Sol resolved 4/4 runs in each condition, with and without the legacy WIGTN harness. The harness increased median wall time by 151.7%, output tokens by 141.2%, and command count by 32.0%. We used this result to redesign WIGTN around selective, task-dependent intervention.",
   language: "en",
   track: "Agentic engineering",
@@ -347,13 +347,13 @@ const codexSelectiveHarness: ResearchProject = {
     "Some raw execution packets are not included in a durable public repository, so this is not a complete third-party reproduction package.",
   ],
   citation:
-    'Kim, Hyeonsang. (2026). "Re-evaluating an implementation harness on GPT-5.6 Sol." WIGTN Technical Reports.',
+    'Kim, Hyeonsang. (2026). "WIGTN Plugin for Codex: The harness stopped earning its cost on GPT-5.6 Sol." WIGTN Technical Reports.',
 };
 
 const wigtnOcr: ResearchProject = {
   slug: "wigtnocr",
   shortTitle: "WigtnOCR",
-  title: "Distilling a 30B document parser into 2B",
+  title: "A 2B parser that outperforms its 30B teacher on retrieval",
   dek: "An engineering account of how we used a 30B teacher once, served the task with a 2B student, and checked whether parsing gains survived downstream retrieval.",
   track: "Models & evaluation",
   status: "Open model",
@@ -551,7 +551,7 @@ const wigtnOcr: ResearchProject = {
 const wigvo: ResearchProject = {
   slug: "wigvo",
   shortTitle: "WIGVO",
-  title: "Real-time bidirectional translation over ordinary phone calls",
+  title: "Stopping a phone-call translator from translating its own echo",
   dek: "A field-tested account of what changed when a browser translator met ordinary phone audio, including the echo-control ideas that failed before the deployed design.",
   track: "AI systems",
   status: "Peer reviewed",
@@ -778,7 +778,7 @@ const wigvo: ResearchProject = {
 const wigss: ResearchProject = {
   slug: "wigss",
   shortTitle: "WIGSS",
-  title: "Turning browser edits into reviewable source diffs",
+  title: "Fixing the last ten pixels in the browser without losing the diff",
   dek: "An engineering note on why we moved small visual corrections into the browser while keeping the repository, reviewable diffs and rollback as the source of truth.",
   track: "Agentic engineering",
   status: "Engineering note",
@@ -905,13 +905,13 @@ const wigss: ResearchProject = {
     "No controlled speed, fidelity or code-quality benchmark has been released.",
   ],
   citation:
-    'WIGTN Engineering. (2026). "WIGSS: Turning Browser Edits into Reviewable Source Diffs." WIGTN Research.',
+    'WIGTN Engineering. (2026). "WIGSS: Fixing the last ten pixels in the browser without losing the diff." WIGTN Research.',
 };
 
 const wigtnCoding: ResearchProject = {
   slug: "wigtn-coding",
   shortTitle: "WIGTN Plugin",
-  title: "A staged multi-agent workflow for software delivery",
+  title: "Splitting agent roles is easy; keeping their assumptions in sync is not",
   dek: "An engineering note on the coordination problem behind multi-agent coding: separating roles is easy; keeping assumptions, contracts and release evidence shared is the hard part.",
   track: "Agentic engineering",
   status: "Engineering note",
@@ -1050,13 +1050,13 @@ const wigtnCoding: ResearchProject = {
     "The current benchmark matrix is incomplete and must not be summarized as a result.",
   ],
   citation:
-    'WIGTN Engineering. (2026). "WIGTN Plugin: A Staged Multi-Agent Workflow for Software Delivery." WIGTN Research.',
+    'WIGTN Engineering. (2026). "WIGTN Plugin: Splitting agent roles is easy; keeping their assumptions in sync is not." WIGTN Research.',
 };
 
 const wigtnFlake: ResearchProject = {
   slug: "wigtn-flake",
   shortTitle: "WIGTN Flake",
-  title: "Purpose-driven multi-agent analysis with Snowflake Cortex",
+  title: "Start from the decision, not the dataset",
   dek: "A hackathon case study that follows a purpose-first product idea through orchestration, grounded analysis and the evidence boundaries of the working system.",
   track: "AI systems",
   status: "Case study",
@@ -1226,9 +1226,14 @@ const wigtnFlake: ResearchProject = {
     "The demo video is evidence of execution, not evidence of decision accuracy.",
   ],
   citation:
-    'WIGTN. (2026). "WIGTN Flake: Purpose-Driven Multi-Agent Analysis with Snowflake Cortex." WIGTN Research.',
+    'WIGTN. (2026). "WIGTN Flake: Start from the decision, not the dataset." WIGTN Research.',
 };
 
+/* Ordered by publication date, newest first, rather than by hand. `date` is
+ * zero-padded "YYYY.MM" or "YYYY.MM.DD", so a plain string compare is already
+ * chronological; a month-only entry sorts just after the same month's dated
+ * ones, which is what we want. Sorting the exported array (not just the index)
+ * keeps the hub, the related-reports rail and the sitemap in one order. */
 export const RESEARCH_PROJECTS: ResearchProject[] = [
   codexSelectiveHarness,
   wigtnOcr,
@@ -1236,7 +1241,7 @@ export const RESEARCH_PROJECTS: ResearchProject[] = [
   wigss,
   wigtnCoding,
   wigtnFlake,
-];
+].sort((a, b) => b.date.localeCompare(a.date));
 
 export function getResearchProject(slug: string) {
   return RESEARCH_PROJECTS.find((project) => project.slug === slug);

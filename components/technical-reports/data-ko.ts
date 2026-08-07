@@ -36,8 +36,8 @@ type ProjectTranslation = {
 export const KO_PROJECT_TRANSLATIONS: Record<string, ProjectTranslation> = {
   "codex-selective-harness": {
     shortTitle: "Codex용 WIGTN Plugin",
-    title: "GPT-5.6 Sol에서도 기존 구현 하네스가 필요한가",
-    titleLines: ["GPT-5.6 Sol에서도", "기존 구현 하네스가 필요한가"],
+    title: "모델이 좋아지자 하네스는 비용만 남겼다",
+    titleLines: ["모델이 좋아지자", "하네스는 비용만 남겼다"],
     dek: "SWE-bench Verified 과제 2개를 조건별로 총 4회씩 실행했다. GPT-5.6 Sol은 기존 WIGTN 하네스가 없어도 모든 실행에서 과제를 해결했다. 하네스를 적용한 조건은 중앙값 기준 실행 시간이 151.7%, 출력 토큰이 141.2%, 명령 수가 32.0% 늘었다. 이 결과를 바탕으로 WIGTN을 필요한 작업에만 개입하는 구조로 바꿨다.",
     track: "에이전틱 엔지니어링",
     status: "실측 시스템",
@@ -203,8 +203,8 @@ export const KO_PROJECT_TRANSLATIONS: Record<string, ProjectTranslation> = {
   },
   wigtnocr: {
     shortTitle: "WigtnOCR",
-    title: "30B 문서 파서를 2B로 증류하기",
-    titleLines: ["30B 문서 파서를", "2B로 증류하기"],
+    title: "검색 성능에서 30B 교사를 넘어선 2B 파서",
+    titleLines: ["검색 성능에서 30B 교사를", "넘어선 2B 파서"],
     dek: "30B 교사 모델은 학습 데이터를 만들 때만 사용하고 실제 추론은 2B 학생 모델이 맡는다. 학생 모델이 문서 구조를 얼마나 보존하는지, 파싱 성능의 향상이 검색 결과까지 이어지는지 함께 측정했다.",
     track: "모델 및 평가",
     status: "오픈 모델",
@@ -333,8 +333,8 @@ export const KO_PROJECT_TRANSLATIONS: Record<string, ProjectTranslation> = {
   },
   wigvo: {
     shortTitle: "WIGVO",
-    title: "일반 전화망에서 실시간 양방향 통역 구현하기",
-    titleLines: ["일반 전화망에서", "실시간 양방향 통역 구현하기"],
+    title: "전화 통역기가 자기 목소리를 다시 통역하지 않게 만들기",
+    titleLines: ["전화 통역기가 자기 목소리를", "다시 통역하지 않게 만들기"],
     dek: "브라우저에서 동작하던 통역 시스템을 일반 전화망에 연결하자 에코와 협대역 오디오 문제가 생겼다. 실제 배포 구조에 이르기까지 실패한 에코 제어 방식과 현장 통화에서 측정한 지연 시간을 정리했다.",
     track: "AI 시스템",
     status: "동료 심사",
@@ -454,8 +454,8 @@ export const KO_PROJECT_TRANSLATIONS: Record<string, ProjectTranslation> = {
   },
   wigss: {
     shortTitle: "WIGSS",
-    title: "브라우저 편집을 코드 변경으로 남기기",
-    titleLines: ["브라우저 편집을", "코드 변경으로 남기기"],
+    title: "마지막 10픽셀을 브라우저에서 고치고 diff로 남기기",
+    titleLines: ["마지막 10픽셀을 브라우저에서 고치고", "diff로 남기기"],
     dek: "작은 시각적 수정은 브라우저에서 직접 처리하고, 최종 결과는 저장소의 코드 변경으로 남긴다. 브라우저를 편집 화면으로 활용하면서도 diff 검토와 롤백을 유지한 구조를 설명한다.",
     track: "에이전틱 엔지니어링",
     status: "엔지니어링 노트",
@@ -533,8 +533,8 @@ export const KO_PROJECT_TRANSLATIONS: Record<string, ProjectTranslation> = {
   },
   "wigtn-coding": {
     shortTitle: "WIGTN Plugin",
-    title: "멀티 에이전트로 소프트웨어 개발을 단계별 조율하기",
-    titleLines: ["멀티 에이전트로", "소프트웨어 개발을 단계별 조율하기"],
+    title: "역할을 나누기는 쉽고, 가정을 맞추기는 어렵다",
+    titleLines: ["역할을 나누기는 쉽고,", "가정을 맞추기는 어렵다"],
     dek: "멀티 에이전트 코딩의 핵심은 역할 수가 아니라 조율 방식이다. 요구사항부터 구현, 검토, 릴리스까지 가정과 계약, 검증 근거가 끊기지 않도록 단계별 산출물과 책임 범위를 설계했다.",
     track: "에이전틱 엔지니어링",
     status: "엔지니어링 노트",
@@ -617,8 +617,8 @@ export const KO_PROJECT_TRANSLATIONS: Record<string, ProjectTranslation> = {
   },
   "wigtn-flake": {
     shortTitle: "WIGTN Flake",
-    title: "Snowflake Cortex로 목적별 분석 구현하기",
-    titleLines: ["Snowflake Cortex로", "목적별 분석 구현하기"],
+    title: "데이터가 아니라 결정에서 출발하는 분석",
+    titleLines: ["데이터가 아니라", "결정에서 출발하는 분석"],
     dek: "사용 목적에 따라 분석 역할과 데이터 경로를 바꾸는 멀티 에이전트 시스템을 구현했다. 이 글은 실제 요청이 실행되는 경로와 현재 근거로 말할 수 있는 범위를 정리한 해커톤 사례다.",
     track: "AI 시스템",
     status: "사례 연구",

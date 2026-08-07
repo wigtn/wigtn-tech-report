@@ -25,7 +25,9 @@ export async function generateMetadata({
   const canonical = `${SITE_URL}/${project.slug}/`;
 
   return {
-    title: project.shortTitle,
+    // Brand token first: SERP truncates the tail, and `title` alone drops the
+    // product name out of every report page's title tag.
+    title: `${project.shortTitle}: ${project.title}`,
     description: project.dek,
     alternates: {
       canonical,

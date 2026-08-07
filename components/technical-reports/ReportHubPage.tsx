@@ -37,7 +37,7 @@ export function ReportHubPage({ locale = "en" }: { locale?: ReportLocale }) {
     <ReportShell locale={locale}>
       <header className="border-b border-[#E4E7EC]">
         <div className="mx-auto max-w-[1180px] px-5 py-16 text-center md:px-8 md:py-24">
-          <p className="font-report-mono text-[10px] uppercase tracking-[0.12em] text-[#1457D9]">
+          <p className="font-report-mono text-[20px] font-medium uppercase tracking-[0.12em] text-[#1457D9]">
             WIGTN Tech
           </p>
           <h1
@@ -49,7 +49,13 @@ export function ReportHubPage({ locale = "en" }: { locale?: ReportLocale }) {
           >
             {copy.title}
           </h1>
-          <p className="mx-auto mt-5 max-w-[42rem] text-[16px] leading-7 text-[#667085]">
+          {/* Wide enough that the English lead sits on one line and the Korean
+              lead breaks at its sentence boundary rather than mid-clause. */}
+          <p
+            className={`mx-auto mt-5 max-w-[54rem] text-pretty text-[16px] leading-7 text-[#667085] ${
+              locale === "ko" ? "[word-break:keep-all]" : ""
+            }`}
+          >
             {copy.description}
           </p>
         </div>
@@ -75,11 +81,14 @@ export function ReportHubPage({ locale = "en" }: { locale?: ReportLocale }) {
               <article
                 key={project.slug}
                 lang={project.language ?? "en"}
-                className="group"
+                className="group h-full"
               >
+                {/* Column + mt-auto footer: titles are now 2-3 lines and vary
+                    per project, so the date/arrow row has to be pinned or the
+                    cards in a grid row stop lining up along the bottom. */}
                 <Link
                   href={reportHref(project.slug, locale)}
-                  className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1457D9]"
+                  className="flex h-full flex-col focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1457D9]"
                 >
                   <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-[#F2F4F7]">
                     {project.heroFigure ? (
@@ -116,26 +125,37 @@ export function ReportHubPage({ locale = "en" }: { locale?: ReportLocale }) {
 
                   <div className="flex items-start justify-between gap-4 font-report-mono text-[9px] uppercase leading-5 tracking-[0.07em]">
                     <span className="mt-5">
-                      <span className="text-[#1457D9]">{project.status}</span>
-                      <span className="ml-4 text-[#667085]">{project.format}</span>
+                      <span className="block normal-case tracking-[0.02em] text-[#1457D9]">
+                        {project.shortTitle}
+                      </span>
+                      <span className="block text-[#667085]">
+                        {project.status}
+                        <span className="ml-4">{project.format}</span>
+                      </span>
                     </span>
                     <span className="mt-5 text-[#98A2B3]">
                       {String(index + 1).padStart(2, "0")}
                     </span>
                   </div>
 
-                  <h3 className="mt-4 font-report-display text-[1.75rem] font-semibold leading-tight tracking-[-0.02em] transition-colors group-hover:text-[#1457D9]">
-                    {project.shortTitle}
-                  </h3>
-                  <p
-                    className={`mt-2 max-w-[32rem] text-[15px] leading-6 text-[#475467] ${
-                      locale === "ko" ? "[word-break:keep-all]" : ""
+                  <h3
+                    className={`mt-4 font-semibold transition-colors group-hover:text-[#1457D9] ${
+                      locale === "ko"
+                        ? "font-sans text-[1.375rem] leading-[1.32] tracking-[-0.03em] [word-break:keep-all] [text-wrap:pretty]"
+                        : "text-balance font-report-display text-[1.5rem] leading-[1.22] tracking-[-0.02em]"
                     }`}
                   >
                     {project.title}
+                  </h3>
+                  <p
+                    className={`mt-2 line-clamp-3 max-w-[32rem] text-[14px] leading-6 text-[#667085] ${
+                      locale === "ko" ? "[word-break:keep-all]" : ""
+                    }`}
+                  >
+                    {project.dek}
                   </p>
 
-                  <div className="mt-5 flex items-center justify-between gap-5">
+                  <div className="mt-auto flex items-center justify-between gap-5 pt-5">
                     <time className="font-report-mono text-[9px] text-[#667085]">
                       {project.date}
                     </time>
