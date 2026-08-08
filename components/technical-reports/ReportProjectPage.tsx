@@ -229,6 +229,10 @@ export function ReportProjectPage({
     );
   }
 
+  /* Section numbers run continuously over what actually renders. Limitations is
+   * skipped when the list is empty, so Sources takes its number instead of
+   * leaving a hole in the sequence. */
+  const sourcesIndex = project.sections.length + (project.limitations.length > 0 ? 2 : 1);
   const videoLink = project.links.find((link) => link.href.includes("youtube.com"));
   const embedUrl = videoLink ? youtubeEmbedUrl(videoLink.href) : undefined;
   const related = getResearchProjects(locale)
@@ -439,6 +443,12 @@ export function ReportProjectPage({
             </section>
           )}
 
+          {/* No limitations listed, no Limitations section — rather than the
+              heading "Where the claim stops" above an empty rule. The empty
+              heading is worse than the absence: on a page that has not yet
+              stated its bounds, it reads as a claim whose bounds are none.
+              `sections` needs no guard; it maps over nothing. */}
+          {project.limitations.length > 0 && (
           <section
             id="limitations"
             className="scroll-mt-20 border-b border-[#E4E7EC] py-9 md:py-12"
@@ -449,6 +459,8 @@ export function ReportProjectPage({
                   {String(project.sections.length + 1).padStart(2, "0")}
                 </span>
                 <span>{copy.limitations}</span>
+                {/* Numbered from the sections above it; `sourcesIndex` below
+                    counts this one only when it renders. */}
               </header>
               <div className="mt-5">
                 <h2
@@ -476,6 +488,7 @@ export function ReportProjectPage({
               </div>
             </div>
           </section>
+          )}
 
           <section
             id="sources"
@@ -484,7 +497,7 @@ export function ReportProjectPage({
             <div className="mx-auto max-w-[820px]">
               <header className="flex gap-3 font-report-mono text-[12px] uppercase tracking-[0.08em] text-[#667085]">
                 <span className="text-[#1457D9]">
-                  {String(project.sections.length + 2).padStart(2, "0")}
+                  {String(sourcesIndex).padStart(2, "0")}
                 </span>
                 <span>{copy.sources}</span>
               </header>
@@ -512,14 +525,20 @@ export function ReportProjectPage({
                     </a>
                   ))}
                 </div>
-                <div className="mt-8 rounded-lg bg-[#F7F8FA] p-5">
-                  <span className="font-report-mono text-[12px] uppercase tracking-[0.08em] text-[#1457D9]">
-                    {copy.citation}
-                  </span>
-                  <code className="mt-3 block whitespace-pre-wrap font-report-mono text-[13px] leading-6 text-[#475467]">
-                    {project.citation}
-                  </code>
-                </div>
+                {/* No citation block when there is no citation. An empty one
+                    invites a reader to cite work that has no citable form yet,
+                    and a placeholder left to be filled in later is how a
+                    guessed venue ends up on a page. */}
+                {project.citation && (
+                  <div className="mt-8 rounded-lg bg-[#F7F8FA] p-5">
+                    <span className="font-report-mono text-[12px] uppercase tracking-[0.08em] text-[#1457D9]">
+                      {copy.citation}
+                    </span>
+                    <code className="mt-3 block whitespace-pre-wrap font-report-mono text-[13px] leading-6 text-[#475467]">
+                      {project.citation}
+                    </code>
+                  </div>
+                )}
               </div>
             </div>
           </section>
