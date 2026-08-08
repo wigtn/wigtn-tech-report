@@ -55,14 +55,14 @@ export const REPORT_AUTHORS = {
   },
   "sangwoo-son": {
     name: "Diego Son 손상우",
-    role: "AI Engineer",
+    role: "AI Research Engineer",
     image: "/images/team/sangwoo_son.jpg",
     width: 320,
     height: 320,
   },
   "jinmo-kim": {
     name: "Eric Kim 김진모",
-    role: "MLOps Engineer",
+    role: "DevOps Engineer",
     image: "/images/team/jinmo_kim.jpg",
     width: 320,
     height: 320,

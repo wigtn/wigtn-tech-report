@@ -29,10 +29,16 @@ WIGTN 테크 리포트 사이트. Next.js static export → GitHub Pages.
 ## 검사
 
 ```bash
-npx tsc --noEmit      # 타입 + authorId 누락 검출
-bash .wigtn/checks.sh # 위 + EN/KO 정합 (data-ko.ts 있을 때만)
-npm run build         # static export
+npx tsc --noEmit       # 타입 + authorId 누락 검출
+npm run check:authors  # 작성자 직함이 wigtn-webpage 로스터와 일치하는지
+bash .wigtn/checks.sh  # 위 둘 + EN/KO 정합 (data-ko.ts 있을 때만)
+npm run build          # static export
 ```
+
+`check:authors`는 `authors.ts`가 로스터의 **복사본**이라서 필요하다. 원본이
+바뀌어도 자동으로 따라오지 않는다 — 실제로 로스터 정정 뒤 두 명의 직함이
+어긋난 채 남아 있었고, 그중 한 명만 사람 눈에 띄었다. 옆 레포(`../wigtn-webpage`)가
+없으면 건너뛰므로 CI에서는 항상 통과한다. **개발자 머신에서 도는 검사다.**
 
 ESLint 설정이 없다. `npm run lint`는 대화형 프롬프트로 빠지므로 게이트로 쓰지 않는다.
 CI(`.github/workflows/deploy-pages.yml`)는 `npm run build`만 돌린다.
