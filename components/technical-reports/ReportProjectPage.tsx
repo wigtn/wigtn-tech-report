@@ -6,7 +6,7 @@ import {
   ArrowUpRight,
   Play,
 } from "lucide-react";
-import { assetPath } from "@/lib/site";
+import { assetPath, SITE_URL } from "@/lib/site";
 import {
   type ResearchFigure,
   type ResearchTable,
@@ -529,13 +529,25 @@ export function ReportProjectPage({
                     invites a reader to cite work that has no citable form yet,
                     and a placeholder left to be filled in later is how a
                     guessed venue ends up on a page. */}
+                {/* A report with no `venue` was published here and nowhere
+                    else, so its citation ends in this page's own address: a
+                    locator is what tells a reader they are citing a web
+                    document rather than something that appeared somewhere.
+                    WIGVO has a venue and points at the proceedings instead,
+                    not at us.
+
+                    Built from SITE_URL rather than written into `citation`,
+                    so it stays the same address the sitemap and the canonical
+                    tag emit even if the site moves off github.io. */}
                 {project.citation && (
                   <div className="mt-8 rounded-lg bg-[#F7F8FA] p-5">
                     <span className="font-report-mono text-[12px] uppercase tracking-[0.08em] text-[#1457D9]">
                       {copy.citation}
                     </span>
-                    <code className="mt-3 block whitespace-pre-wrap font-report-mono text-[13px] leading-6 text-[#475467]">
-                      {project.citation}
+                    <code className="mt-3 block whitespace-pre-wrap break-words font-report-mono text-[13px] leading-6 text-[#475467]">
+                      {project.venue
+                        ? project.citation
+                        : `${project.citation} ${SITE_URL}/${project.slug}/`}
                     </code>
                   </div>
                 )}

@@ -120,6 +120,14 @@ export type ResearchProject = {
   metrics: ResearchMetric[];
   sections: ResearchSection[];
   limitations: string[];
+  /* The copy-paste citation. Only WIGVO has a `venue`; the rest were published
+   * here and nowhere else, so they carry the "[Technical report]. WIGTN." tail
+   * and the page renders this site's own URL after it. They used to end in
+   * "WIGTN Research." or "WIGTN Technical Reports." — a name sitting exactly
+   * where WIGVO's "ACL 2026 System Demonstrations · pp. 336–344" sits, which
+   * dressed an unreviewed web note as a proceedings entry.
+   *
+   * The URL is not stored here. See ReportProjectPage. */
   citation: string;
 };
 
@@ -392,7 +400,7 @@ const codexSelectiveHarness: ResearchProject = {
     "Some raw execution packets are not included in a durable public repository, so this is not a complete third-party reproduction package.",
   ],
   citation:
-    'Kim, Hyeonsang. (2026). "Running a harness on frontier models, part 2: Codex." WIGTN Technical Reports.',
+    'Kim, Hyeonsang. (2026). "Running a harness on frontier models, part 2: Codex." [Technical report]. WIGTN.',
 };
 
 const wigtnOcr: ResearchProject = {
@@ -700,7 +708,7 @@ const wigtnOcr: ResearchProject = {
     "The release supports a parameter-count claim; it does not yet support a precise speed or cost-reduction claim.",
   ],
   citation:
-    'WIGTN Research. (2026). "WigtnOCR: Pseudo-Label Distillation for Structure-Preserving Document Parsing." WIGTN Research.',
+    'WIGTN Research. (2026). "WigtnOCR: Pseudo-Label Distillation for Structure-Preserving Document Parsing." [Technical report]. WIGTN.',
 };
 
 const wigvo: ResearchProject = {
@@ -1269,7 +1277,7 @@ const wigss: ResearchProject = {
     "No controlled speed, fidelity or code-quality benchmark has been released.",
   ],
   citation:
-    'WIGTN Engineering. (2026). "WIGSS: Fixing the last ten pixels in the browser without losing the diff." WIGTN Research.',
+    'WIGTN Engineering. (2026). "WIGSS: Fixing the last ten pixels in the browser without losing the diff." [Technical report]. WIGTN.',
 };
 
 const wigtnCoding: ResearchProject = {
@@ -1538,7 +1546,7 @@ const wigtnCoding: ResearchProject = {
     "The current benchmark matrix is incomplete and must not be summarized as a result.",
   ],
   citation:
-    'WIGTN Engineering. (2026). "Running a harness on frontier models, part 1: Claude Code." WIGTN Technical Reports.',
+    'WIGTN Engineering. (2026). "Running a harness on frontier models, part 1: Claude Code." [Technical report]. WIGTN.',
 };
 
 
