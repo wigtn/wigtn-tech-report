@@ -1397,7 +1397,7 @@ const wigtnCoding: ResearchProject = {
       paragraphs: [
         "The repository opened on 12 January 2026 and took 72 commits in its first month. The shape was wrong. Work was divided by technology, with separate plugins for frontend, backend, mobile and AI development, each carrying its own skills for the frameworks in that stack.",
         "On 14 February those five became one. The division had been by technology, but the work does not divide that way. A React change and a FastAPI change need the same sequence of definition, independent review, bounded implementation and a release decision. They do not need different plugins. The merge removed 6,321 lines and added 3,011.",
-        "Three weeks later, two commits on consecutive days removed a further 30,670. The first cut 54 components to 32 and its message names the reason: twenty-two of the removed skills documented React, Tailwind and Jest, which the model already knew. Skills went from 29 to 7, and the seven that survived carry project-specific information only.",
+        "Three weeks later, two commits on consecutive days removed a further 30,670. The first cut 54 components to 32 and its message names the reason: twenty-two of the removed skills documented React, Tailwind and Jest, which the model already knew. Skills went from 29 to 7 in that pass and to 3 in the one that followed; they stand at 7 again today, after five months of regrowth. What survives at any count is project-specific information only.",
       ],
       figures: [
         {
@@ -1406,7 +1406,7 @@ const wigtnCoding: ResearchProject = {
           height: 900,
           alt: "Agent, command and skill counts in February 2026, March 2026 and today",
           caption:
-            "Directory listings at each commit. The agent row barely moves across all three snapshots while the skill row collapses from 29 to 7 and settles at 7, which is the shape of the decision: roles were kept, documentation was not.",
+            "Directory listings at each commit. The agent row barely moves across all three snapshots while the skill row collapses from 29 to 3 and stands at 7 again today, which is the shape of the decision: roles were kept, documentation was not. The middle column is the second March pass, three days after the cut described above.",
           contain: true,
         },
       ],
