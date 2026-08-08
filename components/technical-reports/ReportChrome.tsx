@@ -5,8 +5,21 @@ import { assetPath } from "@/lib/site";
 import type { ReportLocale } from "./localized-data";
 
 /* This site is deployed separately from wigtn.com, so browser-back is the only
- * route home and it breaks on direct/shared entry. A real link always works. */
+ * route home and it breaks on direct/shared entry. A real link always works.
+ *
+ * One back-link was the whole bridge, and most readers arrive here cold, from a
+ * paper or a model card rather than from wigtn.com. That left them with no
+ * route to the team or to what it has shipped short of typing a URL. The chrome
+ * now offers the same two destinations the wigtn.com header does.
+ *
+ * No trailing slashes: wigtn.com exports flat files, so `/team` resolves and
+ * `/team/` 404s. */
 const WIGTN_HOME = "https://wigtn.com";
+
+const WIGTN_LINKS = [
+  { label: "About", href: `${WIGTN_HOME}/team` },
+  { label: "Updates", href: `${WIGTN_HOME}/news` },
+];
 
 export const reportHomeHref = (locale: ReportLocale) =>
   locale === "ko" ? "/ko/" : "/";
@@ -50,7 +63,20 @@ export function ReportHeader({
             Technical reports
           </span>
         </Link>
-        <div className="flex shrink-0 items-center gap-4 font-report-mono text-[12px] uppercase tracking-[0.1em] sm:gap-6 sm:text-[13px]">
+        <div className="flex shrink-0 items-center gap-4 font-report-mono text-[12px] uppercase tracking-[0.1em] sm:gap-5 sm:text-[13px]">
+          {/* Hidden below sm for the same reason the "Technical reports" label
+              is: three items plus the wordmark overflow a 375px row, and the
+              nav text starts wrapping mid-word. The footer carries all three
+              unconditionally, so a phone still has the route. */}
+          {WIGTN_LINKS.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              className="hidden shrink-0 whitespace-nowrap text-[#8D8998] transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:inline"
+            >
+              {link.label}
+            </a>
+          ))}
           <a
             href={WIGTN_HOME}
             className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap text-[#8D8998] transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
@@ -74,6 +100,26 @@ export function ReportFooter({ locale }: { locale: ReportLocale }) {
             ? "방법 · 측정 · 한계"
             : "Methods · Measurements · Limitations"}
         </span>
+        {/* The only route back to wigtn.com on a phone, where the header pair
+            is hidden. Present at every width so there is one place that always
+            answers "who publishes this". */}
+        <nav className="flex flex-wrap items-center gap-x-5 gap-y-2">
+          {WIGTN_LINKS.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              className="whitespace-nowrap transition-colors hover:text-[#1457D9]"
+            >
+              {link.label}
+            </a>
+          ))}
+          <a
+            href={WIGTN_HOME}
+            className="whitespace-nowrap transition-colors hover:text-[#1457D9]"
+          >
+            wigtn.com
+          </a>
+        </nav>
       </div>
     </footer>
   );

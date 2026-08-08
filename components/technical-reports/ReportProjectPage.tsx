@@ -233,9 +233,12 @@ export function ReportProjectPage({
     );
   }
 
-  /* Section numbers run continuously over what actually renders. Limitations is
-   * skipped when the list is empty, so Sources takes its number instead of
-   * leaving a hole in the sequence. */
+  /* Every number on the page comes from this one counter, so the sections,
+   * Limitations and Sources cannot disagree. Sections were numbered by hand in
+   * data.ts until one of WIGVO's was cut and the rest kept their old strings;
+   * see the comment on ResearchSection. Limitations is skipped when the list is
+   * empty, so Sources takes its number rather than leaving a hole. */
+  const sectionNumber = (position: number) => String(position + 1).padStart(2, "0");
   const sourcesIndex = project.sections.length + (project.limitations.length > 0 ? 2 : 1);
   const videoLink = project.links.find((link) => link.href.includes("youtube.com"));
   const embedUrl = videoLink ? youtubeEmbedUrl(videoLink.href) : undefined;
@@ -371,7 +374,7 @@ export function ReportProjectPage({
             >
               <div className="mx-auto max-w-[820px]">
                 <header className="flex gap-3 font-report-mono text-[12px] uppercase tracking-[0.08em] text-[#667085]">
-                  <span className="text-[#1457D9]">{section.index}</span>
+                  <span className="text-[#1457D9]">{sectionNumber(position)}</span>
                   <span>{section.eyebrow}</span>
                 </header>
                 {/* Type scale, body-relative: label 12 / body 17 / lead 19 /
@@ -499,7 +502,7 @@ export function ReportProjectPage({
             <div className="mx-auto max-w-[820px]">
               <header className="flex gap-3 font-report-mono text-[12px] uppercase tracking-[0.08em] text-[#667085]">
                 <span className="text-[#1457D9]">
-                  {String(project.sections.length + 1).padStart(2, "0")}
+                  {sectionNumber(project.sections.length)}
                 </span>
                 <span>{copy.limitations}</span>
                 {/* Numbered from the sections above it; `sourcesIndex` below
