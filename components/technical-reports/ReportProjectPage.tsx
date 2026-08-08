@@ -6,7 +6,7 @@ import {
   ArrowUpRight,
   Play,
 } from "lucide-react";
-import { assetPath, SITE_URL } from "@/lib/site";
+import { assetPath } from "@/lib/site";
 import {
   type ResearchFigure,
   type ResearchTable,
@@ -35,8 +35,7 @@ const PROJECT_COPY = {
     systemVideo: "System video",
     limitations: "Limitations",
     claimStops: "Where the claim stops",
-    sources: "Sources & citation",
-    citation: "Suggested citation",
+    sources: "Sources",
     continue: "Continue reading",
     allReports: "All reports",
     readReport: "Read report",
@@ -48,8 +47,7 @@ const PROJECT_COPY = {
     systemVideo: "시스템 영상",
     limitations: "한계",
     claimStops: "평가의 한계",
-    sources: "자료와 인용",
-    citation: "권장 인용 형식",
+    sources: "자료",
     continue: "다른 리포트",
     allReports: "전체 리포트",
     readReport: "리포트 읽기",
@@ -81,9 +79,15 @@ function figureMaxWidth(figure: ResearchFigure) {
  *
  * It used to be a text run: "WIGTN Engineering · 2026.08.04". Four of the five
  * reports said "WIGTN Engineering" or "WIGTN Research", which identifies nobody
- * and is the same string a reader has already seen on the card, the footer and
- * the citation. A named face is the one thing on the page that says a person
- * stands behind the measurements.
+ * and is the same string a reader has already seen on the card and the footer.
+ * A named face is the one thing on the page that says a person stands behind
+ * the measurements.
+ *
+ * It is now the only credit on the page. A "Suggested citation" box used to sit
+ * under the sources; it came out because nobody cites these — WIGVO's readers
+ * cite the ACL paper, and the other four are web notes. The box was inviting a
+ * citation nobody was going to write, in a form that made unreviewed notes look
+ * like publications.
  *
  * The portrait needs no per-person framing: authors.ts stores square crops
  * already centred on the face, so the circle is a plain `rounded-full`. It is
@@ -315,12 +319,51 @@ export function ReportProjectPage({
         </div>
       </header>
 
+      {/* The banner sits between the masthead and section 01, never inside the
+          body.
+        *
+        * These are brand images — OpenAI's Codex art, Anthropic's Claude Code
+        * art, our own product banners. They illustrate nothing that was
+        * measured, which is why they carry no caption and take no FIG. number.
+        * Above section 01 that is fine: a reader takes it as the report's
+        * cover. Dropped between two paragraphs it would read as evidence, and
+        * that is what `heroSectionId` being absent on all five was protecting
+        * against — not the image appearing at all.
+        *
+        * `heroSectionId` stays the escape hatch. Set it and the image becomes
+        * a numbered body figure instead; this block steps aside so it is not
+        * rendered twice.
+        *
+        * 16:10 with object-cover, the same crop the hub card uses, so one
+        * image identifies the report in both places. The natural ratios run
+        * from 1:1 to 16:9, and WigtnOCR's square would otherwise open the page
+        * with an 820px wall. Cropping is confined to this banner: body figures
+        * still render at their own ratio and are never cut. */}
+      {project.heroFigure && !project.heroSectionId && (
+        <div className="mx-auto w-full max-w-[960px] px-6 pb-10 md:px-8 md:pb-12">
+          <div className="mx-auto max-w-[820px]">
+            <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-[#F2F4F7]">
+              <Image
+                src={assetPath(project.heroFigure.src)}
+                alt={project.heroFigure.alt}
+                fill
+                priority
+                sizes="(min-width: 900px) 820px, 100vw"
+                className={
+                  project.heroFigure.contain ? "object-contain p-6" : "object-cover"
+                }
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
       <div
         lang={locale}
         className="mx-auto w-full max-w-[960px] px-6 pb-12 md:px-8 md:pb-16"
       >
         <article className="border-t border-[#D8DDE5]">
-          {project.sections.map((section) => (
+          {project.sections.map((section, position) => (
             <section
               key={section.id}
               id={section.id}
@@ -525,32 +568,6 @@ export function ReportProjectPage({
                     </a>
                   ))}
                 </div>
-                {/* No citation block when there is no citation. An empty one
-                    invites a reader to cite work that has no citable form yet,
-                    and a placeholder left to be filled in later is how a
-                    guessed venue ends up on a page. */}
-                {/* A report with no `venue` was published here and nowhere
-                    else, so its citation ends in this page's own address: a
-                    locator is what tells a reader they are citing a web
-                    document rather than something that appeared somewhere.
-                    WIGVO has a venue and points at the proceedings instead,
-                    not at us.
-
-                    Built from SITE_URL rather than written into `citation`,
-                    so it stays the same address the sitemap and the canonical
-                    tag emit even if the site moves off github.io. */}
-                {project.citation && (
-                  <div className="mt-8 rounded-lg bg-[#F7F8FA] p-5">
-                    <span className="font-report-mono text-[12px] uppercase tracking-[0.08em] text-[#1457D9]">
-                      {copy.citation}
-                    </span>
-                    <code className="mt-3 block whitespace-pre-wrap break-words font-report-mono text-[13px] leading-6 text-[#475467]">
-                      {project.venue
-                        ? project.citation
-                        : `${project.citation} ${SITE_URL}/${project.slug}/`}
-                    </code>
-                  </div>
-                )}
               </div>
             </div>
           </section>

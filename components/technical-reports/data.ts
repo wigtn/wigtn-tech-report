@@ -48,8 +48,9 @@ export type ResearchTable = {
  * reflowing as images arrive. Measure with sips, or read the viewBox for an
  * SVG. Do not estimate: a wrong ratio here is a visibly stretched chart.
  *
- * `contain` and `focalPoint` now only affect the hub card, which crops every
- * report to one 16:10 tile. Inside a report nothing crops, so neither is read. */
+ * `contain` affects the two places that crop to a 16:10 tile: the hub card and
+ * the banner above section 01. Body figures never crop — they render at their
+ * own ratio — so it is not read there. `focalPoint` is read nowhere. */
 export type ResearchFigure = {
   src: string;
   alt: string;
@@ -120,15 +121,6 @@ export type ResearchProject = {
   metrics: ResearchMetric[];
   sections: ResearchSection[];
   limitations: string[];
-  /* The copy-paste citation. Only WIGVO has a `venue`; the rest were published
-   * here and nowhere else, so they carry the "[Technical report]. WIGTN." tail
-   * and the page renders this site's own URL after it. They used to end in
-   * "WIGTN Research." or "WIGTN Technical Reports." — a name sitting exactly
-   * where WIGVO's "ACL 2026 System Demonstrations · pp. 336–344" sits, which
-   * dressed an unreviewed web note as a proceedings entry.
-   *
-   * The URL is not stored here. See ReportProjectPage. */
-  citation: string;
 };
 
 export const researchHref = (slug: string) => `/${slug}/`;
@@ -146,9 +138,10 @@ const codexSelectiveHarness: ResearchProject = {
   authorId: "hyeonsang-kim",
   /* The banner is OpenAI's Codex brand image, used to identify the tool this
    * report evaluates. It illustrates nothing we measured, so it carries no
-   * caption and stays out of the body: `heroSectionId` is deliberately absent,
-   * which keeps it to the hub card. The chart it replaced now sits in `results`,
-   * where its caption can sit next to the numbers it plots. */
+   * caption and `heroSectionId` is deliberately absent: it runs on the hub card
+   * and as the banner above section 01, never as a numbered figure in the body.
+   * The chart it replaced now sits in `results`, where its caption can sit next
+   * to the numbers it plots. */
   heroFigure: {
     src: "/images/projects/codex_image_v1.jpg",
     width: 1600,
@@ -399,8 +392,6 @@ const codexSelectiveHarness: ResearchProject = {
     "We invalidated the FeatureBench run that accessed a reference implementation and observed no intact, repeatable lift in general coding quality.",
     "Some raw execution packets are not included in a durable public repository, so this is not a complete third-party reproduction package.",
   ],
-  citation:
-    'Kim, Hyeonsang. (2026). "Running a harness on frontier models, part 2: Codex." [Technical report]. WIGTN.',
 };
 
 const wigtnOcr: ResearchProject = {
@@ -416,9 +407,11 @@ const wigtnOcr: ResearchProject = {
   authorId: "hyeongseob-kim",
   featured: true,
   /* Brand banner, same treatment as the two harness reports: no caption, no
-   * `heroSectionId`, so it identifies the report on the hub card without posing
-   * as a figure in the body. The highlights chart it replaced moved into
-   * `parsing`, next to the table of the numbers it plots. */
+   * `heroSectionId`, so it identifies the report on the hub card and above
+   * section 01 without posing as a figure in the body. Square, and the only one
+   * that is: the 16:10 banner crop takes it from the empty sky around the mark,
+   * not from the mark. The highlights chart it replaced moved into `parsing`,
+   * next to the table of the numbers it plots. */
   heroFigure: {
     src: "/images/projects/wigtnocr_v1_image.jpg",
     width: 1254,
@@ -707,8 +700,6 @@ const wigtnOcr: ResearchProject = {
     "Pseudo-label filtering reduces weak supervision but does not turn generated labels into human ground truth.",
     "The release supports a parameter-count claim; it does not yet support a precise speed or cost-reduction claim.",
   ],
-  citation:
-    'WIGTN Research. (2026). "WigtnOCR: Pseudo-Label Distillation for Structure-Preserving Document Parsing." [Technical report]. WIGTN.',
 };
 
 const wigvo: ResearchProject = {
@@ -726,10 +717,11 @@ const wigvo: ResearchProject = {
   venue: "ACL 2026 System Demonstrations · pp. 336–344",
   featured: true,
   /* Brand banner, same treatment as the other reports: no caption, no
-   * `heroSectionId`, so it identifies the report on the hub card rather than
-   * posing as a figure. Everything it asserts is already in this report: the
-   * venue is in `venue`, and the provider is named in the cost section. The
-   * architecture diagram it replaced moved into `architecture`. */
+   * `heroSectionId`, so it identifies the report on the hub card and above
+   * section 01 rather than posing as a figure. Everything it asserts is already
+   * in this report: the venue is in `venue`, and the provider is named in the
+   * cost section. The architecture diagram it replaced moved into
+   * `architecture`. */
   heroFigure: {
     src: "/images/projects/wigvo_image_v1.jpg",
     width: 1535,
@@ -1123,8 +1115,6 @@ const wigvo: ResearchProject = {
     "The hallucination blocklist is pattern-based and language-specific, so it generalizes to a new language only after the patterns for it are written.",
     "Mode usage comes from the same field study and reflects who was invited to it, not a representative population.",
   ],
-  citation:
-    'Kim, H. et al. (2026). "WIGVO: Real-Time Bidirectional Speech Translation over Legacy PSTN Calls via Dual-Session Echo Gating." ACL 2026 System Demonstrations, 336–344.',
 };
 
 const wigss: ResearchProject = {
@@ -1139,14 +1129,23 @@ const wigss: ResearchProject = {
   date: "2026.04.10",
   authorId: "jinmo-kim",
   /* Brand banner, same treatment as the other four: no caption, no
-   * `heroSectionId`, so it stays on the hub card. The npm screenshot it replaced
-   * moved into `architecture`.
+   * `heroSectionId`, so it runs on the hub card and above section 01. The npm
+   * screenshot it replaced moved into `architecture`.
    *
-   * The banner art shows `npm i @wigtn/wigss`. That scoped package does not
-   * exist; the published one is `wigss`, which is what every link in this file
-   * points at. The string is illegible at card size and nothing on this site
-   * repeats it, so it is not shipping a wrong instruction to a reader, but the
-   * art should be corrected before it is used anywhere at full size. */
+   * ⚠ THE ART IS WRONG AND IS NOW LEGIBLE. It shows `npm i @wigtn/wigss` three
+   * times, once as a large centred pill, plus `from '@wigtn/wigss'` in the code
+   * panel. That scoped package does not exist; the published one is `wigss`,
+   * which is what every link in this file points at.
+   *
+   * The earlier note here said the string was illegible at card size and that
+   * the art should be corrected before being used anywhere at full size. The
+   * banner above section 01 is that full size — roughly 820px against the
+   * card's 370px — so a reader can now read an install command that fails.
+   *
+   * Shipping it anyway was decided deliberately on 2026-08-09, with the banner
+   * change, rather than holding this one report back. It is a known debt, not
+   * an oversight: re-export the art with `npm i wigss` and replace the file.
+   * The fix belongs in the image, not in a caption apologising for it. */
   heroFigure: {
     src: "/images/projects/wigss_image_v1.jpg",
     width: 1536,
@@ -1276,8 +1275,6 @@ const wigss: ResearchProject = {
     "DOM-to-source mapping becomes ambiguous across generated markup and higher-order abstractions.",
     "No controlled speed, fidelity or code-quality benchmark has been released.",
   ],
-  citation:
-    'WIGTN Engineering. (2026). "WIGSS: Fixing the last ten pixels in the browser without losing the diff." [Technical report]. WIGTN.',
 };
 
 const wigtnCoding: ResearchProject = {
@@ -1300,9 +1297,10 @@ const wigtnCoding: ResearchProject = {
   date: "2026.01.12",
   authorId: "hyunwoo-cho",
   /* Anthropic's Claude Code brand image, identifying the tool this plugin runs
-   * on. Same treatment as part 2: no caption, no `heroSectionId`, so it stays on
-   * the hub card instead of appearing in the body as if it were a figure. The
-   * workflow diagram it replaced moved into the `workflow` section. */
+   * on. Same treatment as part 2: no caption, no `heroSectionId`, so it runs on
+   * the hub card and above section 01 instead of appearing in the body as if it
+   * were a figure. The workflow diagram it replaced moved into the `workflow`
+   * section. */
   heroFigure: {
     src: "/images/projects/claudecode_image_v1.jpg",
     width: 1920,
@@ -1545,8 +1543,6 @@ const wigtnCoding: ResearchProject = {
     "Operational timing observations are not a controlled single-agent comparison.",
     "The current benchmark matrix is incomplete and must not be summarized as a result.",
   ],
-  citation:
-    'WIGTN Engineering. (2026). "Running a harness on frontier models, part 1: Claude Code." [Technical report]. WIGTN.',
 };
 
 
