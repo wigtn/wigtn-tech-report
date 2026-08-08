@@ -23,3 +23,7 @@ pnpm-debug.log*
 
 # Staged reports for papers still under review. See components/technical-reports/drafts/README.md
 components/technical-reports/drafts/
+
+# Korean translation. Kept on disk, out of the deployment.
+# See components/technical-reports/localized-data.ts for how to restore it.
+components/technical-reports/data-ko.ts
