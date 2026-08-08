@@ -35,8 +35,7 @@ const PROJECT_COPY = {
     systemVideo: "System video",
     limitations: "Limitations",
     claimStops: "Where the claim stops",
-    sources: "Sources & citation",
-    citation: "Suggested citation",
+    sources: "Sources",
     continue: "Continue reading",
     allReports: "All reports",
     readReport: "Read report",
@@ -48,8 +47,7 @@ const PROJECT_COPY = {
     systemVideo: "시스템 영상",
     limitations: "한계",
     claimStops: "평가의 한계",
-    sources: "자료와 인용",
-    citation: "권장 인용 형식",
+    sources: "자료",
     continue: "다른 리포트",
     allReports: "전체 리포트",
     readReport: "리포트 읽기",
@@ -81,9 +79,15 @@ function figureMaxWidth(figure: ResearchFigure) {
  *
  * It used to be a text run: "WIGTN Engineering · 2026.08.04". Four of the five
  * reports said "WIGTN Engineering" or "WIGTN Research", which identifies nobody
- * and is the same string a reader has already seen on the card, the footer and
- * the citation. A named face is the one thing on the page that says a person
- * stands behind the measurements.
+ * and is the same string a reader has already seen on the card and the footer.
+ * A named face is the one thing on the page that says a person stands behind
+ * the measurements.
+ *
+ * It is now the only credit on the page. A "Suggested citation" box used to sit
+ * under the sources; it came out because nobody cites these — WIGVO's readers
+ * cite the ACL paper, and the other four are web notes. The box was inviting a
+ * citation nobody was going to write, in a form that made unreviewed notes look
+ * like publications.
  *
  * The portrait needs no per-person framing: authors.ts stores square crops
  * already centred on the face, so the circle is a plain `rounded-full`. It is
@@ -525,20 +529,6 @@ export function ReportProjectPage({
                     </a>
                   ))}
                 </div>
-                {/* No citation block when there is no citation. An empty one
-                    invites a reader to cite work that has no citable form yet,
-                    and a placeholder left to be filled in later is how a
-                    guessed venue ends up on a page. */}
-                {project.citation && (
-                  <div className="mt-8 rounded-lg bg-[#F7F8FA] p-5">
-                    <span className="font-report-mono text-[12px] uppercase tracking-[0.08em] text-[#1457D9]">
-                      {copy.citation}
-                    </span>
-                    <code className="mt-3 block whitespace-pre-wrap font-report-mono text-[13px] leading-6 text-[#475467]">
-                      {project.citation}
-                    </code>
-                  </div>
-                )}
               </div>
             </div>
           </section>

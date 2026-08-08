@@ -120,7 +120,6 @@ export type ResearchProject = {
   metrics: ResearchMetric[];
   sections: ResearchSection[];
   limitations: string[];
-  citation: string;
 };
 
 export const researchHref = (slug: string) => `/${slug}/`;
@@ -391,8 +390,6 @@ const codexSelectiveHarness: ResearchProject = {
     "We invalidated the FeatureBench run that accessed a reference implementation and observed no intact, repeatable lift in general coding quality.",
     "Some raw execution packets are not included in a durable public repository, so this is not a complete third-party reproduction package.",
   ],
-  citation:
-    'Kim, Hyeonsang. (2026). "Running a harness on frontier models, part 2: Codex." WIGTN Technical Reports.',
 };
 
 const wigtnOcr: ResearchProject = {
@@ -699,8 +696,6 @@ const wigtnOcr: ResearchProject = {
     "Pseudo-label filtering reduces weak supervision but does not turn generated labels into human ground truth.",
     "The release supports a parameter-count claim; it does not yet support a precise speed or cost-reduction claim.",
   ],
-  citation:
-    'WIGTN Research. (2026). "WigtnOCR: Pseudo-Label Distillation for Structure-Preserving Document Parsing." WIGTN Research.',
 };
 
 const wigvo: ResearchProject = {
@@ -1115,8 +1110,6 @@ const wigvo: ResearchProject = {
     "The hallucination blocklist is pattern-based and language-specific, so it generalizes to a new language only after the patterns for it are written.",
     "Mode usage comes from the same field study and reflects who was invited to it, not a representative population.",
   ],
-  citation:
-    'Kim, H. et al. (2026). "WIGVO: Real-Time Bidirectional Speech Translation over Legacy PSTN Calls via Dual-Session Echo Gating." ACL 2026 System Demonstrations, 336–344.',
 };
 
 const wigss: ResearchProject = {
@@ -1268,8 +1261,6 @@ const wigss: ResearchProject = {
     "DOM-to-source mapping becomes ambiguous across generated markup and higher-order abstractions.",
     "No controlled speed, fidelity or code-quality benchmark has been released.",
   ],
-  citation:
-    'WIGTN Engineering. (2026). "WIGSS: Fixing the last ten pixels in the browser without losing the diff." WIGTN Research.',
 };
 
 const wigtnCoding: ResearchProject = {
@@ -1537,8 +1528,6 @@ const wigtnCoding: ResearchProject = {
     "Operational timing observations are not a controlled single-agent comparison.",
     "The current benchmark matrix is incomplete and must not be summarized as a result.",
   ],
-  citation:
-    'WIGTN Engineering. (2026). "Running a harness on frontier models, part 1: Claude Code." WIGTN Technical Reports.',
 };
 
 
