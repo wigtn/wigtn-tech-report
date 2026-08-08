@@ -48,8 +48,9 @@ export type ResearchTable = {
  * reflowing as images arrive. Measure with sips, or read the viewBox for an
  * SVG. Do not estimate: a wrong ratio here is a visibly stretched chart.
  *
- * `contain` and `focalPoint` now only affect the hub card, which crops every
- * report to one 16:10 tile. Inside a report nothing crops, so neither is read. */
+ * `contain` affects the two places that crop to a 16:10 tile: the hub card and
+ * the banner above section 01. Body figures never crop — they render at their
+ * own ratio — so it is not read there. `focalPoint` is read nowhere. */
 export type ResearchFigure = {
   src: string;
   alt: string;
@@ -137,9 +138,10 @@ const codexSelectiveHarness: ResearchProject = {
   authorId: "hyeonsang-kim",
   /* The banner is OpenAI's Codex brand image, used to identify the tool this
    * report evaluates. It illustrates nothing we measured, so it carries no
-   * caption and stays out of the body: `heroSectionId` is deliberately absent,
-   * which keeps it to the hub card. The chart it replaced now sits in `results`,
-   * where its caption can sit next to the numbers it plots. */
+   * caption and `heroSectionId` is deliberately absent: it runs on the hub card
+   * and as the banner above section 01, never as a numbered figure in the body.
+   * The chart it replaced now sits in `results`, where its caption can sit next
+   * to the numbers it plots. */
   heroFigure: {
     src: "/images/projects/codex_image_v1.jpg",
     width: 1600,
@@ -405,9 +407,11 @@ const wigtnOcr: ResearchProject = {
   authorId: "hyeongseob-kim",
   featured: true,
   /* Brand banner, same treatment as the two harness reports: no caption, no
-   * `heroSectionId`, so it identifies the report on the hub card without posing
-   * as a figure in the body. The highlights chart it replaced moved into
-   * `parsing`, next to the table of the numbers it plots. */
+   * `heroSectionId`, so it identifies the report on the hub card and above
+   * section 01 without posing as a figure in the body. Square, and the only one
+   * that is: the 16:10 banner crop takes it from the empty sky around the mark,
+   * not from the mark. The highlights chart it replaced moved into `parsing`,
+   * next to the table of the numbers it plots. */
   heroFigure: {
     src: "/images/projects/wigtnocr_v1_image.jpg",
     width: 1254,
@@ -713,10 +717,11 @@ const wigvo: ResearchProject = {
   venue: "ACL 2026 System Demonstrations · pp. 336–344",
   featured: true,
   /* Brand banner, same treatment as the other reports: no caption, no
-   * `heroSectionId`, so it identifies the report on the hub card rather than
-   * posing as a figure. Everything it asserts is already in this report: the
-   * venue is in `venue`, and the provider is named in the cost section. The
-   * architecture diagram it replaced moved into `architecture`. */
+   * `heroSectionId`, so it identifies the report on the hub card and above
+   * section 01 rather than posing as a figure. Everything it asserts is already
+   * in this report: the venue is in `venue`, and the provider is named in the
+   * cost section. The architecture diagram it replaced moved into
+   * `architecture`. */
   heroFigure: {
     src: "/images/projects/wigvo_image_v1.jpg",
     width: 1535,
@@ -1124,14 +1129,23 @@ const wigss: ResearchProject = {
   date: "2026.04.10",
   authorId: "jinmo-kim",
   /* Brand banner, same treatment as the other four: no caption, no
-   * `heroSectionId`, so it stays on the hub card. The npm screenshot it replaced
-   * moved into `architecture`.
+   * `heroSectionId`, so it runs on the hub card and above section 01. The npm
+   * screenshot it replaced moved into `architecture`.
    *
-   * The banner art shows `npm i @wigtn/wigss`. That scoped package does not
-   * exist; the published one is `wigss`, which is what every link in this file
-   * points at. The string is illegible at card size and nothing on this site
-   * repeats it, so it is not shipping a wrong instruction to a reader, but the
-   * art should be corrected before it is used anywhere at full size. */
+   * ⚠ THE ART IS WRONG AND IS NOW LEGIBLE. It shows `npm i @wigtn/wigss` three
+   * times, once as a large centred pill, plus `from '@wigtn/wigss'` in the code
+   * panel. That scoped package does not exist; the published one is `wigss`,
+   * which is what every link in this file points at.
+   *
+   * The earlier note here said the string was illegible at card size and that
+   * the art should be corrected before being used anywhere at full size. The
+   * banner above section 01 is that full size — roughly 820px against the
+   * card's 370px — so a reader can now read an install command that fails.
+   *
+   * Shipping it anyway was decided deliberately on 2026-08-09, with the banner
+   * change, rather than holding this one report back. It is a known debt, not
+   * an oversight: re-export the art with `npm i wigss` and replace the file.
+   * The fix belongs in the image, not in a caption apologising for it. */
   heroFigure: {
     src: "/images/projects/wigss_image_v1.jpg",
     width: 1536,
@@ -1283,9 +1297,10 @@ const wigtnCoding: ResearchProject = {
   date: "2026.01.12",
   authorId: "hyunwoo-cho",
   /* Anthropic's Claude Code brand image, identifying the tool this plugin runs
-   * on. Same treatment as part 2: no caption, no `heroSectionId`, so it stays on
-   * the hub card instead of appearing in the body as if it were a figure. The
-   * workflow diagram it replaced moved into the `workflow` section. */
+   * on. Same treatment as part 2: no caption, no `heroSectionId`, so it runs on
+   * the hub card and above section 01 instead of appearing in the body as if it
+   * were a figure. The workflow diagram it replaced moved into the `workflow`
+   * section. */
   heroFigure: {
     src: "/images/projects/claudecode_image_v1.jpg",
     width: 1920,

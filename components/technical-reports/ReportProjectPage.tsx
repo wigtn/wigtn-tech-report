@@ -319,12 +319,51 @@ export function ReportProjectPage({
         </div>
       </header>
 
+      {/* The banner sits between the masthead and section 01, never inside the
+          body.
+        *
+        * These are brand images — OpenAI's Codex art, Anthropic's Claude Code
+        * art, our own product banners. They illustrate nothing that was
+        * measured, which is why they carry no caption and take no FIG. number.
+        * Above section 01 that is fine: a reader takes it as the report's
+        * cover. Dropped between two paragraphs it would read as evidence, and
+        * that is what `heroSectionId` being absent on all five was protecting
+        * against — not the image appearing at all.
+        *
+        * `heroSectionId` stays the escape hatch. Set it and the image becomes
+        * a numbered body figure instead; this block steps aside so it is not
+        * rendered twice.
+        *
+        * 16:10 with object-cover, the same crop the hub card uses, so one
+        * image identifies the report in both places. The natural ratios run
+        * from 1:1 to 16:9, and WigtnOCR's square would otherwise open the page
+        * with an 820px wall. Cropping is confined to this banner: body figures
+        * still render at their own ratio and are never cut. */}
+      {project.heroFigure && !project.heroSectionId && (
+        <div className="mx-auto w-full max-w-[960px] px-6 pb-10 md:px-8 md:pb-12">
+          <div className="mx-auto max-w-[820px]">
+            <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-[#F2F4F7]">
+              <Image
+                src={assetPath(project.heroFigure.src)}
+                alt={project.heroFigure.alt}
+                fill
+                priority
+                sizes="(min-width: 900px) 820px, 100vw"
+                className={
+                  project.heroFigure.contain ? "object-contain p-6" : "object-cover"
+                }
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
       <div
         lang={locale}
         className="mx-auto w-full max-w-[960px] px-6 pb-12 md:px-8 md:pb-16"
       >
         <article className="border-t border-[#D8DDE5]">
-          {project.sections.map((section) => (
+          {project.sections.map((section, position) => (
             <section
               key={section.id}
               id={section.id}
