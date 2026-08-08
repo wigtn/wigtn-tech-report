@@ -1542,25 +1542,25 @@ const wigtnCoding: ResearchProject = {
 };
 
 
-/* Ordered by date, oldest first, rather than by hand. `date` is zero-padded
+/* Ordered by date, newest first, rather than by hand. `date` is zero-padded
  * "YYYY.MM" or "YYYY.MM.DD", so a plain string compare is already chronological;
- * a month-only entry sorts just before the same month's dated ones. Sorting the
+ * a month-only entry sorts just after the same month's dated ones. Sorting the
  * exported array (not just the index) keeps the hub, the related-reports rail
  * and the sitemap in one order.
  *
- * Oldest first, not newest, because the index has to read as a sequence: the
- * harness work is a numbered two-part series, and a newest-first index puts
- * part 2 above part 1. Reversing it opens on the plugin's origin and closes on
- * the evaluation that came out of it, which is the order the reports were
- * written to be read in. The cost is that the newest report is at the bottom;
- * for a five-item index that is a trade worth making. */
+ * Newest first is the index convention and what this returns to. Note the
+ * consequence, so nobody rediscovers it as a bug: part 1 of the harness series
+ * is dated to its repository's origin (2026.01.12) and is therefore the oldest
+ * entry, so a newest-first index puts part 2 at the top and part 1 at the
+ * bottom. The series numbering in the titles is what carries the reading order;
+ * the sort does not. */
 export const RESEARCH_PROJECTS: ResearchProject[] = [
   codexSelectiveHarness,
   wigtnOcr,
   wigvo,
   wigss,
   wigtnCoding,
-].sort((a, b) => a.date.localeCompare(b.date));
+].sort((a, b) => b.date.localeCompare(a.date));
 
 export function getResearchProject(slug: string) {
   return RESEARCH_PROJECTS.find((project) => project.slug === slug);
