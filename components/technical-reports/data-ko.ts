@@ -20,6 +20,7 @@ type ProjectTranslation = {
   shortTitle: string;
   title: string;
   titleLines: string[];
+  cardTitle?: string;
   dek: string;
   track: string;
   status: string;
@@ -36,8 +37,8 @@ type ProjectTranslation = {
 export const KO_PROJECT_TRANSLATIONS: Record<string, ProjectTranslation> = {
   "codex-selective-harness": {
     shortTitle: "Codex용 WIGTN Plugin",
-    title: "모델이 좋아지자 하네스는 비용만 남겼다",
-    titleLines: ["모델이 좋아지자", "하네스는 비용만 남겼다"],
+    title: "프론티어 모델에서 Harness를 다루는 법 2: Codex",
+    titleLines: ["프론티어 모델에서 Harness를", "다루는 법 2: Codex"],
     dek: "SWE-bench Verified 과제 2개를 조건별로 총 4회씩 실행했다. GPT-5.6 Sol은 기존 WIGTN 하네스가 없어도 모든 실행에서 과제를 해결했다. 하네스를 적용한 조건은 중앙값 기준 실행 시간이 151.7%, 출력 토큰이 141.2%, 명령 수가 32.0% 늘었다. 이 결과를 바탕으로 WIGTN을 필요한 작업에만 개입하는 구조로 바꿨다.",
     track: "에이전틱 엔지니어링",
     status: "실측 시스템",
@@ -45,9 +46,8 @@ export const KO_PROJECT_TRANSLATIONS: Record<string, ProjectTranslation> = {
     authors: "김현상",
     venue: undefined,
     heroFigure: {
-      alt: "Bare Codex와 기존 WIGTN 하네스의 과제 해결률 및 실행 비용 비교",
-      caption:
-        "SWE-bench Verified 개발 표본에서 GPT-5.6 Sol을 비교했다. 두 조건 모두 4회 실행을 전부 해결했지만, 기존 하네스는 실행 시간·출력 토큰·명령 수의 중앙값을 모두 늘렸다.",
+      alt: "Codex",
+      caption: "",
     },
     links: [
       "소스 저장소",
@@ -119,6 +119,13 @@ export const KO_PROJECT_TRANSLATIONS: Record<string, ProjectTranslation> = {
           "Bare Codex와 기존 하네스는 각각 4회 실행을 모두 해결했다. 총 8회 실행에서 조건에 따른 성공 여부 차이는 없었다.",
         paragraphs: [
           "작은 버그 수정에도 계획서 작성, 별도 점검, 완료 기록을 수행하면서 비용이 늘었다. 이 표본에서는 그 단계들이 코드 결과를 바꾸지 않았다.",
+        ],
+        figures: [
+          {
+            alt: "Bare Codex와 기존 WIGTN 하네스의 과제 해결률 및 실행 비용 비교",
+            caption:
+              "SWE-bench Verified 개발 표본에서 GPT-5.6 Sol을 비교했다. 두 조건 모두 4회 실행을 전부 해결했지만, 기존 하네스는 실행 시간·출력 토큰·명령 수의 중앙값을 모두 늘렸다.",
+          },
         ],
         table: {
           caption: "GPT-5.6 Sol 쌍대 비교, 전체 중앙값",
@@ -205,6 +212,7 @@ export const KO_PROJECT_TRANSLATIONS: Record<string, ProjectTranslation> = {
     shortTitle: "WigtnOCR",
     title: "검색 성능에서 30B 교사를 넘어선 2B 파서",
     titleLines: ["검색 성능에서 30B 교사를", "넘어선 2B 파서"],
+    cardTitle: "30B를 증류해 파서 6종 중 Hit@1 1위",
     dek: "30B 교사 모델은 학습 데이터를 만들 때만 사용하고 실제 추론은 2B 학생 모델이 맡는다. 학생 모델이 문서 구조를 얼마나 보존하는지, 파싱 성능의 향상이 검색 결과까지 이어지는지 함께 측정했다.",
     track: "모델 및 평가",
     status: "오픈 모델",
@@ -212,9 +220,8 @@ export const KO_PROJECT_TRANSLATIONS: Record<string, ProjectTranslation> = {
     authors: "WIGTN Research",
     venue: undefined,
     heroFigure: {
-      alt: "WigtnOCR 벤치마크 주요 결과",
-      caption:
-        "공개된 WigtnOCR 평가의 파싱 및 검색 결과. NED는 낮을수록 좋고, TEDS와 검색 지표는 높을수록 좋다.",
+      alt: "Hugging Face에 공개된 WigtnOCR",
+      caption: "",
     },
     links: ["연구 저장소", "모델 가중치"],
     metrics: [
@@ -232,6 +239,13 @@ export const KO_PROJECT_TRANSLATIONS: Record<string, ProjectTranslation> = {
         paragraphs: [
           "파싱 결과가 보기에는 깔끔해도 사용자의 질문에 필요한 근거를 잃을 수 있다. 이 차이를 확인하기 위해 WigtnOCR은 파싱 자체의 품질과 후속 검색 품질을 따로 평가했다.",
           "OmniDocBench에서는 텍스트, 표, 수식, 읽기 순서를 측정했다. KoGovDoc 평가에서는 검색기와 청킹 정책을 고정한 뒤 정답의 근거가 파싱 결과에 얼마나 남아 있는지 측정했다.",
+        ],
+        figures: [
+          {
+            alt: "WigtnOCR 벤치마크 주요 결과",
+            caption:
+              "공개된 WigtnOCR 평가의 파싱 및 검색 결과를 함께 놓았다. 이 리포트의 논지가 둘이 같이 움직이지 않는다는 것이기 때문이다. NED는 낮을수록 좋고, TEDS와 검색 지표는 높을수록 좋다.",
+          },
         ],
         callout: {
           label: "확인하려던 것",
@@ -416,6 +430,7 @@ export const KO_PROJECT_TRANSLATIONS: Record<string, ProjectTranslation> = {
     shortTitle: "WIGVO",
     title: "전화 통역기가 자기 목소리를 다시 통역하지 않게 만들기",
     titleLines: ["전화 통역기가 자기 목소리를", "다시 통역하지 않게 만들기"],
+    cardTitle: "일반 PSTN 통화 위의 실시간 통역",
     dek: "브라우저에서 동작하던 통역 시스템을 일반 전화망에 연결하자 에코와 협대역 오디오 문제가 생겼다. 실제 배포 구조에 이르기까지 실패한 에코 제어 방식과 현장 통화에서 측정한 지연 시간을 정리했다.",
     track: "AI 시스템",
     status: "동료 심사",
@@ -423,8 +438,8 @@ export const KO_PROJECT_TRANSLATIONS: Record<string, ProjectTranslation> = {
     authors: "김형섭 · 손상우 · 조현우 · 김현상 · 김진모",
     venue: "ACL 2026 System Demonstrations · pp. 336–344",
     heroFigure: {
-      alt: "WIGVO 이중 세션 시스템 구조",
-      caption: "세션 A는 브라우저 음성을 PSTN 오디오로 통역한다. 세션 B는 에코, 에너지, 음성 활동 게이트를 거쳐 전화 측 음성을 수신한다.",
+      alt: "WIGVO, 일반 전화망에서의 실시간 양방향 음성 통역",
+      caption: "",
     },
     links: ["ACL 논문", "시스템 데모 보기", "WIGVO 사용해 보기"],
     metrics: [
@@ -458,6 +473,10 @@ export const KO_PROJECT_TRANSLATIONS: Record<string, ProjectTranslation> = {
           { label: "세션 B", title: "전화 → 브라우저", body: "인식한 음성을 정해진 파이프라인으로 번역하고 합성해 브라우저로 돌려보낸다." },
         ],
         figures: [
+          {
+            alt: "WIGVO 이중 세션 시스템 구조",
+            caption: "세션 A는 브라우저 음성을 PSTN 오디오로 통역한다. 세션 B는 에코, 에너지, 음성 활동 게이트를 거쳐 전화 측 음성을 수신한다.",
+          },
           { alt: "WIGVO 3단계 전화 오디오 파이프라인", caption: "전화 측 경로는 결정론적 무음 치환, 에너지 게이트, 신경망 기반 음성 활동 게이트를 결합한다." },
         ],
       },
@@ -682,6 +701,7 @@ export const KO_PROJECT_TRANSLATIONS: Record<string, ProjectTranslation> = {
     shortTitle: "WIGSS",
     title: "마지막 10픽셀을 브라우저에서 고치고 diff로 남기기",
     titleLines: ["마지막 10픽셀을 브라우저에서 고치고", "diff로 남기기"],
+    cardTitle: "드래그로 고치면 소스가 바뀌는 오픈소스",
     dek: "작은 시각적 수정은 브라우저에서 직접 처리하고, 최종 결과는 저장소의 코드 변경으로 남긴다. 브라우저를 편집 화면으로 활용하면서도 diff 검토와 롤백을 유지한 구조를 설명한다.",
     track: "에이전틱 엔지니어링",
     status: "엔지니어링 노트",
@@ -689,8 +709,8 @@ export const KO_PROJECT_TRANSLATIONS: Record<string, ProjectTranslation> = {
     authors: "WIGTN Engineering",
     venue: undefined,
     heroFigure: {
-      alt: "WIGSS 브라우저 편집기 패키지",
-      caption: "WIGSS는 대상 개발 서버에 시각 편집기를 덧붙이되 최종 산출물은 소스 코드로 남긴다.",
+      alt: "WIGSS, WIGTN Style Sync Studio",
+      caption: "",
     },
     links: ["npm 패키지"],
     metrics: [
@@ -715,6 +735,12 @@ export const KO_PROJECT_TRANSLATIONS: Record<string, ProjectTranslation> = {
       {
         eyebrow: "시스템 구조",
         title: "브라우저 조작을 소스 코드 변경으로 되돌린다",
+        figures: [
+          {
+            alt: "WIGSS 브라우저 편집기 패키지",
+            caption: "WIGSS는 대상 개발 서버에 시각 편집기를 덧붙이되 최종 산출물은 소스 코드로 남긴다. npm에는 wigss로 공개되어 있다.",
+          },
+        ],
         steps: [
           { label: "01", title: "실행 중인 DOM 탐색", body: "편집기가 보이는 요소를 조사하고 대상 개발 서버에서 재사용 가능한 그룹을 표시한다." },
           { label: "02", title: "오버레이 추적", body: "선택 상태는 iframe 밖에 유지하고, 경계 상자는 requestAnimationFrame으로 레이아웃 변경을 따라간다." },
@@ -759,24 +785,24 @@ export const KO_PROJECT_TRANSLATIONS: Record<string, ProjectTranslation> = {
   },
   "wigtn-coding": {
     shortTitle: "WIGTN Plugin",
-    title: "역할을 나누기는 쉽고, 가정을 맞추기는 어렵다",
-    titleLines: ["역할을 나누기는 쉽고,", "가정을 맞추기는 어렵다"],
-    dek: "멀티 에이전트 코딩의 핵심은 역할 수가 아니라 조율 방식이다. 요구사항부터 구현, 검토, 릴리스까지 가정과 계약, 검증 근거가 끊기지 않도록 단계별 산출물과 책임 범위를 설계했다.",
+    title: "프론티어 모델에서 Harness를 다루는 법 1: Claude Code",
+    titleLines: ["프론티어 모델에서 Harness를", "다루는 법 1: Claude Code"],
+    dek: "Claude Code 플러그인 7개월을 커밋마다 실측했다. 지시문은 49,275줄에서 정점을 찍고 지금 19,912줄이지만, 직선으로 줄지 않았다. 프론티어 모델이 나올 때 잘리고, 그 사이 몇 달 동안 다시 자란다. 한 번도 잘리지 않은 것은 모델이 건너뛸 수 없는 강제 장치였다.",
     track: "에이전틱 엔지니어링",
     status: "엔지니어링 노트",
     format: "워크플로 구조",
     authors: "WIGTN Engineering",
     venue: undefined,
     heroFigure: {
-      alt: "WIGTN Plugin 6단계 전달 워크플로",
-      caption: "공개된 워크플로는 PRD 정의, 독립 검토, 범위가 정해진 구현, 명시적인 릴리스 결정으로 이어진다.",
+      alt: "Claude Code",
+      caption: "",
     },
     links: ["소스 저장소"],
     metrics: [
-      { label: "전문화된 에이전트", detail: "패키지 구성 수이며 품질 점수가 아님" },
-      { label: "병렬 PRD 검토자", detail: "완전성, 실현 가능성, 보안, 일관성" },
-      { label: "메모리 계층", detail: "저장소, 세션, 작업 상태" },
-      { label: "통제 비교", detail: "평가 하네스는 있으나 행렬은 미완성" },
+      { label: "지시문 규모, 정점에서 현재", detail: "커밋마다 실측한 값이며 diff 합계가 아니다" },
+      { label: "3월 정리 후 남은 스킬", detail: "나머지는 모델이 이미 아는 내용이었다" },
+      { label: "3월에서 6월 사이 재증가", detail: "감축은 단조가 아니며 그렇게 주장하지 않는다" },
+      { label: "하네스 유무에 따른 과제 결과", detail: "GPT-5.6 Sol 측정. 2편 참조." },
     ],
     sections: [
       {
@@ -794,6 +820,12 @@ export const KO_PROJECT_TRANSLATIONS: Record<string, ProjectTranslation> = {
       {
         eyebrow: "워크플로",
         title: "인수인계마다 검토 가능한 산출물을 남긴다",
+        figures: [
+          {
+            alt: "WIGTN Plugin 6단계 전달 워크플로",
+            caption: "공개된 워크플로는 PRD 정의, 독립 검토, 범위가 정해진 구현, 명시적인 릴리스 결정으로 이어진다.",
+          },
+        ],
         steps: [
           { label: "정의", title: "PRD 작성", body: "목표, 사용자, 제약, 인수 조건, 단계별 범위를 명확히 한다." },
           { label: "검토", title: "병렬 검토", body: "완전성, 실현 가능성, 보안, 일관성 검토자가 같은 문서를 독립적으로 확인한다." },
@@ -821,6 +853,87 @@ export const KO_PROJECT_TRANSLATIONS: Record<string, ProjectTranslation> = {
         },
       },
       {
+        eyebrow: "출발점",
+        title: "스택별 플러그인 마켓플레이스로 시작했다가 해체했다",
+        paragraphs: [
+          "저장소는 2026년 1월 12일에 열렸고 첫 달에만 72개의 커밋이 쌓였다. 그런데 나누는 축이 틀렸다. 프런트엔드, 백엔드, 모바일, AI 개발을 각각 별도 플러그인으로 두고, 각 스택의 프레임워크 지식을 스킬로 담는 구조였다.",
+          "2월 14일에 다섯 개를 하나로 합쳤다. 기술로 나눴지만 일은 그렇게 나뉘지 않는다. React 작업과 FastAPI 작업은 정의, 독립 검토, 범위가 정해진 구현, 릴리스 결정이라는 같은 순서를 필요로 한다. 서로 다른 플러그인이 필요한 것이 아니다. 이 통합에서 6,321줄이 지워지고 3,011줄이 추가됐다.",
+          "3주 뒤 이틀에 걸친 두 커밋이 30,670줄을 더 지웠다. 첫 번째는 54개 컴포넌트를 32개로 줄였고, 커밋 메시지가 이유를 명시한다. 지워진 스킬 22개는 React, Tailwind, Jest를 설명하고 있었고 모델은 이미 그것을 알고 있었다. 스킬은 29개에서 7개가 됐고, 남은 일곱은 프로젝트 고유 정보만 담는다.",
+        ],
+        figures: [
+          {
+            alt: "2026년 2월, 3월, 현재의 에이전트·명령·스킬 개수",
+            caption:
+              "각 커밋의 디렉터리 목록을 센 값이다. 세 시점에서 에이전트 행은 거의 움직이지 않는데 스킬 행은 29에서 7로 무너진다. 이 모양이 곧 판단이었다. 역할은 남기고 설명서를 지웠다.",
+          },
+        ],
+        callout: {
+          label: "첫 감축이 알려준 것",
+          text: "우리가 쓴 것의 대부분은 모델에게 필요 없는 설명서였다. 하네스가 모델의 지식에 더해지는 대신 그것과 경쟁하고 있었다.",
+        },
+      },
+      {
+        eyebrow: "모델 업그레이드",
+        title: "업그레이드마다 잘라내고, 조용한 몇 달이 되돌려놓는다",
+        paragraphs: [
+          "마일스톤 커밋마다 체크아웃해서 지시문을 세어보니 인정해야 할 모양이 나왔다. 규모는 49,275줄에서 19,912줄로 줄긴 했지만 직선이 아니다. 모델이 나올 때 가파르게 떨어지고, 그 사이 몇 달 동안 다시 올라간다. 기능이 그때 붙기 때문이다. 3월 감축은 사흘 만에 58%를 걷어냈고, 이어진 12주가 24%를 되돌려놓았다.",
+          "감축 자체는 구체적이다. 6월 Opus 4.8 대응은 커밋이 '표현적 과잉 하네스'라 부른 것을 걷어내는 작업이었고, 동작과 로직은 바꾸지 않았다. 강제된 xhigh 추론 강도 8개, 그리고 우리가 우리 프롬프트에 적어둔 가짜 수치들이 지워졌다. 하드코딩된 소요 시간, 속도 향상 주장, 예시 점수가 그것이다. 8월 Opus 5 대응은 계약만 남기고 나머지를 잘랐다.",
+          "그 증가를 방치했을 때의 비용은 이 시리즈 2편이 수치로 보여준다. SWE-bench Verified 과제 2개에서 GPT-5.6 Sol은 기존 하네스가 있을 때도 없을 때도 4회 중 4회를 해결했고, 하네스는 중앙값 기준 실행 시간을 151.7%, 출력 토큰을 141.2% 늘렸다. 우리 제품에 불리한 결과였고 그대로 공개했다. 아래 규칙은 거기서 나왔다.",
+        ],
+        figures: [
+          {
+            alt: "2026년 2월부터 8월까지 지시문 규모. 계단식으로 줄고 사이에 다시 자란다",
+            caption:
+              "agents, commands, skills 아래의 모든 .md를 마일스톤 커밋마다 wc -l로 센 값이며 평활 처리하지 않았다. 3월과 6월 사이의 재증가는 디자인 스타일, screen-spec, 다이어그램 스킬, 발표자료 생성기가 추가된 구간이다.",
+          },
+        ],
+        table: {
+          caption: "각 감축 직전과 직후의 지시문 규모",
+          headers: ["날짜", "계기", "직전", "직후", "변화"],
+          rows: [
+            ["2026.03.07", "v3 정리", "49,275", "27,918", "−43%"],
+            ["2026.03.09", "v3 정리 2차", "27,918", "20,361", "−27%"],
+            ["2026.06.26", "Opus 4.8", "25,308", "23,795", "−6%"],
+            ["2026.07.09", "프롬프트 축소", "24,360", "22,584", "−7%"],
+            ["2026.08.04", "Opus 5", "22,748", "19,754", "−13%"],
+          ],
+        },
+        callout: {
+          label: "우리가 따르는 규칙",
+          text: "지시문은 조언이고, 더 나은 모델에게는 더 적은 조언이 필요하다. 계약은 조언이 아니다. 이 팀이 무엇을 요구하는지를 말하고, 그것은 눈앞의 코드에서 어떤 모델도 추론할 수 없다. 모든 감축은 조언을 걷어내고 계약을 남겼다.",
+        },
+      },
+      {
+        eyebrow: "강제 장치",
+        title: "프롬프트는 줄고, 강제는 늘었다",
+        paragraphs: [
+          "지시문을 지우는 것은 건너뛰면 안 되는 것들이 더 이상 지시문이 아닐 때만 안전하다. 프롬프트는 컨텍스트가 차면 모델이 조용히 흘릴 수 있는 조언이다. 훅은 그렇지 않다. 7월과 8월에 걸쳐 중요한 규칙을 하나씩 프롬프트 밖으로 옮겨 기계적인 장치로 만들었다.",
+          "그중 하나는 우리 도구 자체의 비결정성을 고친 것이다. 게이트는 findings를 합산해 100점 만점 점수를 냈는데, 같은 diff가 한 번은 78점, 다음엔 85점이 나왔고 그 차이가 커밋 차단 여부를 갈랐다. 점수는 폐기했다. 대신 critical과 major 건수를 세는 롤업으로 바꿔서, 같은 findings는 항상 같은 판정을 낸다.",
+        ],
+        figures: [
+          {
+            alt: "커밋과 저장소 사이에 놓인 독립된 게이트 두 개",
+            caption:
+              "hooks/gate.sh를 그대로 따라 그렸다. 두 게이트는 독립이다. 객관 체크는 모든 커밋에서 실행되며 커밋 메시지를 읽지 않고, 리뷰 기록은 리뷰를 통과했다고 주장하는 커밋에만 요구된다. 긴급 경로는 주장을 없앨 뿐 체크를 없애지 않는다.",
+          },
+        ],
+        table: {
+          caption: "지시문을 대체한 것",
+          headers: ["지시문이던 것", "지금은"],
+          rows: [
+            ["커밋 전에 품질 게이트를 실행할 것", "게이트 기록이 없으면 커밋을 막는 사전 훅"],
+            ["리뷰를 정직하게 보고할 것", "훅이 직접 실행하는 체크 스크립트. exit code는 모델이 쓰지 않는다"],
+            ["예전 리뷰를 재사용하지 말 것", "게이트 기록에 걸린 30분 신선도 창"],
+            ["보안 findings를 무겁게 볼 것", "security-critical은 다른 findings와 무관하게 커밋 차단"],
+            ["체크를 켜둘 것", "스크립트를 지우면 재생성된다. 끄려면 사유를 적어야 한다"],
+          ],
+        },
+        callout: {
+          label: "역할 분담",
+          text: "하네스는 모델을 더 잘 쓰게 만들지 않는다. 우리가 직접 측정해서 확인한 사실이다. 하네스가 하는 일은 결과를 반복 가능하게 만드는 것, 그리고 실행되지 않은 검사를 기록으로 남기지 않는 것이다.",
+        },
+      },
+      {
         eyebrow: "평가 계획",
         title: "평가 프로토콜은 있지만 비교 결과는 아직 없다",
         paragraphs: [
@@ -837,6 +950,8 @@ export const KO_PROJECT_TRANSLATIONS: Record<string, ProjectTranslation> = {
     ],
     limitations: [
       "에이전트와 스킬 수는 패키지의 구성 범위를 나타낼 뿐 개발 생산성을 뜻하지 않는다.",
+      "규모 수치는 agents, commands, skills 아래 Markdown의 줄 수다. 출하되는 지시문의 양을 재는 것이지 모델이 한 턴에 실제로 읽는 양이 아니며, 파일이 작아진 것이 남은 것이 옳다는 근거는 되지 않는다.",
+      "이 감축들은 우리 도구에 대해 우리가 내린 결정이지 하네스 크기를 통제 비교한 결과가 아니다. 통제된 결과는 2편 하나뿐이고, 그것도 모델 하나에서 과제 2개를 다룬다.",
       "운영 중 관측한 시간은 통제된 단일 에이전트 비교가 아니다.",
       "현재 벤치마크 행렬은 미완성이며 결과처럼 요약해서는 안 된다.",
     ],
