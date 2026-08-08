@@ -420,8 +420,42 @@ const wigtnOcr: ResearchProject = {
       },
     },
     {
-      id: "method",
+      id: "why",
       index: "02",
+      eyebrow: "Alternatives",
+      title: "Four kinds of parser, and what each one loses on a Korean government PDF",
+      lead:
+        "The model exists because the four things you would reach for first each fail differently on this corpus.",
+      steps: [
+        {
+          label: "Plain OCR",
+          title: "Reads characters, not documents",
+          body: "It recovers text and drops the structure that says which value belongs to which field. PaddleOCR, the one measured here, returned between a third and a thirtieth of the text the deployed model did, losing most tables, forms and multi-column layouts.",
+        },
+        {
+          label: "Rule-based",
+          title: "Fast, and structurally blind",
+          body: "PyMuPDF4LLM extracts quickly and recognises almost no structure: the article-clause-item hierarchy in a statute, and any page mixing a table with a diagram and prose, come out flat. Not the whole family, though. Marker is rule-based and leads text accuracy and reading order in the comparison two sections down.",
+        },
+        {
+          label: "Recent VLM parsers",
+          title: "Trained on other people's documents",
+          body: "The current open VLM parsers are trained mostly on English and Chinese material. Korean government documents bring complex tables, forms, official seals, scanned pages mixed with digital ones, and multi-column layouts they were not tuned for.",
+        },
+        {
+          label: "A 30B VLM",
+          title: "Good, and not deployable here",
+          body: "Parsing quality is high, but it needs two GPUs and is slow to serve. The project's constraint was the GPU budget, and a 2B model meets it: one GPU to serve, and an edge deployment that is actually realistic.",
+        },
+      ],
+      callout: {
+        label: "Where the constraint came from",
+        text: "The work started inside a B2B2G retrieval service, where the end user's document structure cannot be known in advance but the domain can: Korean government documents. That fixed the target and left the infrastructure budget as the hard limit.",
+      },
+    },
+    {
+      id: "method",
+      index: "03",
       eyebrow: "Method",
       title: "Use the 30B teacher offline and serve the 2B student",
       lead:
@@ -459,8 +493,38 @@ const wigtnOcr: ResearchProject = {
       },
     },
     {
+      id: "judge",
+      index: "04",
+      eyebrow: "Supervision",
+      title: "The judge reads text only, and that is the point",
+      paragraphs: [
+        "A 122B text-only model scored every generated page on five dimensions: structure, table quality, completeness, hallucination and consistency. It never sees the source image, and that is deliberate rather than a shortcut.",
+        "A vision model grading a vision model's output shares its visual interpretation bias, so the two agree on the same misreading and the evaluation closes a loop instead of testing anything. Separating the judge into a text-only model asks a different question: not whether this matches the image, but whether this output is usable as training data at all. Repetition loops, truncated text and leaked reasoning are all detectable from the text alone.",
+        "Scores run one to five and anything below three was dropped. 75.1% of the Korean government pages cleared that bar, and 73.8% of the arXiv pages.",
+      ],
+      callout: {
+        label: "A finding that changed the pipeline",
+        text: "The first teacher was a reasoning model. Its output was unstable for this task: thinking tags leaked into the transcription and long pages truncated. Switching to the instruction-tuned model of the same size fixed both. For document transcription, instruction tuning beat reasoning.",
+      },
+    },
+    {
+      id: "data",
+      index: "05",
+      eyebrow: "Data",
+      title: "Two things wrong with the corpus before any training ran",
+      bullets: [
+        "One document accounted for 53% of the pages. A model trained on that learns that document rather than the domain, so a per-document ratio cap of 0.25 was applied.",
+        "The reasoning teacher had left English thinking traces inside some of the generated Markdown. Twenty pages were deleted outright and 257 were repaired.",
+        "What survived: 2,667 training pages and 294 held out and excluded from training. The split is at page level; the source does not establish that a held-out page never shares a document with a trained one.",
+      ],
+      callout: {
+        label: "Why this is in the report",
+        text: "Both problems were invisible in the aggregate quality score and would have been invisible in the final metrics too. They were found by looking at the corpus rather than at the numbers it produced.",
+      },
+    },
+    {
       id: "parsing",
-      index: "03",
+      index: "06",
       eyebrow: "Intrinsic evaluation",
       title: "The student improves tables without winning every metric",
       lead:
@@ -490,8 +554,33 @@ const wigtnOcr: ResearchProject = {
       },
     },
     {
+      id: "ablation",
+      index: "07",
+      eyebrow: "Ablation",
+      title: "A bigger adapter made the tables worse",
+      lead:
+        "At this data size, rank 8 beat rank 32. The larger adapter improved formula CDM slightly and regressed the structure preservation the model exists for.",
+      table: {
+        caption: "LoRA configuration against OmniDocBench",
+        headers: ["Config", "Rank", "Epochs", "Text NED ↓", "Table TEDS ↑", "TEDS-S ↑", "CDM F1 ↑", "RO NED ↓", "Skip % ↓"],
+        rows: [
+          { cells: ["v1, deployed", "8", "3", "0.288", "0.649", "0.732", "0.884", "0.211", "5.8%"], highlight: true },
+          { cells: ["v2, best", "32", "3", "0.309", "0.600", "0.697", "not run", "0.215", "0.7%"] },
+          { cells: ["v2, last", "32", "5", "0.306", "0.610", "0.695", "0.892", "0.214", "0.0%"] },
+        ],
+      },
+      paragraphs: [
+        "Rank 32 costs 4.9 points of Table TEDS and 2.1 points of text NED, which is an error metric, so that is a regression too. Five epochs overfits: validation loss turns up, and the table metric does not return to rank 8's level.",
+        "The tempting row is v2 at five epochs, which reaches a 0% skip rate. It gets there by producing something for every page rather than by parsing better, and the parsing metrics say so. The deployed model keeps a 5.8% skip rate and the table quality, which is the trade this corpus rewards.",
+      ],
+      callout: {
+        label: "What was frozen and why",
+        text: "The vision encoder and the aligner are untouched; the adapter is on the language model's linear layers only. A pilot run had already shown the visual recognition was adequate and the text generation was the gap, so training the part that was working would have spent capacity on the wrong problem.",
+      },
+    },
+    {
       id: "retrieval",
-      index: "04",
+      index: "08",
       eyebrow: "Downstream evaluation",
       title: "Cleaner chunks do not automatically retrieve better",
       lead:
@@ -527,7 +616,7 @@ const wigtnOcr: ResearchProject = {
     },
     {
       id: "failures",
-      index: "05",
+      index: "09",
       eyebrow: "Failure analysis",
       title: "What did not transfer cleanly",
       bullets: [
@@ -665,8 +754,22 @@ const wigvo: ResearchProject = {
       ],
     },
     {
-      id: "ablation",
+      id: "landscape",
       index: "03",
+      eyebrow: "Constraint",
+      title: "The place left over, once you own neither the handset nor the network",
+      paragraphs: [
+        "Bidirectional speech translation is not new, and neither is doing it on a phone. The implementations that work well get there by controlling something this project does not have. A device-level implementation cancels echo in hardware because it owns the microphone. A carrier implementation intervenes inside the network itself. Both are correct engineering, and both are closed to a team with neither asset.",
+        "What is left is a server relay, which is the awkward middle. It sees the audio only after the network has already degraded it, it cannot touch the recipient's device, and it has to solve echo in software or not at all. It is also the arrangement this project needed, because the constraint that shaped everything was that the person being called installs nothing.",
+      ],
+      callout: {
+        label: "What is deliberately not here",
+        text: "An earlier draft of this section carried a feature matrix comparing named third-party systems. It came out. The marks were transcribed from an internal write-up with no citation, several were contestable, and a blank cell in a comparison table reads as a missing capability rather than as an unchecked one. Describing our own constraint does the same work without asserting anything about somebody else's product.",
+      },
+    },
+    {
+      id: "ablation",
+      index: "05",
       eyebrow: "System evolution",
       title: "Our cleanest idea did not survive the phone network",
       paragraphs: [
@@ -689,7 +792,7 @@ const wigvo: ResearchProject = {
     },
     {
       id: "detector",
-      index: "04",
+      index: "06",
       eyebrow: "What failed first",
       title: "Three echo gates failed before the one that shipped",
       lead:
@@ -698,7 +801,7 @@ const wigvo: ResearchProject = {
         {
           label: "Attempt 1",
           title: "Audio fingerprinting",
-          body: "Correlating outgoing synthesis against incoming line audio. It is the idea the ablation section measures: it halved the loop rate and never became reliable, because μ-law is a non-linear quantizer and the correlation it needs does not survive the codec.",
+          body: "Correlating outgoing synthesis against incoming line audio. It is the idea the previous section measures: it halved the loop rate and never became reliable, because μ-law is a non-linear quantizer and the correlation it needs does not survive the codec.",
         },
         {
           label: "Attempt 2",
@@ -723,7 +826,7 @@ const wigvo: ResearchProject = {
     },
     {
       id: "vad",
-      index: "05",
+      index: "07",
       eyebrow: "Voice activity",
       title: "The hosted detector assumed audio the phone network does not carry",
       paragraphs: [
@@ -742,8 +845,23 @@ const wigvo: ResearchProject = {
       },
     },
     {
+      id: "separation",
+      index: "08",
+      eyebrow: "Recognition",
+      title: "Asking one model to hear and to translate produced sentences nobody said",
+      paragraphs: [
+        "The realtime speech API can transcribe and translate in one pass, and doing that added content the speaker had not produced. Not mishearing: fluent, plausible additions that fit the conversation and were never said.",
+        "The two jobs are now separate. Recognition stays inside the realtime session, and translation runs as a discrete text call at temperature zero against the transcript, with the realtime session's own translation path switched off by configuration rather than left unused.",
+        "The architecture diagram at the top of this report predates that change and still shows the realtime session handling translation on the voice-to-voice path. The deployed arrangement is the one described here.",
+      ],
+      callout: {
+        label: "The pattern, not a rule",
+        text: "Several stages that could be made deterministic were moved out of the model: echo control is a gate rather than a classifier, and translation is a fixed-temperature call rather than an improvisation. Recognition and the last-resort guardrail rewrite are still model calls, so this is a direction the system leans rather than a property it has.",
+      },
+    },
+    {
       id: "hallucination",
-      index: "06",
+      index: "09",
       eyebrow: "Recognition safety",
       title: "The recognizer invented a news anchor, and it reached a real phone",
       paragraphs: [
@@ -774,7 +892,7 @@ const wigvo: ResearchProject = {
     },
     {
       id: "pipelines",
-      index: "07",
+      index: "10",
       eyebrow: "System shape",
       title: "One relay, three conversations",
       lead:
@@ -802,8 +920,22 @@ const wigvo: ResearchProject = {
       ],
     },
     {
+      id: "cost",
+      index: "11",
+      eyebrow: "Operating profile",
+      title: "What the field study cost, and which mode people actually used",
+      paragraphs: [
+        "USD 0.28 per minute on the evaluated provider stack, over the reported call set. That figure covers one provider configuration and one pricing period, and it is the number the paper reports rather than a current quote.",
+        "Cost is not incidental to this design. A relay pays for two directional sessions plus telephony minutes for the whole call, including the stretches where nobody is speaking, which is why the gates that suppress noise before recognition are a cost control as much as a quality one.",
+      ],
+      callout: {
+        label: "What this figure is not",
+        text: "It is not a unit economics claim. It is what one evaluated stack charged during one measurement window, on Korean-English calls, and any of those three can move it.",
+      },
+    },
+    {
       id: "evaluation",
-      index: "08",
+      index: "12",
       eyebrow: "Field evaluation",
       title: "Then we took it through 155 Korean-English calls",
       lead:
@@ -842,7 +974,7 @@ const wigvo: ResearchProject = {
     },
     {
       id: "conference",
-      index: "09",
+      index: "13",
       eyebrow: "Conference field notes",
       title: "Questions from ACL and IWSLT",
       lead:
