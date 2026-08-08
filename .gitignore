@@ -20,3 +20,6 @@ pnpm-debug.log*
 
 # TypeScript
 *.tsbuildinfo
+
+# Staged reports for papers still under review. See components/technical-reports/drafts/README.md
+components/technical-reports/drafts/

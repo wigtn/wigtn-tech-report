@@ -688,8 +688,122 @@ const wigvo: ResearchProject = {
       },
     },
     {
-      id: "evaluation",
+      id: "detector",
       index: "04",
+      eyebrow: "What failed first",
+      title: "Three echo gates failed before the one that shipped",
+      lead:
+        "The deployed gate is the fourth design. The three before it each failed in a way that pointed at the same underlying rule.",
+      steps: [
+        {
+          label: "Attempt 1",
+          title: "Audio fingerprinting",
+          body: "Correlating outgoing synthesis against incoming line audio. It is the idea the ablation section measures: it halved the loop rate and never became reliable, because μ-law is a non-linear quantizer and the correlation it needs does not survive the codec.",
+        },
+        {
+          label: "Attempt 2",
+          title: "Fixed 2.5s gate",
+          body: "Blocking a constant window after every synthesis stopped the loop and broke the conversation: a caller who answered quickly was silenced.",
+        },
+        {
+          label: "Attempt 3",
+          title: "Dynamic cooldown",
+          body: "Scaling the window to synthesis length restored the turn-taking, then exposed a noise spike from the line's automatic gain control the moment the gate released.",
+        },
+        {
+          label: "Deployed",
+          title: "Silence injection with settling",
+          body: "Replace rather than block, add a settling window scaled to synthesis length, and put an energy gate and a local VAD behind it.",
+        },
+      ],
+      callout: {
+        label: "Drop vs replace",
+        text: "Dropping packets reads to the far end as a dead stream, and server-side voice activity detection stops with it. Replacing them with valid μ-law silence (0xFF) keeps the stream continuous while the detector correctly hears nothing. The same rule fixed both the echo gate and the VAD, which is why it is stated as a principle rather than a patch.",
+      },
+    },
+    {
+      id: "vad",
+      index: "05",
+      eyebrow: "Voice activity",
+      title: "The hosted detector assumed audio the phone network does not carry",
+      paragraphs: [
+        "Server-side voice activity detection is tuned for clean wideband input. On PSTN, steady background noise sits inside the range it reads as speech, so the end-of-turn event arrived tens of seconds late or never arrived at all. Tuning the energy threshold did not converge: no single value separated speech from line noise across calls.",
+        "The detector moved on-device instead, which made the decision inspectable frame by frame and let the gate above it stay authoritative. Onset and offset are deliberately asymmetric, because the cost of the two errors is not symmetric: clipping the start of a sentence is worse than holding the line open a moment too long.",
+      ],
+      bullets: [
+        "Energy gate first, with a higher threshold inside the echo window than outside it.",
+        "A local neural detector second, on 8 kHz audio upsampled to the rate it expects.",
+        "Asymmetric hysteresis: a short onset to catch the first syllable, a long offset to survive a pause mid-sentence.",
+        "A minimum utterance length and a minimum peak, so a weak fragment is rejected as noise rather than sent for recognition.",
+      ],
+      callout: {
+        label: "Measured change",
+        text: "End-of-turn detection moved from the tens of seconds, and sometimes never, to sub-second.",
+      },
+    },
+    {
+      id: "hallucination",
+      index: "06",
+      eyebrow: "Recognition safety",
+      title: "The recognizer invented a news anchor, and it reached a real phone",
+      paragraphs: [
+        "Feed line noise to a speech recognizer trained on broadcast and video audio and it does not return nothing. It returns something plausible from that distribution: a station ident, a sign-off, a subscribe prompt. In production, one such phrase passed through translation and was spoken to a recipient. Nothing upstream was wrong; the recognizer had simply been handed noise and answered confidently.",
+        "The fix is layered, and the ordering matters. The cheapest layer is not to hand the recognizer noise in the first place, which is what the gates above already do. What survives that is caught by pattern, and what survives pattern matching is caught after translation, where the cost of a false positive is a short delay rather than a wrong sentence in someone's ear.",
+      ],
+      steps: [
+        {
+          label: "Before recognition",
+          title: "Do not submit contaminated audio",
+          body: "The echo gate and silence injection mean the recognizer never receives the frames most likely to produce an invention.",
+        },
+        {
+          label: "After recognition",
+          title: "Pattern and shape filters",
+          body: "A blocklist of broadcast-style phrases in both languages, plus checks on minimum length, silence timeout, repeated phrases and recognizer confidence.",
+        },
+        {
+          label: "After translation",
+          title: "Three-level guardrail",
+          body: "Most turns pass through untouched. A suspect turn is spoken while a correction runs behind it. Only the worst class is held back for a corrected rewrite, which is the one path that adds audible delay.",
+        },
+      ],
+      callout: {
+        label: "Why this is in the report",
+        text: "This subsystem exists because of an incident, not a design review. A relay that is honest about what reached a caller is more useful than one that reports only its aggregate accuracy.",
+      },
+    },
+    {
+      id: "pipelines",
+      index: "07",
+      eyebrow: "System shape",
+      title: "One relay, three conversations",
+      lead:
+        "The echo problem is shared. What differs is who is speaking, and that turned out to be the axis worth building around.",
+      steps: [
+        {
+          label: "Voice to voice",
+          title: "Both sides speak",
+          body: "The bidirectional case in the paper: two directional sessions, the gates between them, interrupt handling on both ends.",
+        },
+        {
+          label: "Text to voice",
+          title: "One side types",
+          body: "The caller types and the recipient hears synthesized speech. This is the path for a user who cannot use voice, and it removes the caller-side echo problem entirely.",
+        },
+        {
+          label: "Full agent",
+          title: "Neither side is the caller",
+          body: "The relay places and holds the call on the user's behalf, with tool calls for the task it was given.",
+        },
+      ],
+      paragraphs: [
+        "The three share the echo-gating logic through one component rather than reimplementing it, which is what made the second and third modes cheap to add. An earlier single-object router that switched on mode internally was the thing that had to go first.",
+        "The text-to-voice path is not a lesser mode. In the field study it was the most used of the three, which was not what the design assumed at the start.",
+      ],
+    },
+    {
+      id: "evaluation",
+      index: "08",
       eyebrow: "Field evaluation",
       title: "Then we took it through 155 Korean-English calls",
       lead:
@@ -728,7 +842,7 @@ const wigvo: ResearchProject = {
     },
     {
       id: "conference",
-      index: "05",
+      index: "09",
       eyebrow: "Conference field notes",
       title: "Questions from ACL and IWSLT",
       lead:
@@ -770,6 +884,8 @@ const wigvo: ResearchProject = {
     "Session B latency remains ASR-bound and its P95 is not yet acceptable for every conversational setting.",
     "COMET uses offline LLM references rather than human translations, and no formal user study is reported.",
     "Cost reflects one provider configuration and pricing period.",
+    "The hallucination blocklist is pattern-based and language-specific, so it generalizes to a new language only after the patterns for it are written.",
+    "Mode usage comes from the same field study and reflects who was invited to it, not a representative population.",
   ],
   citation:
     'Kim, H. et al. (2026). "WIGVO: Real-Time Bidirectional Speech Translation over Legacy PSTN Calls via Dual-Session Echo Gating." ACL 2026 System Demonstrations, 336–344.',
