@@ -713,7 +713,7 @@ const wigvo: ResearchProject = {
   status: "Peer reviewed",
   format: "ACL system paper",
   date: "2026.07",
-  authorId: "sangwoo-son",
+  authorId: "hyeongseob-kim",
   authors: "Hyeong-seob Kim · Sang-Woo Son · Hyun-woo Cho · Hyeonsang Kim · Jinmo Kim",
   venue: "ACL 2026 System Demonstrations · pp. 336–344",
   featured: true,
