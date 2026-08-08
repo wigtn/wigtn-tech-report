@@ -1280,7 +1280,16 @@ const wigtnCoding: ResearchProject = {
   track: "Agentic engineering",
   status: "Engineering note",
   format: "Workflow architecture",
-  date: "2026.08.04",
+  /* The date the plugin repository opened, taken from its first commit
+   * (0593d8d, 2026-01-12 16:35 KST; the GitHub repo was created a minute
+   * earlier). It is the origin of the work this report traces, and it is what
+   * puts part 1 at the head of the index and part 2 at the end.
+   *
+   * Note what it is not: this report was written later and its content runs
+   * past this date — the reductions table ends at the 2026.08.04 Opus 5 pass
+   * and the metric reads "19,912 today". So the byline date sits before events
+   * the report describes. Recorded here deliberately, decided by the author. */
+  date: "2026.01.12",
   authorId: "hyunwoo-cho",
   /* Anthropic's Claude Code brand image, identifying the tool this plugin runs
    * on. Same treatment as part 2: no caption, no `heroSectionId`, so it stays on
@@ -1533,18 +1542,25 @@ const wigtnCoding: ResearchProject = {
 };
 
 
-/* Ordered by publication date, newest first, rather than by hand. `date` is
- * zero-padded "YYYY.MM" or "YYYY.MM.DD", so a plain string compare is already
- * chronological; a month-only entry sorts just after the same month's dated
- * ones, which is what we want. Sorting the exported array (not just the index)
- * keeps the hub, the related-reports rail and the sitemap in one order. */
+/* Ordered by date, oldest first, rather than by hand. `date` is zero-padded
+ * "YYYY.MM" or "YYYY.MM.DD", so a plain string compare is already chronological;
+ * a month-only entry sorts just before the same month's dated ones. Sorting the
+ * exported array (not just the index) keeps the hub, the related-reports rail
+ * and the sitemap in one order.
+ *
+ * Oldest first, not newest, because the index has to read as a sequence: the
+ * harness work is a numbered two-part series, and a newest-first index puts
+ * part 2 above part 1. Reversing it opens on the plugin's origin and closes on
+ * the evaluation that came out of it, which is the order the reports were
+ * written to be read in. The cost is that the newest report is at the bottom;
+ * for a five-item index that is a trade worth making. */
 export const RESEARCH_PROJECTS: ResearchProject[] = [
   codexSelectiveHarness,
   wigtnOcr,
   wigvo,
   wigss,
   wigtnCoding,
-].sort((a, b) => b.date.localeCompare(a.date));
+].sort((a, b) => a.date.localeCompare(b.date));
 
 export function getResearchProject(slug: string) {
   return RESEARCH_PROJECTS.find((project) => project.slug === slug);
