@@ -61,9 +61,17 @@ export type ResearchFigure = {
   focalPoint?: string;
 };
 
+/* No `index` field. The number a section displays is its position in this
+ * array, computed where it is rendered.
+ *
+ * It used to be a hand-written string, and it drifted: WIGVO ran 01, 02, 03,
+ * 05 ... 13, because a section was cut and nothing renumbered what followed.
+ * The hole then collided with the rest of the page, since Limitations and
+ * Sources were already derived from `sections.length`: Limitations came out as
+ * 13 next to a section that also called itself 13. Two numbering schemes over
+ * one list, one typed and one derived, could only agree by luck. */
 export type ResearchSection = {
   id: string;
-  index: string;
   eyebrow: string;
   title: string;
   lead?: string;
@@ -216,7 +224,6 @@ const codexSelectiveHarness: ResearchProject = {
   sections: [
     {
       id: "question",
-      index: "01",
       eyebrow: "Problem",
       title: "When the model improves, the harness needs another evaluation",
       lead:
@@ -231,7 +238,6 @@ const codexSelectiveHarness: ResearchProject = {
     },
     {
       id: "method",
-      index: "02",
       eyebrow: "Method",
       title: "We changed the harness, not the model or the task",
       lead:
@@ -266,7 +272,6 @@ const codexSelectiveHarness: ResearchProject = {
     },
     {
       id: "results",
-      index: "03",
       eyebrow: "Results",
       title: "Both conditions solved every run, but the legacy harness cost more",
       lead:
@@ -307,7 +312,6 @@ const codexSelectiveHarness: ResearchProject = {
     },
     {
       id: "interpretation",
-      index: "04",
       eyebrow: "Interpretation",
       title: "The clearest benefit was enforcing team rules, not improving code outcomes",
       lead:
@@ -347,7 +351,6 @@ const codexSelectiveHarness: ResearchProject = {
     },
     {
       id: "decision",
-      index: "05",
       eyebrow: "Product decision",
       title: "Keep routine implementation light. Add structure where failure is expensive.",
       lead:
@@ -377,7 +380,6 @@ const codexSelectiveHarness: ResearchProject = {
     },
     {
       id: "validation",
-      index: "06",
       eyebrow: "Validation after redesign",
       title: "We checked that the revised structure stayed out of routine coding",
       lead:
@@ -462,7 +464,6 @@ const wigtnOcr: ResearchProject = {
   sections: [
     {
       id: "problem",
-      index: "01",
       eyebrow: "Problem",
       title: "The output looked readable. Retrieval told a different story",
       lead:
@@ -489,7 +490,6 @@ const wigtnOcr: ResearchProject = {
     },
     {
       id: "why",
-      index: "02",
       eyebrow: "Alternatives",
       title: "Four kinds of parser, and what each one loses on a Korean government PDF",
       lead:
@@ -523,7 +523,6 @@ const wigtnOcr: ResearchProject = {
     },
     {
       id: "method",
-      index: "03",
       eyebrow: "Method",
       title: "Use the 30B teacher offline and serve the 2B student",
       lead:
@@ -562,7 +561,6 @@ const wigtnOcr: ResearchProject = {
     },
     {
       id: "judge",
-      index: "04",
       eyebrow: "Supervision",
       title: "The judge reads text only, and that is the point",
       paragraphs: [
@@ -577,7 +575,6 @@ const wigtnOcr: ResearchProject = {
     },
     {
       id: "data",
-      index: "05",
       eyebrow: "Data",
       title: "Two things wrong with the corpus before any training ran",
       bullets: [
@@ -592,7 +589,6 @@ const wigtnOcr: ResearchProject = {
     },
     {
       id: "parsing",
-      index: "06",
       eyebrow: "Intrinsic evaluation",
       title: "The student improves tables without winning every metric",
       lead:
@@ -625,7 +621,6 @@ const wigtnOcr: ResearchProject = {
     },
     {
       id: "ablation",
-      index: "07",
       eyebrow: "Ablation",
       title: "A bigger adapter made the tables worse",
       lead:
@@ -650,7 +645,6 @@ const wigtnOcr: ResearchProject = {
     },
     {
       id: "retrieval",
-      index: "08",
       eyebrow: "Downstream evaluation",
       title: "Cleaner chunks do not automatically retrieve better",
       lead:
@@ -690,7 +684,6 @@ const wigtnOcr: ResearchProject = {
     },
     {
       id: "failures",
-      index: "09",
       eyebrow: "Failure analysis",
       title: "What did not transfer cleanly",
       bullets: [
@@ -777,7 +770,6 @@ const wigvo: ResearchProject = {
   sections: [
     {
       id: "problem",
-      index: "01",
       eyebrow: "Problem",
       title: "The first phone prototype translated itself",
       paragraphs: [
@@ -791,7 +783,6 @@ const wigvo: ResearchProject = {
     },
     {
       id: "architecture",
-      index: "02",
       eyebrow: "Architecture",
       title: "The fix started by separating the two directions",
       lead:
@@ -849,7 +840,6 @@ const wigvo: ResearchProject = {
     },
     {
       id: "landscape",
-      index: "03",
       eyebrow: "Constraint",
       title: "The place left over, once you own neither the handset nor the network",
       paragraphs: [
@@ -863,7 +853,6 @@ const wigvo: ResearchProject = {
     },
     {
       id: "ablation",
-      index: "05",
       eyebrow: "System evolution",
       title: "Our cleanest idea did not survive the phone network",
       paragraphs: [
@@ -886,7 +875,6 @@ const wigvo: ResearchProject = {
     },
     {
       id: "detector",
-      index: "06",
       eyebrow: "What failed first",
       title: "Three echo gates failed before the one that shipped",
       lead:
@@ -920,7 +908,6 @@ const wigvo: ResearchProject = {
     },
     {
       id: "vad",
-      index: "07",
       eyebrow: "Voice activity",
       title: "The hosted detector assumed audio the phone network does not carry",
       paragraphs: [
@@ -940,13 +927,16 @@ const wigvo: ResearchProject = {
     },
     {
       id: "separation",
-      index: "08",
       eyebrow: "Recognition",
       title: "Asking one model to hear and to translate produced sentences nobody said",
       paragraphs: [
         "The realtime speech API can transcribe and translate in one pass, and doing that added content the speaker had not produced. Not mishearing: fluent, plausible additions that fit the conversation and were never said.",
         "The two jobs are now separate. Recognition stays inside the realtime session, and translation runs as a discrete text call at temperature zero against the transcript, with the realtime session's own translation path switched off by configuration rather than left unused.",
-        "The architecture diagram at the top of this report predates that change and still shows the realtime session handling translation on the voice-to-voice path. The deployed arrangement is the one described here.",
+        /* The diagram is not at the top any more: it moved into Architecture
+         * when the hub card became a banner, so this sentence was pointing at a
+         * place it no longer sits. That it is still the wrong diagram is a
+         * separate problem, and the fix for it is a redrawn figure. */
+        "The architecture diagram in Architecture, above, predates that change and still shows the realtime session handling translation on the voice-to-voice path. The deployed arrangement is the one described here.",
       ],
       callout: {
         label: "The pattern, not a rule",
@@ -955,7 +945,6 @@ const wigvo: ResearchProject = {
     },
     {
       id: "hallucination",
-      index: "09",
       eyebrow: "Recognition safety",
       title: "The recognizer invented a news anchor, and it reached a real phone",
       paragraphs: [
@@ -986,7 +975,6 @@ const wigvo: ResearchProject = {
     },
     {
       id: "pipelines",
-      index: "10",
       eyebrow: "System shape",
       title: "One relay, three conversations",
       lead:
@@ -1015,7 +1003,6 @@ const wigvo: ResearchProject = {
     },
     {
       id: "cost",
-      index: "11",
       eyebrow: "Operating profile",
       title: "What the field study cost, and which mode people actually used",
       paragraphs: [
@@ -1029,7 +1016,6 @@ const wigvo: ResearchProject = {
     },
     {
       id: "evaluation",
-      index: "12",
       eyebrow: "Field evaluation",
       title: "Then we took it through 155 Korean-English calls",
       lead:
@@ -1072,7 +1058,6 @@ const wigvo: ResearchProject = {
     },
     {
       id: "conference",
-      index: "13",
       eyebrow: "Conference field notes",
       title: "Questions from ACL and IWSLT",
       lead:
@@ -1186,7 +1171,6 @@ const wigss: ResearchProject = {
   sections: [
     {
       id: "problem",
-      index: "01",
       eyebrow: "Problem",
       title: "The last ten pixels are expensive to describe",
       paragraphs: [
@@ -1200,7 +1184,6 @@ const wigss: ResearchProject = {
     },
     {
       id: "architecture",
-      index: "02",
       eyebrow: "Architecture",
       title: "Keep the gesture in the browser and the change in source",
       figures: [
@@ -1253,7 +1236,6 @@ const wigss: ResearchProject = {
     },
     {
       id: "evidence",
-      index: "03",
       eyebrow: "Evidence status",
       title: "Architecture is documented; outcome quality is not yet benchmarked",
       paragraphs: [
@@ -1342,7 +1324,6 @@ const wigtnCoding: ResearchProject = {
   sections: [
     {
       id: "problem",
-      index: "01",
       eyebrow: "Problem",
       title: "Do not make every engineering decision in one context",
       paragraphs: [
@@ -1356,7 +1337,6 @@ const wigtnCoding: ResearchProject = {
     },
     {
       id: "workflow",
-      index: "02",
       eyebrow: "Workflow",
       title: "Turn every handoff into an artifact",
       figures: [
@@ -1405,7 +1385,6 @@ const wigtnCoding: ResearchProject = {
     },
     {
       id: "memory",
-      index: "03",
       eyebrow: "Coordination",
       title: "Three layers keep shared decisions visible",
       table: {
@@ -1424,7 +1403,6 @@ const wigtnCoding: ResearchProject = {
     },
     {
       id: "origin",
-      index: "04",
       eyebrow: "Origin",
       title: "We shipped a marketplace of stack plugins and then took it apart",
       paragraphs: [
@@ -1450,7 +1428,6 @@ const wigtnCoding: ResearchProject = {
     },
     {
       id: "reductions",
-      index: "05",
       eyebrow: "Model upgrades",
       title: "Every upgrade is a cut, and every quiet month undoes part of it",
       paragraphs: [
@@ -1487,7 +1464,6 @@ const wigtnCoding: ResearchProject = {
     },
     {
       id: "enforcement",
-      index: "06",
       eyebrow: "Enforcement",
       title: "The prompts shrank; the enforcement grew",
       paragraphs: [
@@ -1523,7 +1499,6 @@ const wigtnCoding: ResearchProject = {
     },
     {
       id: "benchmark",
-      index: "07",
       eyebrow: "Evaluation plan",
       title: "The benchmark exists as a protocol, not yet as a result",
       paragraphs: [
