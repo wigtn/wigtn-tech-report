@@ -12,6 +12,11 @@ import {
   type ResearchTable,
 } from "./data";
 import {
+  AUTHOR_AFFILIATION,
+  getReportAuthor,
+  type ReportAuthor,
+} from "./authors";
+import {
   getLocalizedResearchProject,
   getResearchProjects,
   type ReportLocale,
@@ -70,6 +75,64 @@ function figureMaxWidth(figure: ResearchFigure) {
   if (ratio < 1) return "max-w-[28rem]";
   if (ratio < 1.6) return "max-w-[42rem]";
   return "max-w-[52rem]";
+}
+
+/* The byline names a person, not a department.
+ *
+ * It used to be a text run: "WIGTN Engineering · 2026.08.04". Four of the five
+ * reports said "WIGTN Engineering" or "WIGTN Research", which identifies nobody
+ * and is the same string a reader has already seen on the card, the footer and
+ * the citation. A named face is the one thing on the page that says a person
+ * stands behind the measurements.
+ *
+ * The portrait needs no per-person framing: authors.ts stores square crops
+ * already centred on the face, so the circle is a plain `rounded-full`. It is
+ * decorative here — the name sits in the adjacent text, so a screen reader that
+ * also announced the image would say the name twice. Hence alt="".
+ *
+ * `authors` renders only when it carries names the byline does not — in
+ * practice the WIGVO paper's five. It sits under the byline rather than
+ * replacing it, so the report has an author and the paper keeps its authors. */
+function ReportByline({
+  author,
+  date,
+  authors,
+}: {
+  author: ReportAuthor;
+  date: string;
+  authors?: string;
+}) {
+  return (
+    <div className="mt-7">
+      <div className="flex items-center gap-4">
+        <Image
+          src={assetPath(author.image)}
+          alt=""
+          width={author.width}
+          height={author.height}
+          sizes="56px"
+          className="h-14 w-14 shrink-0 rounded-full object-cover"
+        />
+        <div className="min-w-0">
+          <div className="text-[17px] font-semibold leading-6 text-[#1457D9]">
+            {author.name}
+          </div>
+          <div className="mt-0.5 text-[15px] leading-6 text-[#667085]">
+            {author.role}, {AUTHOR_AFFILIATION}
+            <span aria-hidden className="mx-2 text-[#98A2B3]">
+              ·
+            </span>
+            <time>{date}</time>
+          </div>
+        </div>
+      </div>
+      {authors && (
+        <p className="mt-3 text-[15px] leading-6 text-[#667085]">
+          <span className="text-[#98A2B3]">Paper authors</span> {authors}
+        </p>
+      )}
+    </div>
+  );
 }
 
 function ReportFigure({ figure }: { figure: ResearchFigure }) {
@@ -221,11 +284,11 @@ export function ReportProjectPage({
                 {project.dek}
               </p>
 
-              <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-[15px] text-[#667085]">
-                <span>{project.authors}</span>
-                <span aria-hidden>·</span>
-                <time>{project.date}</time>
-              </div>
+              <ReportByline
+                author={getReportAuthor(project.authorId)}
+                date={project.date}
+                authors={project.authors}
+              />
 
               <div className="mt-5 flex flex-wrap gap-x-5 gap-y-3">
                 {project.links.slice(0, 4).map((link) => (

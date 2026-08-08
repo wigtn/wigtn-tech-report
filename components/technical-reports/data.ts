@@ -1,4 +1,6 @@
 // Shared content model for the technical report index and detail routes.
+import type { ReportAuthorId } from "./authors";
+
 export type ResearchStatus =
   | "Peer reviewed"
   | "Open model"
@@ -96,7 +98,20 @@ export type ResearchProject = {
   status: ResearchStatus;
   format: string;
   date: string;
-  authors: string;
+  /* Who is answerable for this report, rendered as the byline with their
+   * portrait. Required on purpose: a new report cannot be added without picking
+   * a person, because `tsc` fails on a missing key. The alternative was a note
+   * asking whoever adds a report to remember, and a note is not a check.
+   *
+   * Ask the person creating the report who to register, rather than inferring
+   * it from whoever ran the commit. Ids are in authors.ts. */
+  authorId: ReportAuthorId;
+  /* The formal credit line, kept only where it says something the byline does
+   * not. WIGVO is a five-author ACL paper: naming one of them as the report's
+   * author is right, dropping the other four is not. The four reports that had
+   * "WIGTN Engineering" or a single name here carry no such list, so theirs is
+   * absent and the byline is the whole credit. */
+  authors?: string;
   venue?: string;
   featured?: boolean;
   heroFigure?: ResearchFigure;
@@ -120,7 +135,7 @@ const codexSelectiveHarness: ResearchProject = {
   status: "Measured system",
   format: "Evaluation report",
   date: "2026.07.28",
-  authors: "Hyeonsang Kim",
+  authorId: "hyeonsang-kim",
   /* The banner is OpenAI's Codex brand image, used to identify the tool this
    * report evaluates. It illustrates nothing we measured, so it carries no
    * caption and stays out of the body: `heroSectionId` is deliberately absent,
@@ -390,7 +405,7 @@ const wigtnOcr: ResearchProject = {
   status: "Open model",
   format: "Model report",
   date: "2026.05.20",
-  authors: "WIGTN Research",
+  authorId: "hyeongseob-kim",
   featured: true,
   /* Brand banner, same treatment as the two harness reports: no caption, no
    * `heroSectionId`, so it identifies the report on the hub card without posing
@@ -698,6 +713,7 @@ const wigvo: ResearchProject = {
   status: "Peer reviewed",
   format: "ACL system paper",
   date: "2026.07",
+  authorId: "sangwoo-son",
   authors: "Hyeong-seob Kim · Sang-Woo Son · Hyun-woo Cho · Hyeonsang Kim · Jinmo Kim",
   venue: "ACL 2026 System Demonstrations · pp. 336–344",
   featured: true,
@@ -1113,7 +1129,7 @@ const wigss: ResearchProject = {
   status: "Engineering note",
   format: "Open-source architecture",
   date: "2026.04.10",
-  authors: "WIGTN Engineering",
+  authorId: "jinmo-kim",
   /* Brand banner, same treatment as the other four: no caption, no
    * `heroSectionId`, so it stays on the hub card. The npm screenshot it replaced
    * moved into `architecture`.
@@ -1265,7 +1281,7 @@ const wigtnCoding: ResearchProject = {
   status: "Engineering note",
   format: "Workflow architecture",
   date: "2026.08.04",
-  authors: "WIGTN Engineering",
+  authorId: "hyunwoo-cho",
   /* Anthropic's Claude Code brand image, identifying the tool this plugin runs
    * on. Same treatment as part 2: no caption, no `heroSectionId`, so it stays on
    * the hub card instead of appearing in the body as if it were a figure. The
