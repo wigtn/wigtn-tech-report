@@ -21,9 +21,10 @@ export function ReportHeader({
   locale: ReportLocale;
   slug?: string;
 }) {
-  const englishHref = slug ? reportHref(slug, "en") : reportHomeHref("en");
-  const koreanHref = slug ? reportHref(slug, "ko") : reportHomeHref("ko");
-
+  /* The EN/한국어 switch was removed with the /ko routes. A visible language
+   * pair whose second half 404s is worse than no pair at all. `locale` stays in
+   * the signature so restoring Korean is a routing change, not a component
+   * rewrite; localized-data.ts lists everything that has to come back. */
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-[#15151E]/95 text-white backdrop-blur">
       <nav className="mx-auto flex h-16 max-w-[1180px] items-center justify-between gap-4 px-5 md:px-8">
@@ -49,7 +50,7 @@ export function ReportHeader({
             Technical reports
           </span>
         </Link>
-        <div className="flex shrink-0 items-center gap-4 font-report-mono text-[10px] uppercase tracking-[0.1em] sm:gap-6 sm:text-xs">
+        <div className="flex shrink-0 items-center gap-4 font-report-mono text-[12px] uppercase tracking-[0.1em] sm:gap-6 sm:text-[13px]">
           <a
             href={WIGTN_HOME}
             className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap text-[#8D8998] transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
@@ -57,36 +58,6 @@ export function ReportHeader({
             <ArrowLeft aria-hidden size={13} />
             wigtn.com
           </a>
-          <span className="hidden h-3 w-px bg-white/20 sm:block" aria-hidden />
-          <div
-            role="group"
-            className="flex items-center gap-3"
-            aria-label={locale === "ko" ? "언어 선택" : "Language"}
-          >
-            <Link
-              href={englishHref}
-              hrefLang="en"
-              className={`whitespace-nowrap ${
-                locale === "en"
-                  ? "text-white"
-                  : "text-[#8D8998] transition-colors hover:text-white"
-              }`}
-            >
-              EN
-            </Link>
-            <span className="h-3 w-px bg-white/20" aria-hidden />
-            <Link
-              href={koreanHref}
-              hrefLang="ko"
-              className={`whitespace-nowrap ${
-                locale === "ko"
-                  ? "text-white"
-                  : "text-[#8D8998] transition-colors hover:text-white"
-              }`}
-            >
-              한국어
-            </Link>
-          </div>
         </div>
       </nav>
     </header>
@@ -96,7 +67,7 @@ export function ReportHeader({
 export function ReportFooter({ locale }: { locale: ReportLocale }) {
   return (
     <footer className="border-t border-[#D8DDE5] bg-[#F7F8FA]">
-      <div className="mx-auto flex max-w-[1180px] flex-col gap-3 px-5 py-8 font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#667085] sm:flex-row sm:items-center sm:justify-between md:px-8">
+      <div className="mx-auto flex max-w-[1180px] flex-col gap-3 px-5 py-8 font-report-mono text-[12px] uppercase tracking-[0.08em] text-[#667085] sm:flex-row sm:items-center sm:justify-between md:px-8">
         <span>WIGTN Technical Reports</span>
         <span>
           {locale === "ko"

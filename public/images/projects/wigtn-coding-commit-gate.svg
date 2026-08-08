@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" width="1600" height="900">
+  <title>The two independent gates a commit passes through</title>
+  <!--
+    Traced from hooks/gate.sh on main, not from the documentation.
+
+    The spine is the happy path and the fail path leaves to the left from BOTH
+    gates, because both block on their own. An earlier version forked only at
+    the bottom, which drew gate 1 as advisory when it is the one that cannot be
+    talked out of a decision.
+
+    Do not write a double hyphen anywhere in this comment. XML forbids it, the
+    file stops being well formed, and a browser renders nothing at all. That
+    shipped once, spelling out the emergency flag by name.
+
+    Every box has to be wide enough for its longest line. Text overflowing a
+    rounded rect also shipped once. Render with cairosvg before committing.
+  -->
+  <style>
+    .box  { font: 600 30px system-ui, -apple-system, Segoe UI, sans-serif; fill: #111827; }
+    .desc { font: 25px system-ui, -apple-system, Segoe UI, sans-serif; fill: #667085; }
+    .lab  { font: 600 25px ui-monospace, SFMono-Regular, Menlo, monospace; fill: #1457D9; }
+    .edge { font: 600 24px ui-monospace, SFMono-Regular, Menlo, monospace; fill: #98A2B3; }
+    .hd   { font: 600 31px system-ui, -apple-system, Segoe UI, sans-serif; fill: #111827; }
+    .out  { font: 600 28px system-ui, -apple-system, Segoe UI, sans-serif; }
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#98A2B3"/>
+    </marker>
+  </defs>
+
+  <text class="hd" x="60" y="54">What stands between a commit and the repository</text>
+
+  <!-- the attempt. Box runs to 440 so "Intercepted by a PreToolUse" fits. -->
+  <rect x="60" y="112" width="380" height="120" rx="10" fill="#EEF4FF" stroke="#1457D9" stroke-width="3"/>
+  <text class="box"  x="86" y="160">git commit</text>
+  <text class="desc" x="86" y="196">Intercepted by a PreToolUse</text>
+  <text class="desc" x="86" y="222">hook before it runs.</text>
+
+  <line x1="440" y1="172" x2="470" y2="172" stroke="#98A2B3" stroke-width="3" marker-end="url(#a)"/>
+
+  <!-- gate 1 -->
+  <rect x="480" y="92" width="640" height="230" rx="10" fill="#FFFFFF" stroke="#98A2B3" stroke-width="3"/>
+  <text class="lab"  x="510" y="134">GATE 1</text>
+  <text class="box"  x="510" y="176">.wigtn/checks.sh</text>
+  <text class="desc" x="510" y="214">The hook runs the script itself and reads its</text>
+  <text class="desc" x="510" y="242">exit code. Typecheck, lint, tests: whatever the</text>
+  <text class="desc" x="510" y="270">repository defines. A model cannot write this</text>
+  <text class="desc" x="510" y="298">number, only earn it.</text>
+
+  <text class="desc" x="1150" y="150">Runs on every commit.</text>
+  <text class="desc" x="1150" y="180">Never reads the message.</text>
+  <text class="desc" x="1150" y="228">Exempt during merge,</text>
+  <text class="desc" x="1150" y="258">rebase, cherry-pick,</text>
+  <text class="desc" x="1150" y="288">revert and bisect.</text>
+
+  <line x1="800" y1="322" x2="800" y2="392" stroke="#98A2B3" stroke-width="3" marker-end="url(#a)"/>
+  <text class="edge" x="820" y="368">pass</text>
+
+  <!-- gate 2 -->
+  <rect x="480" y="402" width="640" height="230" rx="10" fill="#FFFFFF" stroke="#98A2B3" stroke-width="3"/>
+  <text class="lab"  x="510" y="444">GATE 2</text>
+  <text class="box"  x="510" y="486">.wigtn/gate-pass, under 30 min old</text>
+  <text class="desc" x="510" y="524">Applies only when the message claims</text>
+  <text class="desc" x="510" y="552">"Quality Gate: PASS". The claim has to be</text>
+  <text class="desc" x="510" y="580">backed by a record the review wrote, and a</text>
+  <text class="desc" x="510" y="608">record from the last session has expired.</text>
+
+  <text class="desc" x="1150" y="470">Independent of gate 1.</text>
+  <text class="desc" x="1150" y="518">The emergency flag omits</text>
+  <text class="desc" x="1150" y="548">the claim, so this gate has</text>
+  <text class="desc" x="1150" y="578">nothing to check. Gate 1</text>
+  <text class="desc" x="1150" y="608">still runs.</text>
+
+  <line x1="800" y1="632" x2="800" y2="696" stroke="#98A2B3" stroke-width="3" marker-end="url(#a)"/>
+  <text class="edge" x="820" y="678">pass</text>
+
+  <!-- the fail path: leaves to the left from both gates -->
+  <g stroke="#98A2B3" stroke-width="3" fill="none">
+    <path d="M480 262 L270 262 L270 694" marker-end="url(#a)"/>
+    <path d="M480 520 L270 520"/>
+  </g>
+  <text class="edge" x="380" y="292" text-anchor="middle">fail</text>
+  <text class="edge" x="380" y="550" text-anchor="middle">fail</text>
+
+  <!-- outcomes -->
+  <rect x="110" y="706" width="320" height="86" rx="10" fill="#FDECEC" stroke="#B42318" stroke-width="3"/>
+  <text class="out" x="270" y="758" text-anchor="middle" fill="#8E1B12">Blocked, exit 2</text>
+
+  <rect x="640" y="706" width="320" height="86" rx="10" fill="#E8F5EC" stroke="#2E7D46" stroke-width="3"/>
+  <text class="out" x="800" y="758" text-anchor="middle" fill="#1E5B33">Commit proceeds</text>
+
+  <text class="desc" x="60" y="862">Neither gate asks whether the review was good. They enforce that it ran, and that the checks it claims to have passed actually passed.</text>
+</svg>

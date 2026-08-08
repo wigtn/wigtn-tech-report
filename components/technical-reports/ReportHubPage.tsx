@@ -70,7 +70,7 @@ export function ReportHubPage({ locale = "en" }: { locale?: ReportLocale }) {
             >
               {copy.allReports}
             </h2>
-            <span className="font-report-mono text-[9px] text-[#667085]">
+            <span className="font-report-mono text-[12px] text-[#667085]">
               {String(projects.length).padStart(2, "0")}{" "}
               {projects.length === 1 ? copy.article : copy.articles}
             </span>
@@ -104,7 +104,7 @@ export function ReportHubPage({ locale = "en" }: { locale?: ReportLocale }) {
                       />
                     ) : (
                       <div className="flex h-full flex-col justify-between bg-[#EEF4FF] p-6">
-                        <span className="font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#1457D9]">
+                        <span className="font-report-mono text-[12px] uppercase tracking-[0.08em] text-[#1457D9]">
                           {copy.workflow}
                         </span>
                         <div className="grid grid-cols-3 gap-3">
@@ -113,7 +113,7 @@ export function ReportHubPage({ locale = "en" }: { locale?: ReportLocale }) {
                               <strong className="block text-2xl font-medium tracking-[-0.04em]">
                                 {metric.value}
                               </strong>
-                              <span className="mt-1 block text-[10px] leading-4 text-[#667085]">
+                              <span className="mt-1 block text-[13px] leading-5 text-[#667085]">
                                 {metric.label}
                               </span>
                             </div>
@@ -123,40 +123,34 @@ export function ReportHubPage({ locale = "en" }: { locale?: ReportLocale }) {
                     )}
                   </div>
 
-                  <div className="flex items-start justify-between gap-4 font-report-mono text-[9px] uppercase leading-5 tracking-[0.07em]">
-                    <span className="mt-5">
-                      <span className="block normal-case tracking-[0.02em] text-[#1457D9]">
-                        {project.shortTitle}
-                      </span>
-                      <span className="block text-[#667085]">
-                        {project.status}
-                        <span className="ml-4">{project.format}</span>
-                      </span>
-                    </span>
-                    <span className="mt-5 text-[#98A2B3]">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                  </div>
+                  {/* The card is image, headline, date. The track/status/format
+                      row and the dek were both dropped: a grid of nine-pixel
+                      labels reading "Engineering note · Workflow architecture"
+                      told the reader nothing, and three lines of clamped dek
+                      under every card turned an index into a wall.
 
+                      `cardTitle` is an optional short form for the products,
+                      where the banner already names the thing and the headline
+                      is free to state the finding. The two harness reports
+                      deliberately have none: their titles carry the series
+                      numbering, which is how a reader finds part 2 from part 1,
+                      and that has to survive on the card.
+
+                      So card titles are mixed length by design. The size is set
+                      for the long ones; `mt-auto` on the footer keeps the date
+                      row aligned when a title runs to three lines. */}
                   <h3
-                    className={`mt-4 font-semibold transition-colors group-hover:text-[#1457D9] ${
+                    className={`mt-5 font-semibold transition-colors group-hover:text-[#1457D9] ${
                       locale === "ko"
-                        ? "font-sans text-[1.375rem] leading-[1.32] tracking-[-0.03em] [word-break:keep-all] [text-wrap:pretty]"
-                        : "text-balance font-report-display text-[1.5rem] leading-[1.22] tracking-[-0.02em]"
+                        ? "font-sans text-[1.5rem] leading-[1.34] tracking-[-0.03em] [word-break:keep-all] [text-wrap:balance]"
+                        : "text-balance font-report-display text-[1.5625rem] leading-[1.26] tracking-[-0.02em]"
                     }`}
                   >
-                    {project.title}
+                    {project.cardTitle ?? project.title}
                   </h3>
-                  <p
-                    className={`mt-2 line-clamp-3 max-w-[32rem] text-[14px] leading-6 text-[#667085] ${
-                      locale === "ko" ? "[word-break:keep-all]" : ""
-                    }`}
-                  >
-                    {project.dek}
-                  </p>
 
                   <div className="mt-auto flex items-center justify-between gap-5 pt-5">
-                    <time className="font-report-mono text-[9px] text-[#667085]">
+                    <time className="font-report-mono text-[12px] text-[#667085]">
                       {project.date}
                     </time>
                     <ArrowRight

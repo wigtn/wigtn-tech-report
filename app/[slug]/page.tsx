@@ -31,10 +31,6 @@ export async function generateMetadata({
     description: project.dek,
     alternates: {
       canonical,
-      languages: {
-        en: canonical,
-        ko: `${SITE_URL}/ko/${project.slug}/`,
-      },
     },
     openGraph: {
       title: `${project.shortTitle}: ${project.title}`,

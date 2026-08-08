@@ -40,10 +40,20 @@ export type ResearchTable = {
   }>;
 };
 
+/* `width` and `height` are the file's real pixel dimensions, measured rather
+ * than guessed. They are what lets a figure render at its own aspect ratio
+ * instead of being letterboxed into a fixed box, and what stops the page
+ * reflowing as images arrive. Measure with sips, or read the viewBox for an
+ * SVG. Do not estimate: a wrong ratio here is a visibly stretched chart.
+ *
+ * `contain` and `focalPoint` now only affect the hub card, which crops every
+ * report to one 16:10 tile. Inside a report nothing crops, so neither is read. */
 export type ResearchFigure = {
   src: string;
   alt: string;
   caption: string;
+  width?: number;
+  height?: number;
   contain?: boolean;
   portrait?: boolean;
   focalPoint?: string;
@@ -75,6 +85,11 @@ export type ResearchProject = {
   shortTitle: string;
   title: string;
   titleLines?: string[];
+  /* Headline for the hub card. The full `title` is written to sit above the
+   * article, where it has a whole page under it; on a 370px tile it wraps to
+   * three ragged lines and stops being a hook. The banner already carries the
+   * product name, so this says what the report found, not what it is about. */
+  cardTitle?: string;
   dek: string;
   language?: "en" | "ko";
   track: ResearchTrack;
@@ -98,7 +113,7 @@ export const researchHref = (slug: string) => `/${slug}/`;
 const codexSelectiveHarness: ResearchProject = {
   slug: "codex-selective-harness",
   shortTitle: "WIGTN Plugin for Codex",
-  title: "The harness stopped earning its cost on GPT-5.6 Sol",
+  title: "Running a harness on frontier models, part 2: Codex",
   dek: "On two SWE-bench Verified tasks, GPT-5.6 Sol resolved 4/4 runs in each condition, with and without the legacy WIGTN harness. The harness increased median wall time by 151.7%, output tokens by 141.2%, and command count by 32.0%. We used this result to redesign WIGTN around selective, task-dependent intervention.",
   language: "en",
   track: "Agentic engineering",
@@ -106,14 +121,18 @@ const codexSelectiveHarness: ResearchProject = {
   format: "Evaluation report",
   date: "2026.07.28",
   authors: "Hyeonsang Kim",
+  /* The banner is OpenAI's Codex brand image, used to identify the tool this
+   * report evaluates. It illustrates nothing we measured, so it carries no
+   * caption and stays out of the body: `heroSectionId` is deliberately absent,
+   * which keeps it to the hub card. The chart it replaced now sits in `results`,
+   * where its caption can sit next to the numbers it plots. */
   heroFigure: {
-    src: "/images/projects/codex-selective-harness-eval.svg",
-    alt: "Task resolution and execution cost for Bare Codex and the legacy WIGTN harness",
-    caption:
-      "GPT-5.6 Sol on the SWE-bench Verified development sample. Bare Codex and the legacy harness each resolved 4/4 runs, while the legacy-harness condition increased median wall time, output tokens and command count.",
-    contain: true,
+    src: "/images/projects/codex_image_v1.jpg",
+    width: 1600,
+    height: 900,
+    alt: "Codex",
+    caption: "",
   },
-  heroSectionId: "results",
   links: [
     {
       label: "Source repository",
@@ -232,6 +251,17 @@ const codexSelectiveHarness: ResearchProject = {
       paragraphs: [
         "The additional cost came from separate planning, inspection and completion logging, even for small bug fixes. In this sample, those steps did not change the code outcome.",
       ],
+      figures: [
+        {
+          src: "/images/projects/codex-selective-harness-eval.svg",
+          width: 1600,
+          height: 1000,
+          alt: "Task resolution and execution cost for Bare Codex and the legacy WIGTN harness",
+          caption:
+            "GPT-5.6 Sol on the SWE-bench Verified development sample. Bare Codex and the legacy harness each resolved 4/4 runs, while the legacy-harness condition increased median wall time, output tokens and command count.",
+          contain: true,
+        },
+      ],
       table: {
         caption: "GPT-5.6 Sol paired comparison, overall median",
         headers: ["Metric", "Bare", "Legacy harness", "Delta"],
@@ -347,13 +377,14 @@ const codexSelectiveHarness: ResearchProject = {
     "Some raw execution packets are not included in a durable public repository, so this is not a complete third-party reproduction package.",
   ],
   citation:
-    'Kim, Hyeonsang. (2026). "WIGTN Plugin for Codex: The harness stopped earning its cost on GPT-5.6 Sol." WIGTN Technical Reports.',
+    'Kim, Hyeonsang. (2026). "Running a harness on frontier models, part 2: Codex." WIGTN Technical Reports.',
 };
 
 const wigtnOcr: ResearchProject = {
   slug: "wigtnocr",
   shortTitle: "WigtnOCR",
   title: "A 2B parser that outperforms its 30B teacher on retrieval",
+  cardTitle: "Distilled from 30B, first of six on Hit@1",
   dek: "An engineering account of how we used a 30B teacher once, served the task with a 2B student, and checked whether parsing gains survived downstream retrieval.",
   track: "Models & evaluation",
   status: "Open model",
@@ -361,14 +392,17 @@ const wigtnOcr: ResearchProject = {
   date: "2026.05.20",
   authors: "WIGTN Research",
   featured: true,
+  /* Brand banner, same treatment as the two harness reports: no caption, no
+   * `heroSectionId`, so it identifies the report on the hub card without posing
+   * as a figure in the body. The highlights chart it replaced moved into
+   * `parsing`, next to the table of the numbers it plots. */
   heroFigure: {
-    src: "/images/projects/wigtnocr-highlights.png",
-    alt: "WigtnOCR benchmark highlights",
-    caption:
-      "Parsing and retrieval highlights from the released WigtnOCR evaluation. Lower is better for NED; higher is better for TEDS and retrieval metrics.",
-    contain: true,
+    src: "/images/projects/wigtnocr_v1_image.jpg",
+    width: 1254,
+    height: 1254,
+    alt: "WigtnOCR on Hugging Face",
+    caption: "",
   },
-  heroSectionId: "parsing",
   links: [
     {
       label: "Research repository",
@@ -413,6 +447,17 @@ const wigtnOcr: ResearchProject = {
       paragraphs: [
         "A parser can look visually clean and still remove the value that answers a user’s question. That gap changed the evaluation plan: WigtnOCR separates intrinsic parsing quality from downstream retrieval quality instead of compressing both into one headline score.",
         "OmniDocBench measures text, tables, formulas and reading order. KoGovDoc then holds the retriever and chunking policy fixed and measures how much answer-bearing content remains recoverable after parsing.",
+      ],
+      figures: [
+        {
+          src: "/images/projects/wigtnocr-highlights.png",
+          width: 4270,
+          height: 1424,
+          alt: "WigtnOCR benchmark highlights",
+          caption:
+            "Parsing and retrieval highlights from the released WigtnOCR evaluation, shown together because the report's argument is that the two do not move together. Lower is better for NED; higher is better for TEDS and retrieval metrics.",
+          contain: true,
+        },
       ],
       callout: {
         label: "What we wanted to know",
@@ -532,6 +577,8 @@ const wigtnOcr: ResearchProject = {
       figures: [
         {
           src: "/images/projects/wigtnocr-omnidocbench.png",
+          width: 5421,
+          height: 1704,
           alt: "OmniDocBench comparison chart",
           caption:
             "OmniDocBench comparison across the 30B teacher, base 2B, Marker and WigtnOCR.",
@@ -588,6 +635,8 @@ const wigtnOcr: ResearchProject = {
       figures: [
         {
           src: "/images/projects/wigtnocr-bc-vs-retrieval.png",
+          width: 2421,
+          height: 1821,
           alt: "Boundary Clarity compared with retrieval Hit at 1",
           caption:
             "Boundary quality and retrieval diverge: intrinsic chunk cleanliness is not a substitute for end-to-end evaluation.",
@@ -595,6 +644,8 @@ const wigtnOcr: ResearchProject = {
         },
         {
           src: "/images/projects/wigtnocr-retrieval.png",
+          width: 4221,
+          height: 1704,
           alt: "KoGovDoc retrieval results",
           caption:
             "Six-parser KoGovDoc retrieval comparison using the same semantic chunking and BGE-M3 retrieval pipeline.",
@@ -641,6 +692,7 @@ const wigvo: ResearchProject = {
   slug: "wigvo",
   shortTitle: "WIGVO",
   title: "Stopping a phone-call translator from translating its own echo",
+  cardTitle: "Real-time translation over an ordinary PSTN call",
   dek: "A field-tested account of what changed when a browser translator met ordinary phone audio, including the echo-control ideas that failed before the deployed design.",
   track: "AI systems",
   status: "Peer reviewed",
@@ -649,14 +701,18 @@ const wigvo: ResearchProject = {
   authors: "Hyeong-seob Kim · Sang-Woo Son · Hyun-woo Cho · Hyeonsang Kim · Jinmo Kim",
   venue: "ACL 2026 System Demonstrations · pp. 336–344",
   featured: true,
+  /* Brand banner, same treatment as the other reports: no caption, no
+   * `heroSectionId`, so it identifies the report on the hub card rather than
+   * posing as a figure. Everything it asserts is already in this report: the
+   * venue is in `venue`, and the provider is named in the cost section. The
+   * architecture diagram it replaced moved into `architecture`. */
   heroFigure: {
-    src: "/images/projects/wigvo_architecture.png",
-    alt: "WIGVO dual-session system architecture",
-    caption:
-      "Session A translates browser speech into PSTN audio. Session B receives the phone side through echo, energy and voice-activity gates.",
-    contain: true,
+    src: "/images/projects/wigvo_image_v1.jpg",
+    width: 1535,
+    height: 1024,
+    alt: "WIGVO, real-time bidirectional speech translation over PSTN calls",
+    caption: "",
   },
-  heroSectionId: "architecture",
   links: [
     {
       label: "ACL paper",
@@ -743,9 +799,23 @@ const wigvo: ResearchProject = {
           body: "Recognized speech is deterministically translated and synthesized back to the browser.",
         },
       ],
+      /* Both diagrams sit after the stage list, in the order the reader needs
+       * them: the whole relay first, then the phone-side path it describes. The
+       * architecture diagram moved here when the hub card became a banner. */
       figures: [
         {
+          src: "/images/projects/wigvo_architecture.png",
+          width: 1299,
+          height: 540,
+          alt: "WIGVO dual-session system architecture",
+          caption:
+            "Session A translates browser speech into PSTN audio. Session B receives the phone side through echo, energy and voice-activity gates.",
+          contain: true,
+        },
+        {
           src: "/images/projects/wigvo_pipeline.png",
+          width: 621,
+          height: 974,
           alt: "WIGVO three-stage phone audio pipeline",
           caption:
             "The phone-side path combines deterministic silence injection with energy and neural voice-activity gates.",
@@ -943,6 +1013,8 @@ const wigvo: ResearchProject = {
       figures: [
         {
           src: "/images/projects/wigvo_latency_histogram.png",
+          width: 2962,
+          height: 1234,
           alt: "WIGVO latency distribution",
           caption:
             "Caller-to-callee and callee-to-caller latency distributions. The phone-originating path is dominated by transcription.",
@@ -950,6 +1022,8 @@ const wigvo: ResearchProject = {
         },
         {
           src: "/images/projects/wigvo_utterance_scatter.png",
+          width: 2061,
+          height: 1462,
           alt: "Utterance duration versus latency",
           caption:
             "Longer phone-side utterances increase end-to-end latency; Session B remains the primary optimization target.",
@@ -987,6 +1061,8 @@ const wigvo: ResearchProject = {
       figures: [
         {
           src: "/images/projects/wigvo-acl-2026-team.gif",
+          width: 1280,
+          height: 1707,
           alt: "Four WIGTN team members at ACL 2026 in San Diego",
           caption:
             "The WIGTN team at ACL 2026 in San Diego, where the accepted System Demonstrations paper was presented.",
@@ -994,12 +1070,16 @@ const wigvo: ResearchProject = {
         },
         {
           src: "/images/projects/wigvo-acl-2026-booth.jpeg",
+          width: 1780,
+          height: 1536,
           alt: "WIGVO paper discussion at the ACL 2026 booth",
           caption:
             "Discussion at the ACL 2026 booth around the WIGVO paper, architecture and recorded system workflow.",
         },
         {
           src: "/images/projects/wigvo-iwslt-2026-talk.jpeg",
+          width: 1920,
+          height: 1078,
           alt: "WIGVO invited oral presentation at IWSLT 2026",
           caption:
             "Invited oral presentation at IWSLT 2026. WIGVO was also discussed in a poster session.",
@@ -1027,19 +1107,29 @@ const wigss: ResearchProject = {
   slug: "wigss",
   shortTitle: "WIGSS",
   title: "Fixing the last ten pixels in the browser without losing the diff",
+  cardTitle: "Open-source drag-to-edit that rewrites your source",
   dek: "An engineering note on why we moved small visual corrections into the browser while keeping the repository, reviewable diffs and rollback as the source of truth.",
   track: "Agentic engineering",
   status: "Engineering note",
   format: "Open-source architecture",
   date: "2026.04.10",
   authors: "WIGTN Engineering",
+  /* Brand banner, same treatment as the other four: no caption, no
+   * `heroSectionId`, so it stays on the hub card. The npm screenshot it replaced
+   * moved into `architecture`.
+   *
+   * The banner art shows `npm i @wigtn/wigss`. That scoped package does not
+   * exist; the published one is `wigss`, which is what every link in this file
+   * points at. The string is illegible at card size and nothing on this site
+   * repeats it, so it is not shipping a wrong instruction to a reader, but the
+   * art should be corrected before it is used anywhere at full size. */
   heroFigure: {
-    src: "/images/carousel/wigss-npm.png",
-    alt: "WIGSS browser editor package",
-    caption:
-      "WIGSS wraps the target development server with a visual editor while keeping source code as the final artifact.",
+    src: "/images/projects/wigss_image_v1.jpg",
+    width: 1536,
+    height: 1024,
+    alt: "WIGSS, WIGTN Style Sync Studio",
+    caption: "",
   },
-  heroSectionId: "architecture",
   links: [
     {
       label: "npm package",
@@ -1089,6 +1179,16 @@ const wigss: ResearchProject = {
       index: "02",
       eyebrow: "Architecture",
       title: "Keep the gesture in the browser and the change in source",
+      figures: [
+        {
+          src: "/images/carousel/wigss-npm.png",
+          width: 1698,
+          height: 1169,
+          alt: "WIGSS browser editor package",
+          caption:
+            "WIGSS wraps the target development server with a visual editor while keeping source code as the final artifact. Published as wigss on npm.",
+        },
+      ],
       steps: [
         {
           label: "01",
@@ -1159,21 +1259,24 @@ const wigss: ResearchProject = {
 const wigtnCoding: ResearchProject = {
   slug: "wigtn-coding",
   shortTitle: "WIGTN Plugin",
-  title: "Splitting agent roles is easy; keeping their assumptions in sync is not",
-  dek: "An engineering note on the coordination problem behind multi-agent coding: separating roles is easy; keeping assumptions, contracts and release evidence shared is the hard part.",
+  title: "Running a harness on frontier models, part 1: Claude Code",
+  dek: "Seven months of a Claude Code plugin, measured at each commit. The instruction surface peaked at 49,275 lines and is 19,912 today, but it did not fall in a straight line: it grows back between frontier releases and gets cut at each one. What never got cut was the enforcement a model cannot skip.",
   track: "Agentic engineering",
   status: "Engineering note",
   format: "Workflow architecture",
-  date: "2026.03.28",
+  date: "2026.08.04",
   authors: "WIGTN Engineering",
+  /* Anthropic's Claude Code brand image, identifying the tool this plugin runs
+   * on. Same treatment as part 2: no caption, no `heroSectionId`, so it stays on
+   * the hub card instead of appearing in the body as if it were a figure. The
+   * workflow diagram it replaced moved into the `workflow` section. */
   heroFigure: {
-    src: "/images/projects/wigtn-coding-workflow.svg",
-    alt: "WIGTN Plugin six-stage delivery workflow",
-    caption:
-      "The released workflow moves from PRD definition through independent review, bounded implementation and an explicit release decision.",
-    contain: true,
+    src: "/images/projects/claudecode_image_v1.jpg",
+    width: 1920,
+    height: 1080,
+    alt: "Claude Code",
+    caption: "",
   },
-  heroSectionId: "workflow",
   links: [
     {
       label: "Source repository",
@@ -1183,24 +1286,24 @@ const wigtnCoding: ResearchProject = {
   ],
   metrics: [
     {
-      value: "13",
-      label: "Specialized agents",
-      detail: "Package composition, not a quality score",
+      value: "49,275 → 19,912",
+      label: "Instruction surface, peak to today",
+      detail: "Counted at each commit, not a diff total",
     },
     {
-      value: "4",
-      label: "Parallel PRD reviewers",
-      detail: "Completeness, feasibility, security, consistency",
+      value: "29 → 7",
+      label: "Skills kept after the March cut",
+      detail: "The rest documented what the model already knew",
     },
     {
-      value: "3",
-      label: "Memory layers",
-      detail: "Repository, session and task state",
+      value: "+24%",
+      label: "Regrowth, March to June",
+      detail: "The cuts are not monotonic and we do not claim they are",
     },
     {
-      value: "Pending",
-      label: "Controlled comparison",
-      detail: "Benchmark harness exists; matrix is incomplete",
+      value: "4/4 = 4/4",
+      label: "Task outcomes with and without",
+      detail: "Measured on GPT-5.6 Sol. See part 2.",
     },
   ],
   sections: [
@@ -1223,6 +1326,17 @@ const wigtnCoding: ResearchProject = {
       index: "02",
       eyebrow: "Workflow",
       title: "Turn every handoff into an artifact",
+      figures: [
+        {
+          src: "/images/projects/wigtn-coding-workflow.svg",
+          width: 1600,
+          height: 1000,
+          alt: "WIGTN Plugin six-stage delivery workflow",
+          caption:
+            "The released workflow moves from PRD definition through independent review, bounded implementation and an explicit release decision.",
+          contain: true,
+        },
+      ],
       steps: [
         {
           label: "Define",
@@ -1276,8 +1390,107 @@ const wigtnCoding: ResearchProject = {
       },
     },
     {
-      id: "benchmark",
+      id: "origin",
       index: "04",
+      eyebrow: "Origin",
+      title: "We shipped a marketplace of stack plugins and then took it apart",
+      paragraphs: [
+        "The repository opened on 12 January 2026 and took 72 commits in its first month. The shape was wrong. Work was divided by technology, with separate plugins for frontend, backend, mobile and AI development, each carrying its own skills for the frameworks in that stack.",
+        "On 14 February those five became one. The division had been by technology, but the work does not divide that way. A React change and a FastAPI change need the same sequence of definition, independent review, bounded implementation and a release decision. They do not need different plugins. The merge removed 6,321 lines and added 3,011.",
+        "Three weeks later, two commits on consecutive days removed a further 30,670. The first cut 54 components to 32 and its message names the reason: twenty-two of the removed skills documented React, Tailwind and Jest, which the model already knew. Skills went from 29 to 7, and the seven that survived carry project-specific information only.",
+      ],
+      figures: [
+        {
+          src: "/images/projects/wigtn-coding-composition.svg",
+          width: 1600,
+          height: 900,
+          alt: "Agent, command and skill counts in February 2026, March 2026 and today",
+          caption:
+            "Directory listings at each commit. The agent row barely moves across all three snapshots while the skill row collapses from 29 to 7 and settles at 7, which is the shape of the decision: roles were kept, documentation was not.",
+          contain: true,
+        },
+      ],
+      callout: {
+        label: "What the first cut taught",
+        text: "Most of what we had written was documentation the model did not need. The harness was competing with the model's own knowledge instead of adding to it.",
+      },
+    },
+    {
+      id: "reductions",
+      index: "05",
+      eyebrow: "Model upgrades",
+      title: "Every upgrade is a cut, and every quiet month undoes part of it",
+      paragraphs: [
+        "Checking out each milestone commit and counting the instruction text gives a shape we did not expect to have to admit. The surface does fall, from 49,275 lines to 19,912, but not in a straight line. It comes down hard at a model release and climbs back through the months in between, because that is when features get added. The March cut took 58% out in three days; the twelve weeks that followed put 24% back.",
+        "The cuts themselves are specific. In June, adapting to Opus 4.8 meant removing what the commit calls expressive over-harness, with no change to behaviour or logic: eight forced xhigh effort settings, and the fabricated numbers we had written into our own prompts, including hardcoded durations, speedup claims and example scores. In August, the Opus 5 pass kept the contracts and cut the rest.",
+        "Part 2 of this series put a number on the cost of leaving that growth alone. On two SWE-bench Verified tasks, GPT-5.6 Sol resolved 4 of 4 runs with the legacy harness and 4 of 4 without it, while the harness raised median wall time by 151.7% and output tokens by 141.2%. We published that against our own product, and it is what set the rule below.",
+      ],
+      figures: [
+        {
+          src: "/images/projects/wigtn-coding-instruction-surface.svg",
+          width: 1600,
+          height: 900,
+          alt: "Instruction surface in lines from February to August 2026, falling in steps with regrowth between them",
+          caption:
+            "Every .md file under agents, commands and skills, counted with wc -l at each milestone commit. The series is not smoothed. The regrowth between March and June is design styles, screen-spec, the diagram skill and the presentation generator being added.",
+          contain: true,
+        },
+      ],
+      table: {
+        caption: "Instruction surface immediately before and after each cut",
+        headers: ["Date", "Trigger", "Before", "After", "Change"],
+        rows: [
+          { cells: ["2026.03.07", "v3 streamline", "49,275", "27,918", "−43%"], highlight: true },
+          { cells: ["2026.03.09", "v3 streamline, second pass", "27,918", "20,361", "−27%"] },
+          { cells: ["2026.06.26", "Opus 4.8", "25,308", "23,795", "−6%"] },
+          { cells: ["2026.07.09", "Prompt slim", "24,360", "22,584", "−7%"] },
+          { cells: ["2026.08.04", "Opus 5", "22,748", "19,754", "−13%"] },
+        ],
+      },
+      callout: {
+        label: "The rule we work from",
+        text: "Instructions are advice, and a better model needs less advice. Contracts are not advice: they state what this team requires, which no model can infer from the code in front of it. Every cut has taken advice and left contracts.",
+      },
+    },
+    {
+      id: "enforcement",
+      index: "06",
+      eyebrow: "Enforcement",
+      title: "The prompts shrank; the enforcement grew",
+      paragraphs: [
+        "Deleting instructions is only safe if the things that must not be skipped stop being instructions. A prompt is advice a model can quietly drop when the context fills. A hook is not. Between July and August the plugin moved each rule that mattered out of the prompt and into something mechanical.",
+        "One of those replacements fixed nondeterminism in our own tooling. The gate used to sum findings into a score out of 100, and the same diff could score 78 on one run and 85 on the next, which decided whether the commit was blocked. The score is gone. A rollup counts critical and major findings instead, so the same findings now always produce the same decision.",
+      ],
+      figures: [
+        {
+          src: "/images/projects/wigtn-coding-commit-gate.svg",
+          width: 1600,
+          height: 900,
+          alt: "Two independent gates between a commit and the repository",
+          caption:
+            "Traced from hooks/gate.sh. The gates are independent: the objective checks run on every commit and never read the message, while the review record is demanded only from commits that claim to have passed a review. The emergency path removes the claim, not the checks.",
+          contain: true,
+        },
+      ],
+      table: {
+        caption: "What replaced prompt instructions",
+        headers: ["Was written as an instruction", "Is now"],
+        rows: [
+          { cells: ["Run the quality gate before committing", "A pre-commit hook that blocks the commit when no gate record exists"] },
+          { cells: ["Report the review honestly", "A checks script the hook runs itself, so the exit code is not written by the model"], highlight: true },
+          { cells: ["Do not reuse an old review", "A 30-minute freshness window on the gate record"] },
+          { cells: ["Weigh security findings heavily", "Security-critical blocks the commit regardless of any other finding"] },
+          { cells: ["Keep the checks enabled", "Deleting the script regenerates it; opting out requires writing down a reason"] },
+        ],
+      },
+      callout: {
+        label: "The division of labour",
+        text: "The harness does not make the model better at writing code, and we have measured that it does not. It makes the result repeatable, and it refuses to record a check that never ran.",
+      },
+    },
+    {
+      id: "benchmark",
+      index: "07",
       eyebrow: "Evaluation plan",
       title: "The benchmark exists as a protocol, not yet as a result",
       paragraphs: [
@@ -1294,11 +1507,13 @@ const wigtnCoding: ResearchProject = {
   ],
   limitations: [
     "Agent and skill counts describe the package surface, not developer productivity.",
+    "The surface figures count lines of Markdown under agents, commands and skills. They measure how much instruction text ships, not how much of it the model reads on a given turn, and a smaller file is not evidence that what remains is correct.",
+    "The reductions are decisions this team made about its own tool, not a controlled comparison of harness sizes. The one controlled result we have is in part 2, and it covers two tasks on one model.",
     "Operational timing observations are not a controlled single-agent comparison.",
     "The current benchmark matrix is incomplete and must not be summarized as a result.",
   ],
   citation:
-    'WIGTN Engineering. (2026). "WIGTN Plugin: Splitting agent roles is easy; keeping their assumptions in sync is not." WIGTN Research.',
+    'WIGTN Engineering. (2026). "Running a harness on frontier models, part 1: Claude Code." WIGTN Technical Reports.',
 };
 
 

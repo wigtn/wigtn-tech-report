@@ -51,24 +51,39 @@ const PROJECT_COPY = {
   },
 } as const;
 
+/* Figures render at their own aspect ratio, with no frame around them.
+ *
+ * The previous version put every image inside a fixed 16:9 box with a border, a
+ * grey fill and up to 32px of padding, then used object-contain. The images in
+ * this repository run from 0.64:1 to 3.18:1, so that box was mostly empty for
+ * most of them: the OmniDocBench chart is 3.18:1 and was losing 44% of its
+ * height to grey, and the WIGVO pipeline diagram is taller than it is wide and
+ * came out small in the middle of a landscape frame. A chart is already a
+ * rectangle on white. Framing it adds a second rectangle and nothing else.
+ *
+ * The width cap comes from the measured ratio rather than a hand-set flag,
+ * because the failure it prevents is a portrait image rendering 1300px tall. */
+function figureMaxWidth(figure: ResearchFigure) {
+  if (figure.portrait) return "max-w-[28rem]";
+  if (!figure.width || !figure.height) return "max-w-[52rem]";
+  const ratio = figure.width / figure.height;
+  if (ratio < 1) return "max-w-[28rem]";
+  if (ratio < 1.6) return "max-w-[42rem]";
+  return "max-w-[52rem]";
+}
+
 function ReportFigure({ figure }: { figure: ResearchFigure }) {
   return (
-    <figure className={`my-8 ${figure.portrait ? "max-w-[34rem]" : "max-w-[52rem]"}`}>
-      <div
-        className={`relative overflow-hidden border border-[#D8DDE5] bg-[#F7F8FA] ${
-          figure.portrait ? "aspect-[4/5]" : "aspect-[16/9]"
-        }`}
-      >
-        <Image
-          src={assetPath(figure.src)}
-          alt={figure.alt}
-          fill
-          sizes="(min-width: 1024px) 832px, 100vw"
-          className={figure.contain ? "object-contain p-4 md:p-8" : "object-cover"}
-          style={figure.focalPoint ? { objectPosition: figure.focalPoint } : undefined}
-        />
-      </div>
-      <figcaption className="mt-3 grid grid-cols-[2.5rem_1fr] gap-3 font-report-mono text-[9px] leading-5 text-[#667085]">
+    <figure className={`my-9 ${figureMaxWidth(figure)}`}>
+      <Image
+        src={assetPath(figure.src)}
+        alt={figure.alt}
+        width={figure.width ?? 1600}
+        height={figure.height ?? 900}
+        sizes="(min-width: 1024px) 832px, 100vw"
+        className="h-auto w-full"
+      />
+      <figcaption className="mt-4 grid grid-cols-[2.5rem_1fr] gap-3 font-report-mono text-[12px] leading-5 text-[#667085]">
         <span className="text-[#1457D9]">FIG.</span>
         <span>{figure.caption}</span>
       </figcaption>
@@ -79,7 +94,7 @@ function ReportFigure({ figure }: { figure: ResearchFigure }) {
 function ReportTable({ table }: { table: ResearchTable }) {
   return (
     <div className="my-8">
-      <p className="mb-3 font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#667085]">
+      <p className="mb-3 font-report-mono text-[12px] uppercase tracking-[0.08em] text-[#667085]">
         {table.caption}
       </p>
       <div className="overflow-x-auto border-y border-[#98A2B3]">
@@ -89,7 +104,7 @@ function ReportTable({ table }: { table: ResearchTable }) {
               {table.headers.map((header) => (
                 <th
                   key={header}
-                  className="border-b border-[#98A2B3] bg-[#F7F8FA] px-4 py-3 font-report-mono text-[9px] font-medium uppercase tracking-[0.06em] text-[#475467]"
+                  className="border-b border-[#98A2B3] bg-[#F7F8FA] px-4 py-3 font-report-mono text-[12px] font-medium uppercase tracking-[0.06em] text-[#475467]"
                 >
                   {header}
                 </th>
@@ -102,7 +117,7 @@ function ReportTable({ table }: { table: ResearchTable }) {
                 {row.cells.map((cell, cellIndex) => (
                   <td
                     key={`${cell}-${cellIndex}`}
-                    className={`border-b border-[#E4E7EC] px-4 py-3 text-sm leading-5 ${
+                    className={`border-b border-[#E4E7EC] px-4 py-3 text-[15px] leading-6 ${
                       cellIndex === 0 ? "font-medium text-[#111827]" : "text-[#475467]"
                     } ${row.highlight ? "font-medium text-[#194185]" : ""}`}
                   >
@@ -164,23 +179,25 @@ export function ReportProjectPage({
           <div className="mx-auto max-w-[820px]">
             <Link
               href={reportHomeHref(locale)}
-              className="inline-flex items-center gap-2 font-report-mono text-[9px] uppercase tracking-[0.09em] text-[#667085] transition-colors hover:text-[#1457D9]"
+              className="inline-flex items-center gap-2 font-report-mono text-[12px] uppercase tracking-[0.09em] text-[#667085] transition-colors hover:text-[#1457D9]"
             >
               <ArrowLeft aria-hidden size={12} /> {copy.reportIndex}
             </Link>
 
             <div className="mt-8">
-              <div className="flex flex-wrap gap-x-4 gap-y-2 font-report-mono text-[9px] uppercase tracking-[0.08em]">
-                <span className="normal-case tracking-[0.02em] text-[#1457D9]">
-                  {project.shortTitle}
-                </span>
-                <span className="text-[#667085]">{project.status}</span>
-                <span className="text-[#667085]">{project.format}</span>
-                <span className="text-[#667085]">{project.track}</span>
-                {project.venue && <span className="text-[#667085]">{project.venue}</span>}
-              </div>
+              {/* Only the venue survives from what used to be a five-item
+                  taxonomy row. "WIGTN Plugin · Engineering note · Workflow
+                  architecture · Agentic engineering" was four labels a reader
+                  cannot act on, stacked above the one line that tells them
+                  something: where the work was published. The fields are still
+                  in the data and still drive sorting and metadata. */}
+              {project.venue && (
+                <div className="font-report-mono text-[12px] uppercase tracking-[0.08em] text-[#667085]">
+                  {project.venue}
+                </div>
+              )}
               <h1
-                className={`mt-5 font-semibold ${
+                className={`${project.venue ? "mt-5" : ""} font-semibold ${
                   locale === "ko"
                     ? "max-w-[780px] font-sans text-[clamp(2rem,3.6vw,3.25rem)] leading-[1.18] tracking-[-0.035em] [word-break:keep-all] [text-wrap:pretty]"
                     : "text-balance font-report-display text-[clamp(2.25rem,4vw,3.5rem)] leading-[1.08] tracking-[-0.022em]"
@@ -195,7 +212,7 @@ export function ReportProjectPage({
                   : project.title}
               </h1>
               <p
-                className={`mt-5 text-[16px] leading-7 text-[#475467] ${
+                className={`mt-5 text-[17px] leading-[1.75] text-[#475467] ${
                   locale === "ko"
                     ? "max-w-[760px] [word-break:keep-all] [text-wrap:pretty]"
                     : ""
@@ -204,7 +221,7 @@ export function ReportProjectPage({
                 {project.dek}
               </p>
 
-              <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm text-[#667085]">
+              <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-[15px] text-[#667085]">
                 <span>{project.authors}</span>
                 <span aria-hidden>·</span>
                 <time>{project.date}</time>
@@ -217,7 +234,7 @@ export function ReportProjectPage({
                     href={link.href}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-2 border-b border-[#98A2B3] pb-1 text-xs font-medium text-[#344054] transition-colors hover:border-[#1457D9] hover:text-[#1457D9]"
+                    className="inline-flex items-center gap-2 border-b border-[#98A2B3] pb-1 text-[13px] font-medium text-[#344054] transition-colors hover:border-[#1457D9] hover:text-[#1457D9]"
                   >
                     {link.href.includes("youtube.com") && (
                       <Play aria-hidden size={11} fill="currentColor" />
@@ -243,23 +260,28 @@ export function ReportProjectPage({
               className="scroll-mt-20 border-b border-[#E4E7EC] py-9 md:py-12"
             >
               <div className="mx-auto max-w-[820px]">
-                <header className="flex gap-3 font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#667085]">
+                <header className="flex gap-3 font-report-mono text-[12px] uppercase tracking-[0.08em] text-[#667085]">
                   <span className="text-[#1457D9]">{section.index}</span>
                   <span>{section.eyebrow}</span>
                 </header>
-                <div className="mt-4 min-w-0">
+                {/* Type scale, body-relative: label 12 / body 17 / lead 19 /
+                    heading 30-40. The old scale ran 9 / 16 / 16 / 27-36, which
+                    put every mono label at 56% of body. At that size the eyebrow,
+                    the figure caption and the table header stopped being read at
+                    all, so the numbers a table exists to show arrived unlabelled. */}
+                <div className="mt-5 min-w-0">
                   <h2
                     className={`font-semibold ${
                       locale === "ko"
-                        ? "max-w-[760px] font-sans text-[clamp(1.65rem,2.35vw,2.15rem)] leading-[1.3] tracking-[-0.028em] [word-break:keep-all] [text-wrap:pretty]"
-                        : "font-report-display text-[clamp(1.7rem,2.6vw,2.25rem)] leading-[1.18] tracking-[-0.018em]"
+                        ? "max-w-[760px] font-sans text-[clamp(1.8rem,2.6vw,2.4rem)] leading-[1.3] tracking-[-0.028em] [word-break:keep-all] [text-wrap:pretty]"
+                        : "font-report-display text-[clamp(1.875rem,2.9vw,2.5rem)] leading-[1.18] tracking-[-0.018em]"
                     }`}
                   >
                     {section.title}
                   </h2>
                   {section.lead && (
                     <p
-                      className={`mt-4 text-[16px] leading-7 text-[#344054] ${
+                      className={`mt-5 text-[19px] leading-[1.7] text-[#344054] ${
                         locale === "ko" ? "[word-break:keep-all]" : ""
                       }`}
                     >
@@ -269,7 +291,7 @@ export function ReportProjectPage({
                   {section.paragraphs?.map((paragraph) => (
                     <p
                       key={paragraph}
-                      className={`mt-4 text-[16px] leading-7 text-[#475467] ${
+                      className={`mt-4 text-[17px] leading-[1.75] text-[#475467] ${
                         locale === "ko" ? "[word-break:keep-all]" : ""
                       }`}
                     >
@@ -288,11 +310,11 @@ export function ReportProjectPage({
                         key={`${section.id}-${step.label}`}
                         className="grid gap-3 border-b border-[#E4E7EC] py-4 sm:grid-cols-[5rem_9rem_minmax(0,1fr)]"
                       >
-                        <span className="font-report-mono text-[9px] uppercase text-[#1457D9]">
+                        <span className="font-report-mono text-[12px] uppercase text-[#1457D9]">
                           {step.label}
                         </span>
-                        <strong className="text-[15px] font-medium">{step.title}</strong>
-                        <p className="text-sm leading-6 text-[#667085]">{step.body}</p>
+                        <strong className="text-[16px] font-medium">{step.title}</strong>
+                        <p className="text-[15px] leading-6 text-[#667085]">{step.body}</p>
                       </div>
                     ))}
                   </div>
@@ -310,10 +332,10 @@ export function ReportProjectPage({
                         key={bullet}
                         className="grid grid-cols-[2.25rem_1fr] gap-4 border-b border-[#E4E7EC] py-4"
                       >
-                        <span className="font-report-mono text-[9px] text-[#1457D9]">
+                        <span className="font-report-mono text-[12px] text-[#1457D9]">
                           {String(index + 1).padStart(2, "0")}
                         </span>
-                        <span className="text-[15px] leading-7 text-[#475467]">{bullet}</span>
+                        <span className="text-[17px] leading-[1.7] text-[#475467]">{bullet}</span>
                       </li>
                     ))}
                   </ul>
@@ -321,10 +343,10 @@ export function ReportProjectPage({
 
                   {section.callout && (
                     <aside className="mt-8 border-l-2 border-[#1457D9] pl-5">
-                      <span className="font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#1457D9]">
+                      <span className="font-report-mono text-[12px] uppercase tracking-[0.08em] text-[#1457D9]">
                         {section.callout.label}
                       </span>
-                      <p className="mt-2 text-[15px] leading-7 text-[#475467]">
+                      <p className="mt-2 text-[17px] leading-[1.7] text-[#475467]">
                         {section.callout.text}
                       </p>
                     </aside>
@@ -337,7 +359,7 @@ export function ReportProjectPage({
           {embedUrl && (
             <section className="border-b border-[#E4E7EC] py-9 md:py-12">
               <div className="mx-auto max-w-[820px]">
-                <header className="mb-5 font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#667085]">
+                <header className="mb-5 font-report-mono text-[12px] uppercase tracking-[0.08em] text-[#667085]">
                   {copy.systemVideo}
                 </header>
                 <div className="aspect-video overflow-hidden rounded-lg bg-[#111827]">
@@ -359,7 +381,7 @@ export function ReportProjectPage({
             className="scroll-mt-20 border-b border-[#E4E7EC] py-9 md:py-12"
           >
             <div className="mx-auto max-w-[820px]">
-              <header className="flex gap-3 font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#667085]">
+              <header className="flex gap-3 font-report-mono text-[12px] uppercase tracking-[0.08em] text-[#667085]">
                 <span className="text-[#1457D9]">
                   {String(project.sections.length + 1).padStart(2, "0")}
                 </span>
@@ -381,10 +403,10 @@ export function ReportProjectPage({
                       key={limitation}
                       className="grid grid-cols-[2.25rem_1fr] gap-4 border-b border-[#E4E7EC] py-4"
                     >
-                      <span className="font-report-mono text-[9px] text-[#1457D9]">
+                      <span className="font-report-mono text-[12px] text-[#1457D9]">
                         L{String(index + 1).padStart(2, "0")}
                       </span>
-                      <span className="text-[15px] leading-7 text-[#475467]">{limitation}</span>
+                      <span className="text-[17px] leading-[1.7] text-[#475467]">{limitation}</span>
                     </li>
                   ))}
                 </ul>
@@ -397,7 +419,7 @@ export function ReportProjectPage({
             className="scroll-mt-20 py-9 md:py-12"
           >
             <div className="mx-auto max-w-[820px]">
-              <header className="flex gap-3 font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#667085]">
+              <header className="flex gap-3 font-report-mono text-[12px] uppercase tracking-[0.08em] text-[#667085]">
                 <span className="text-[#1457D9]">
                   {String(project.sections.length + 2).padStart(2, "0")}
                 </span>
@@ -414,8 +436,8 @@ export function ReportProjectPage({
                       className="group flex items-center justify-between gap-5 border-b border-[#D8DDE5] py-5"
                     >
                       <span>
-                        <strong className="block text-sm font-medium">{link.label}</strong>
-                        <span className="mt-1 block break-all font-report-mono text-[9px] leading-4 text-[#667085]">
+                        <strong className="block text-[15px] font-medium">{link.label}</strong>
+                        <span className="mt-1 block break-all font-report-mono text-[12px] leading-5 text-[#667085]">
                           {link.href}
                         </span>
                       </span>
@@ -428,10 +450,10 @@ export function ReportProjectPage({
                   ))}
                 </div>
                 <div className="mt-8 rounded-lg bg-[#F7F8FA] p-5">
-                  <span className="font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#1457D9]">
+                  <span className="font-report-mono text-[12px] uppercase tracking-[0.08em] text-[#1457D9]">
                     {copy.citation}
                   </span>
-                  <code className="mt-3 block whitespace-pre-wrap font-report-mono text-[10px] leading-6 text-[#475467]">
+                  <code className="mt-3 block whitespace-pre-wrap font-report-mono text-[13px] leading-6 text-[#475467]">
                     {project.citation}
                   </code>
                 </div>
@@ -444,12 +466,12 @@ export function ReportProjectPage({
       <section className="border-t border-[#D8DDE5] bg-[#F7F8FA]">
         <div className="mx-auto max-w-[1180px] px-5 py-12 md:px-8 md:py-16">
           <div className="mb-5 flex items-center justify-between border-b-2 border-[#111827] pb-3">
-            <span className="font-report-mono text-[9px] uppercase tracking-[0.08em] text-[#667085]">
+            <span className="font-report-mono text-[12px] uppercase tracking-[0.08em] text-[#667085]">
               {copy.continue}
             </span>
             <Link
               href={reportHomeHref(locale)}
-              className="text-xs font-medium text-[#1457D9]"
+              className="text-[13px] font-medium text-[#1457D9]"
             >
               {copy.allReports}
             </Link>
@@ -462,7 +484,7 @@ export function ReportProjectPage({
                 href={reportHref(candidate.slug, locale)}
                 className="group border-b border-[#D8DDE5] py-6 md:border-b-0 md:border-r md:px-6 md:first:pl-0 md:last:border-r-0"
               >
-                <span className="flex flex-wrap gap-x-3 font-report-mono text-[9px] uppercase tracking-[0.06em]">
+                <span className="flex flex-wrap gap-x-3 font-report-mono text-[12px] uppercase tracking-[0.06em]">
                   <span className="normal-case tracking-[0.02em] text-[#1457D9]">
                     {candidate.shortTitle}
                   </span>
@@ -477,7 +499,7 @@ export function ReportProjectPage({
                 >
                   {candidate.title}
                 </h3>
-                <span className="mt-5 inline-flex items-center gap-2 text-xs font-medium text-[#1457D9]">
+                <span className="mt-5 inline-flex items-center gap-2 text-[13px] font-medium text-[#1457D9]">
                   {copy.readReport}{" "}
                   <ArrowRight
                     aria-hidden

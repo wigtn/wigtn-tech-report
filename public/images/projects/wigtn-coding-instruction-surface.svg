@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" width="1600" height="900">
+  <title>Instruction surface of the WIGTN plugin, February to August 2026</title>
+  <!--
+    Measured, not estimated: at each commit the repository was checked out and
+    every .md under agents/, commands/ and skills/ was counted with wc -l. The
+    series is deliberately not smoothed, because the shape is the point: the
+    harness grows back between frontier releases and is cut at each one.
+
+    Layout rules this file has to keep, because breaking them was the last bug:
+
+    - Nothing sits in the band y < 100 except the header. The peak label lives
+      just under it, so a second header line will collide with a data label.
+    - Text is laid out in four reserved bands that never share a y range:
+      header 40-60, peak 106-130, annotation 180-310, span note 545-670.
+    - Right-edge labels stop at x=1542, and the plot ends at x=1420 so the
+      final value has a margin to sit in rather than overprinting the axis.
+    - Every label that is not adjacent to its point gets a leader line. A word
+      floating near a curve reads as a stray, not as an annotation.
+
+    Verify by rendering, not by reading: cairosvg at 1600x900 shows collisions
+    that are invisible in the markup.
+  -->
+  <style>
+    .ax   { font: 26px ui-monospace, SFMono-Regular, Menlo, monospace; fill: #98A2B3; }
+    .val  { font: 600 30px ui-monospace, SFMono-Regular, Menlo, monospace; fill: #111827; }
+    .cut  { font: 600 27px system-ui, -apple-system, Segoe UI, sans-serif; fill: #1457D9; }
+    .body { font: 25px system-ui, -apple-system, Segoe UI, sans-serif; fill: #667085; }
+    .hd   { font: 600 31px system-ui, -apple-system, Segoe UI, sans-serif; fill: #111827; }
+  </style>
+
+  <text class="hd" x="60" y="54">Lines of instruction text in agents, commands and skills</text>
+
+  <!-- grid -->
+  <g stroke="#E4E7EC" stroke-width="2">
+    <line x1="200" y1="150" x2="1420" y2="150"/>
+    <line x1="200" y1="258" x2="1420" y2="258"/>
+    <line x1="200" y1="366" x2="1420" y2="366"/>
+    <line x1="200" y1="474" x2="1420" y2="474"/>
+    <line x1="200" y1="582" x2="1420" y2="582"/>
+  </g>
+  <line x1="200" y1="690" x2="1420" y2="690" stroke="#98A2B3" stroke-width="3"/>
+
+  <g class="ax" text-anchor="end">
+    <text x="176" y="159">50k</text>
+    <text x="176" y="267">40k</text>
+    <text x="176" y="375">30k</text>
+    <text x="176" y="483">20k</text>
+    <text x="176" y="591">10k</text>
+    <text x="176" y="699">0</text>
+  </g>
+
+  <!-- series -->
+  <path d="M200 211.3 L363.6 157.8 L397.7 388.5 L411.3 470.1 L990.6 416.7 L1154.2 433 L1242.8 446.1 L1420 476.7 L1420 690 L200 690 Z"
+        fill="#1457D9" fill-opacity="0.07"/>
+  <path d="M200 211.3 L363.6 157.8 L397.7 388.5 L411.3 470.1 L990.6 416.7 L1154.2 433 L1242.8 446.1 L1420 476.7"
+        fill="none" stroke="#1457D9" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+
+  <g fill="#1457D9">
+    <circle cx="200" cy="211.3" r="9"/><circle cx="363.6" cy="157.8" r="12"/>
+    <circle cx="397.7" cy="388.5" r="9"/><circle cx="411.3" cy="470.1" r="9"/>
+    <circle cx="990.6" cy="416.7" r="9"/><circle cx="1154.2" cy="433" r="9"/>
+    <circle cx="1242.8" cy="446.1" r="9"/><circle cx="1420" cy="476.7" r="12"/>
+  </g>
+
+  <!-- band: peak label, 106-130 -->
+  <text class="val" x="363.6" y="126" text-anchor="middle">49,275 · 03.02</text>
+
+  <!-- band: annotation, 180-310 -->
+  <line x1="428" y1="172" x2="428" y2="505" stroke="#98A2B3" stroke-width="2" stroke-dasharray="7 7"/>
+  <text class="cut"  x="452" y="200">v3 streamline</text>
+  <text class="body" x="452" y="238">Two cuts in three days.</text>
+  <text class="body" x="452" y="271">22 skills the model</text>
+  <text class="body" x="452" y="304">already knew, removed.</text>
+
+  <!-- cut labels, each with a leader to its point -->
+  <g stroke="#1457D9" stroke-width="2">
+    <line x1="1154.2" y1="410" x2="1154.2" y2="424"/>
+    <line x1="1242.8" y1="362" x2="1242.8" y2="437"/>
+    <line x1="1420" y1="519" x2="1420" y2="489"/>
+  </g>
+  <text class="cut" x="1154.2" y="400" text-anchor="middle">Opus 4.8</text>
+  <text class="cut" x="1242.8" y="352" text-anchor="middle">Prompt slim</text>
+  <text class="cut" x="1470" y="540" text-anchor="end">Opus 5</text>
+
+  <!-- final value, in the right margin so it never overprints the axis -->
+  <text class="val" x="1442" y="486">19,912</text>
+
+  <!-- band: regrowth span, 545-670 -->
+  <g stroke="#98A2B3" stroke-width="2.5">
+    <line x1="411.3" y1="548" x2="411.3" y2="562"/>
+    <line x1="411.3" y1="562" x2="990.6" y2="562"/>
+    <line x1="990.6" y1="548" x2="990.6" y2="562"/>
+  </g>
+  <!-- style, not fill: a presentation attribute loses to the .cut rule and this
+       came out blue, reading as a fourth cut when it is the opposite. -->
+  <text class="cut"  x="701" y="600" text-anchor="middle" style="fill:#667085">+24% in twelve weeks</text>
+  <text class="body" x="701" y="636" text-anchor="middle">Design styles, screen-spec, the diagram skill</text>
+  <text class="body" x="701" y="669" text-anchor="middle">and the presentation generator land in here.</text>
+
+  <!-- ticks for every measurement, labels for four -->
+  <g stroke="#98A2B3" stroke-width="2">
+    <line x1="200" y1="690" x2="200" y2="702"/>
+    <line x1="363.6" y1="690" x2="363.6" y2="702"/>
+    <line x1="397.7" y1="690" x2="397.7" y2="702"/>
+    <line x1="411.3" y1="690" x2="411.3" y2="702"/>
+    <line x1="990.6" y1="690" x2="990.6" y2="702"/>
+    <line x1="1154.2" y1="690" x2="1154.2" y2="702"/>
+    <line x1="1242.8" y1="690" x2="1242.8" y2="702"/>
+    <line x1="1420" y1="690" x2="1420" y2="702"/>
+  </g>
+  <g class="ax" text-anchor="middle">
+    <text x="200" y="736">02.06</text>
+    <text x="411.3" y="736">03.09</text>
+    <text x="990.6" y="736">06.02</text>
+    <text x="1420" y="736">08.04</text>
+  </g>
+
+  <text class="body" x="60" y="822">Every .md file under agents, commands and skills, counted with wc -l at each milestone commit. Not smoothed.</text>
+  <text class="body" x="60" y="858">Eight measurements, four labelled. The fall from 49,275 to 19,912 is real, and it is not monotonic.</text>
+</svg>
