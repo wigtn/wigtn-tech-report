@@ -420,8 +420,42 @@ const wigtnOcr: ResearchProject = {
       },
     },
     {
-      id: "method",
+      id: "why",
       index: "02",
+      eyebrow: "Alternatives",
+      title: "Four kinds of parser, and what each one loses on a Korean government PDF",
+      lead:
+        "The model exists because the four things you would reach for first each fail differently on this corpus.",
+      steps: [
+        {
+          label: "Plain OCR",
+          title: "Reads characters, not documents",
+          body: "It recovers text and drops the structure that says which value belongs to which field. On this corpus it extracted between three and thirty times less text than the deployed model, losing most tables, forms and multi-column layouts.",
+        },
+        {
+          label: "Rule-based",
+          title: "Fast, and structurally blind",
+          body: "Extraction is quick and structure recognition is close to zero. The article-clause-item hierarchy in a statute, and any page mixing a table with a diagram and prose, come out flat.",
+        },
+        {
+          label: "Recent VLM parsers",
+          title: "Trained on other people's documents",
+          body: "The current open VLM parsers are trained mostly on English and Chinese material. Korean government documents bring complex tables, forms, official seals, scanned pages mixed with digital ones, and multi-column layouts they were not tuned for.",
+        },
+        {
+          label: "A 30B VLM",
+          title: "Good, and not deployable here",
+          body: "Parsing quality is high and it needs two GPUs and is slow to serve. A 2B model serves from one GPU and makes an edge deployment realistic, which is the constraint the project actually had.",
+        },
+      ],
+      callout: {
+        label: "Where the constraint came from",
+        text: "The work started inside a B2B2G retrieval service, where the end user's document structure cannot be known in advance but the domain can: Korean government documents. That fixed the target and left the infrastructure budget as the hard limit.",
+      },
+    },
+    {
+      id: "method",
+      index: "03",
       eyebrow: "Method",
       title: "Use the 30B teacher offline and serve the 2B student",
       lead:
@@ -459,8 +493,63 @@ const wigtnOcr: ResearchProject = {
       },
     },
     {
+      id: "judge",
+      index: "04",
+      eyebrow: "Supervision",
+      title: "The judge reads text only, and that is the point",
+      paragraphs: [
+        "A 122B text-only model scored every generated page on five dimensions: structure, table quality, completeness, hallucination and consistency. It never sees the source image, and that is deliberate rather than a shortcut.",
+        "A vision model grading a vision model's output shares its visual interpretation bias, so the two agree on the same misreading and the evaluation closes a loop instead of testing anything. Separating the judge into a text-only model asks a different question: not whether this matches the image, but whether this output is usable as training data at all. Repetition loops, truncated text and leaked reasoning are all detectable from the text alone.",
+        "Pages scoring below the threshold were dropped. 75.1% of the Korean government pages passed, and 73.8% of the arXiv pages.",
+      ],
+      callout: {
+        label: "A finding that changed the pipeline",
+        text: "The first teacher was a reasoning model. Its output was unstable for this task: thinking tags leaked into the transcription and long pages truncated. Switching to the instruction-tuned model of the same size fixed both. For document transcription, instruction tuning beat reasoning.",
+      },
+    },
+    {
+      id: "data",
+      index: "05",
+      eyebrow: "Data",
+      title: "Two things wrong with the corpus before any training ran",
+      bullets: [
+        "One document accounted for 53% of the pages. A model trained on that learns that document rather than the domain, so a per-document ratio cap of 0.25 was applied before the split.",
+        "The reasoning teacher had left English thinking traces inside some of the generated Markdown. Twenty pages were deleted outright and 257 were repaired.",
+        "What survived: 2,667 training pages and 294 held out, none of the held-out pages from a document the model trained on.",
+      ],
+      callout: {
+        label: "Why this is in the report",
+        text: "Both problems were invisible in the aggregate quality score and would have been invisible in the final metrics too. They were found by looking at the corpus rather than at the numbers it produced.",
+      },
+    },
+    {
+      id: "ablation",
+      index: "06",
+      eyebrow: "Ablation",
+      title: "A bigger adapter made the tables worse",
+      lead:
+        "Rank 8 beat rank 32. The larger adapter improved formulas slightly and regressed the thing this model exists for.",
+      table: {
+        caption: "LoRA configuration against OmniDocBench",
+        headers: ["Config", "Rank", "Epochs", "Text NED ↓", "Table TEDS ↑", "TEDS-S ↑", "RO NED ↓", "Skip % ↓"],
+        rows: [
+          { cells: ["v1, deployed", "8", "3", "0.288", "0.649", "0.732", "0.211", "5.8%"], highlight: true },
+          { cells: ["v2, best", "32", "3", "0.309", "0.600", "0.697", "0.215", "0.7%"] },
+          { cells: ["v2, last", "32", "5", "0.306", "0.610", "0.695", "0.214", "0.0%"] },
+        ],
+      },
+      paragraphs: [
+        "Rank 32 costs 4.9 points of Table TEDS and 2.1 points of text accuracy. Five epochs overfits: validation loss turns up while the table metric does not recover.",
+        "The tempting row is v2 at five epochs, which reaches a 0% skip rate. It gets there by producing something for every page rather than by parsing better, and the parsing metrics say so. The deployed model keeps a 5.8% skip rate and the table quality, which is the trade this corpus rewards.",
+      ],
+      callout: {
+        label: "What was frozen and why",
+        text: "The vision encoder and the aligner are untouched; the adapter is on the language model's linear layers only. A pilot run had already shown the visual recognition was adequate and the text generation was the gap, so training the part that was working would have spent capacity on the wrong problem.",
+      },
+    },
+    {
       id: "parsing",
-      index: "03",
+      index: "07",
       eyebrow: "Intrinsic evaluation",
       title: "The student improves tables without winning every metric",
       lead:
@@ -491,7 +580,7 @@ const wigtnOcr: ResearchProject = {
     },
     {
       id: "retrieval",
-      index: "04",
+      index: "08",
       eyebrow: "Downstream evaluation",
       title: "Cleaner chunks do not automatically retrieve better",
       lead:
@@ -527,7 +616,7 @@ const wigtnOcr: ResearchProject = {
     },
     {
       id: "failures",
-      index: "05",
+      index: "09",
       eyebrow: "Failure analysis",
       title: "What did not transfer cleanly",
       bullets: [
@@ -665,8 +754,61 @@ const wigvo: ResearchProject = {
       ],
     },
     {
-      id: "ablation",
+      id: "landscape",
       index: "03",
+      eyebrow: "Alternatives",
+      title: "Every other system solves this by owning the hardware or the network",
+      lead:
+        "Bidirectional speech translation is not new. Doing it over an ordinary phone line, in software, with nothing installed on the other end, is where the existing options stop.",
+      table: {
+        caption: "Bidirectional speech translation over telephony",
+        headers: ["System", "PSTN", "Bidirectional", "Speech to speech", "Echo control", "No install on the far end"],
+        rows: [
+          { cells: ["SeamlessM4T", "", "yes", "yes", "not applicable", ""] },
+          { cells: ["Moshi / Hibiki", "", "", "yes", "not applicable", ""] },
+          { cells: ["Google Duplex", "yes", "", "", "not disclosed", ""] },
+          { cells: ["Samsung Galaxy AI", "yes", "yes", "yes", "hardware AEC", ""] },
+          { cells: ["SKT A.dot", "yes", "yes", "yes", "carrier infrastructure", ""] },
+          { cells: ["WIGVO", "yes", "yes", "yes", "software", "yes"], highlight: true },
+        ],
+      },
+      paragraphs: [
+        "The two rows that reach the same places we do get there by controlling something we do not: the handset, or the network. A device-level implementation cancels echo in hardware because it owns the microphone. A carrier implementation intervenes inside the network. Both are correct engineering and neither is available to a team without either asset.",
+        "What is left is the server relay, which is the hardest place to solve echo and the only place a caller can reach someone who installed nothing.",
+      ],
+    },
+    {
+      id: "layers",
+      index: "04",
+      eyebrow: "Structure",
+      title: "Three layers, so the phone network stays in one of them",
+      lead:
+        "The narrowband, variable-delay, uncontrollable half of the problem is confined to the transport layer. Everything above it sees ordinary audio.",
+      steps: [
+        {
+          label: "Transport",
+          title: "Two different audio worlds",
+          body: "Telephony media streams carry G.711 mu-law at 8 kHz; the browser side is 16 kHz PCM over a WebSocket. Conversion happens here and nowhere else.",
+        },
+        {
+          label: "Pipeline",
+          title: "One router, three modes",
+          body: "An audio router delegates each event to the voice-to-voice, text-to-voice or agent pipeline. The echo-gating logic is shared through one component rather than reimplemented per mode.",
+        },
+        {
+          label: "Sessions",
+          title: "Two directional interpreters",
+          body: "Browser to phone and phone to browser each hold their own system prompt and a short sliding context, so neither direction's state can contaminate the other.",
+        },
+      ],
+      callout: {
+        label: "Why the router was rewritten",
+        text: "It started as one object that switched on mode internally and grew until adding a third mode meant touching the first two. Splitting it into a thin delegator and three independent pipelines is what made the accessibility modes cheap, and it removed roughly three quarters of the code in that layer.",
+      },
+    },
+    {
+      id: "ablation",
+      index: "05",
       eyebrow: "System evolution",
       title: "Our cleanest idea did not survive the phone network",
       paragraphs: [
@@ -689,7 +831,7 @@ const wigvo: ResearchProject = {
     },
     {
       id: "detector",
-      index: "04",
+      index: "06",
       eyebrow: "What failed first",
       title: "Three echo gates failed before the one that shipped",
       lead:
@@ -723,7 +865,7 @@ const wigvo: ResearchProject = {
     },
     {
       id: "vad",
-      index: "05",
+      index: "07",
       eyebrow: "Voice activity",
       title: "The hosted detector assumed audio the phone network does not carry",
       paragraphs: [
@@ -742,8 +884,22 @@ const wigvo: ResearchProject = {
       },
     },
     {
+      id: "separation",
+      index: "08",
+      eyebrow: "Recognition",
+      title: "Asking one model to hear and to translate produced sentences nobody said",
+      paragraphs: [
+        "The realtime speech API can transcribe and translate in one pass, and doing that added content the speaker had not produced. Not mishearing: fluent, plausible additions that fit the conversation and were never said.",
+        "The two jobs are now separate. Recognition stays inside the realtime session, and translation runs as a discrete text call at temperature zero against the transcript. The realtime session's own translation path is switched off explicitly rather than left unused, because a path that is merely unused is a path that returns the moment a default changes.",
+      ],
+      callout: {
+        label: "The general form",
+        text: "Every stage in this system that could be made deterministic was moved out of the model. Echo control is a gate, not a classifier. Translation is a fixed-temperature call, not an improvisation. What is left for the model is the part only a model can do.",
+      },
+    },
+    {
       id: "hallucination",
-      index: "06",
+      index: "09",
       eyebrow: "Recognition safety",
       title: "The recognizer invented a news anchor, and it reached a real phone",
       paragraphs: [
@@ -774,7 +930,7 @@ const wigvo: ResearchProject = {
     },
     {
       id: "pipelines",
-      index: "07",
+      index: "10",
       eyebrow: "System shape",
       title: "One relay, three conversations",
       lead:
@@ -802,8 +958,23 @@ const wigvo: ResearchProject = {
       ],
     },
     {
+      id: "cost",
+      index: "11",
+      eyebrow: "Operating profile",
+      title: "What the field study cost, and which mode people actually used",
+      bullets: [
+        "USD 0.28 per minute on the evaluated provider stack, over the reported call set. The figure covers one configuration and one pricing period.",
+        "Text-to-voice was the most used of the three modes in the field study, ahead of voice-to-voice, with the agent mode barely exercised.",
+        "That ordering was not the design assumption. The bidirectional voice case is the one in the paper and the one the architecture is named for; the mode where one side types turned out to be the one people reached for.",
+      ],
+      callout: {
+        label: "Read this as usage, not demand",
+        text: "The field study recruited its own participants, so the split describes who was in it rather than a population. It is reported because it changed what the team built next, not because it measures a market.",
+      },
+    },
+    {
       id: "evaluation",
-      index: "08",
+      index: "12",
       eyebrow: "Field evaluation",
       title: "Then we took it through 155 Korean-English calls",
       lead:
@@ -842,7 +1013,7 @@ const wigvo: ResearchProject = {
     },
     {
       id: "conference",
-      index: "09",
+      index: "13",
       eyebrow: "Conference field notes",
       title: "Questions from ACL and IWSLT",
       lead:
