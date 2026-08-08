@@ -1,4 +1,6 @@
 // Shared content model for the technical report index and detail routes.
+import type { ReportAuthorId } from "./authors";
+
 export type ResearchStatus =
   | "Peer reviewed"
   | "Open model"
@@ -96,7 +98,20 @@ export type ResearchProject = {
   status: ResearchStatus;
   format: string;
   date: string;
-  authors: string;
+  /* Who is answerable for this report, rendered as the byline with their
+   * portrait. Required on purpose: a new report cannot be added without picking
+   * a person, because `tsc` fails on a missing key. The alternative was a note
+   * asking whoever adds a report to remember, and a note is not a check.
+   *
+   * Ask the person creating the report who to register, rather than inferring
+   * it from whoever ran the commit. Ids are in authors.ts. */
+  authorId: ReportAuthorId;
+  /* The formal credit line, kept only where it says something the byline does
+   * not. WIGVO is a five-author ACL paper: naming one of them as the report's
+   * author is right, dropping the other four is not. The four reports that had
+   * "WIGTN Engineering" or a single name here carry no such list, so theirs is
+   * absent and the byline is the whole credit. */
+  authors?: string;
   venue?: string;
   featured?: boolean;
   heroFigure?: ResearchFigure;
@@ -120,7 +135,7 @@ const codexSelectiveHarness: ResearchProject = {
   status: "Measured system",
   format: "Evaluation report",
   date: "2026.07.28",
-  authors: "Hyeonsang Kim",
+  authorId: "hyeonsang-kim",
   /* The banner is OpenAI's Codex brand image, used to identify the tool this
    * report evaluates. It illustrates nothing we measured, so it carries no
    * caption and stays out of the body: `heroSectionId` is deliberately absent,
@@ -390,7 +405,7 @@ const wigtnOcr: ResearchProject = {
   status: "Open model",
   format: "Model report",
   date: "2026.05.20",
-  authors: "WIGTN Research",
+  authorId: "hyeongseob-kim",
   featured: true,
   /* Brand banner, same treatment as the two harness reports: no caption, no
    * `heroSectionId`, so it identifies the report on the hub card without posing
@@ -698,6 +713,7 @@ const wigvo: ResearchProject = {
   status: "Peer reviewed",
   format: "ACL system paper",
   date: "2026.07",
+  authorId: "hyeongseob-kim",
   authors: "Hyeong-seob Kim · Sang-Woo Son · Hyun-woo Cho · Hyeonsang Kim · Jinmo Kim",
   venue: "ACL 2026 System Demonstrations · pp. 336–344",
   featured: true,
@@ -1113,7 +1129,7 @@ const wigss: ResearchProject = {
   status: "Engineering note",
   format: "Open-source architecture",
   date: "2026.04.10",
-  authors: "WIGTN Engineering",
+  authorId: "jinmo-kim",
   /* Brand banner, same treatment as the other four: no caption, no
    * `heroSectionId`, so it stays on the hub card. The npm screenshot it replaced
    * moved into `architecture`.
@@ -1264,8 +1280,17 @@ const wigtnCoding: ResearchProject = {
   track: "Agentic engineering",
   status: "Engineering note",
   format: "Workflow architecture",
-  date: "2026.08.04",
-  authors: "WIGTN Engineering",
+  /* The date the plugin repository opened, taken from its first commit
+   * (0593d8d, 2026-01-12 16:35 KST; the GitHub repo was created a minute
+   * earlier). It is the origin of the work this report traces, and it is what
+   * puts part 1 at the head of the index and part 2 at the end.
+   *
+   * Note what it is not: this report was written later and its content runs
+   * past this date — the reductions table ends at the 2026.08.04 Opus 5 pass
+   * and the metric reads "19,912 today". So the byline date sits before events
+   * the report describes. Recorded here deliberately, decided by the author. */
+  date: "2026.01.12",
+  authorId: "hyunwoo-cho",
   /* Anthropic's Claude Code brand image, identifying the tool this plugin runs
    * on. Same treatment as part 2: no caption, no `heroSectionId`, so it stays on
    * the hub card instead of appearing in the body as if it were a figure. The
@@ -1517,11 +1542,18 @@ const wigtnCoding: ResearchProject = {
 };
 
 
-/* Ordered by publication date, newest first, rather than by hand. `date` is
- * zero-padded "YYYY.MM" or "YYYY.MM.DD", so a plain string compare is already
- * chronological; a month-only entry sorts just after the same month's dated
- * ones, which is what we want. Sorting the exported array (not just the index)
- * keeps the hub, the related-reports rail and the sitemap in one order. */
+/* Ordered by date, newest first, rather than by hand. `date` is zero-padded
+ * "YYYY.MM" or "YYYY.MM.DD", so a plain string compare is already chronological;
+ * a month-only entry sorts just after the same month's dated ones. Sorting the
+ * exported array (not just the index) keeps the hub, the related-reports rail
+ * and the sitemap in one order.
+ *
+ * Newest first is the index convention and what this returns to. Note the
+ * consequence, so nobody rediscovers it as a bug: part 1 of the harness series
+ * is dated to its repository's origin (2026.01.12) and is therefore the oldest
+ * entry, so a newest-first index puts part 2 at the top and part 1 at the
+ * bottom. The series numbering in the titles is what carries the reading order;
+ * the sort does not. */
 export const RESEARCH_PROJECTS: ResearchProject[] = [
   codexSelectiveHarness,
   wigtnOcr,
