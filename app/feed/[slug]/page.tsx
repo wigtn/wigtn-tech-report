@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/site";
-import { BlogPostPage } from "@/components/blog/BlogPostPage";
-import { BLOG_POSTS, getBlogPost } from "@/components/blog/data";
+import { FeedPostPage } from "@/components/feed/FeedPostPage";
+import { FEED_POSTS, getFeedPost } from "@/components/feed/data";
 
 export function generateStaticParams() {
-  return BLOG_POSTS.map((post) => ({ slug: post.slug }));
+  return FEED_POSTS.map((post) => ({ slug: post.slug }));
 }
 
 export async function generateMetadata({
@@ -13,13 +13,13 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const post = getBlogPost(slug);
+  const post = getFeedPost(slug);
 
   if (!post) {
     return {};
   }
 
-  const canonical = `${SITE_URL}/blog/${post.slug}/`;
+  const canonical = `${SITE_URL}/feed/${post.slug}/`;
 
   return {
     title: post.title,
@@ -37,11 +37,11 @@ export async function generateMetadata({
   };
 }
 
-export default async function BlogPostRoute({
+export default async function FeedPostRoute({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  return <BlogPostPage slug={slug} />;
+  return <FeedPostPage slug={slug} />;
 }

@@ -10,7 +10,7 @@
  * is in that repo's git history.
  *
  * Images are no longer colocated. They live under
- * `public/images/blog/acl-2026-san-diego/` and are addressed as strings
+ * `public/images/feed/acl-2026-san-diego/` and are addressed as strings
  * through `assetPath`, because this site builds under a GitHub Pages
  * basePath and every other figure on it already resolves that way. The cost
  * is the one the original arrangement was avoiding: a rename now reaches
@@ -37,9 +37,9 @@
  * gallery instead, where `aspect: "3/4"` caps a lone portrait at 460px.
  */
 
-import type { BlogPost } from "../data";
+import type { FeedPost } from "../data";
 
-export const aclSanDiego2026: BlogPost = {
+export const aclSanDiego2026: FeedPost = {
   slug: "acl-2026-san-diego",
   tag: "ACL 2026",
   title: "Team WIGTN at ACL 2026 San Diego and IWSLT 2026: a trip report",
@@ -50,7 +50,7 @@ export const aclSanDiego2026: BlogPost = {
   readTime: "11 min",
   byline: "WIGTN",
   cover: {
-    src: "/images/blog/acl-2026-san-diego/team-cover.jpg",
+    src: "/images/feed/acl-2026-san-diego/team-cover.jpg",
     alt: "Team WIGTN at ACL 2026 San Diego and IWSLT 2026: a trip report",
     width: 1600,
     height: 800,
@@ -70,7 +70,7 @@ export const aclSanDiego2026: BlogPost = {
       t: "gallery",
       images: [
         {
-          src: "/images/blog/acl-2026-san-diego/venue-entrance.jpg",
+          src: "/images/feed/acl-2026-san-diego/venue-entrance.jpg",
           width: 900,
           height: 1600,
           alt: "The ACL 2026 San Diego banner across the glass frontage of the convention centre, with attendees queueing at registration inside.",
@@ -78,7 +78,7 @@ export const aclSanDiego2026: BlogPost = {
           aspect: "3/4",
         },
         {
-          src: "/images/blog/acl-2026-san-diego/arriving.jpg",
+          src: "/images/feed/acl-2026-san-diego/arriving.jpg",
           width: 1200,
           height: 1600,
           alt: "A screen inside the venue reading \"ACL 2026 San Diego, July 2-7. Welcome to San Diego\", beside the registration desk.",
@@ -94,14 +94,14 @@ export const aclSanDiego2026: BlogPost = {
       t: "gallery",
       images: [
         {
-          src: "/images/blog/acl-2026-san-diego/workshop-talk.jpg",
+          src: "/images/feed/acl-2026-san-diego/workshop-talk.jpg",
           width: 1600,
           height: 1200,
           alt: "A workshop talk in progress, with a pipeline diagram on the projection screen and the audience watching from the back of the room.",
           caption: "Workshop day. Someone else's pipeline, and a room taking notes.",
         },
         {
-          src: "/images/blog/acl-2026-san-diego/conference-portrait.jpg",
+          src: "/images/feed/acl-2026-san-diego/conference-portrait.jpg",
           width: 1600,
           height: 1066,
           alt: "Two attendees photographed by the official ACL 2026 conference photographer in the venue foyer.",
@@ -113,7 +113,7 @@ export const aclSanDiego2026: BlogPost = {
     { t: "h", text: "What we brought" },
     { t: "p", text: "WIGVO translates a phone call in both directions, in real time, over the ordinary telephone network. The constraint that shapes everything: the person on the other end installs nothing. No app, no headset, no setup. They pick up a phone the way they always have." },
     { t: "p", text: "That constraint is the whole point. The places that need translation most, the hospital front desk, the city office, the bank call center, are still running on landlines. But a phone line is a hostile environment for speech: narrowband 8 kHz audio, codec distortion, variable delay, and no way to run echo cancellation on the recipient's device. Translated speech played into the line can come back, get recognized again, and trigger a loop that translates itself. In our ungated prototype, eight of ten test calls looped until we cut them off manually." },
-    { t: "image", figure: { src: "/images/blog/acl-2026-san-diego/live-call.png",
+    { t: "image", figure: { src: "/images/feed/acl-2026-san-diego/live-call.png",
           width: 1800,
           height: 981,
       alt: "The WIGVO console during a live call: the assistant panel on the left, the call in progress on the right, and an event log showing the echo gate, energy gate and voice-activity detector firing.",
@@ -128,28 +128,28 @@ export const aclSanDiego2026: BlogPost = {
       t: "gallery",
       images: [
         {
-          src: "/images/blog/acl-2026-san-diego/demo-visitors.jpg",
+          src: "/images/feed/acl-2026-san-diego/demo-visitors.jpg",
           width: 1600,
           height: 1200,
           alt: "Visitors gathered in front of the WIGTN demo screens at ACL 2026, watching a live translated call.",
           caption: "The screens did the explaining; we filled in the parts they could not show.",
         },
         {
-          src: "/images/blog/acl-2026-san-diego/demo-explaining.jpg",
+          src: "/images/feed/acl-2026-san-diego/demo-explaining.jpg",
           width: 1600,
           height: 1200,
           alt: "A WIGTN engineer explaining the WIGVO system to visitors at the demo booth.",
           caption: "Most questions started with \"wait, there is no app on the other end?\"",
         },
         {
-          src: "/images/blog/acl-2026-san-diego/demo-booth-wide.jpg",
+          src: "/images/feed/acl-2026-san-diego/demo-booth-wide.jpg",
           width: 1200,
           height: 1600,
           alt: "Wide view of the WIGTN booth showing the poster, the monitors and the demo table.",
           caption: "Booth D3, set up and running.",
         },
         {
-          src: "/images/blog/acl-2026-san-diego/booth-d3.jpg",
+          src: "/images/feed/acl-2026-san-diego/booth-d3.jpg",
           width: 1600,
           height: 1380,
           alt: "The WIGTN booth at ACL 2026: the WIGVO poster on the right, three screens showing a live call in progress, and visitors talking with the team.",
@@ -165,7 +165,7 @@ export const aclSanDiego2026: BlogPost = {
       t: "gallery",
       images: [
         {
-          src: "/images/blog/acl-2026-san-diego/session-hallway.jpg",
+          src: "/images/feed/acl-2026-san-diego/session-hallway.jpg",
           width: 900,
           height: 1600,
           alt: "Attendees filing through the hallway under the ACL 2026 San Diego banner between sessions.",
@@ -173,7 +173,7 @@ export const aclSanDiego2026: BlogPost = {
           aspect: "3/4",
         },
         {
-          src: "/images/blog/acl-2026-san-diego/coffee-break.jpg",
+          src: "/images/feed/acl-2026-san-diego/coffee-break.jpg",
           width: 900,
           height: 1600,
           alt: "Attendees queueing at the ACL 2026 coffee-break buffet, with sponsor booths visible behind.",
@@ -190,7 +190,7 @@ export const aclSanDiego2026: BlogPost = {
       t: "gallery",
       images: [
         {
-          src: "/images/blog/acl-2026-san-diego/poster-visit-nvidia.jpg",
+          src: "/images/feed/acl-2026-san-diego/poster-visit-nvidia.jpg",
           width: 900,
           height: 1600,
           alt: "An engineer from NVIDIA in conversation with the WIGTN team at the poster boards.",
@@ -198,7 +198,7 @@ export const aclSanDiego2026: BlogPost = {
           aspect: "3/4",
         },
         {
-          src: "/images/blog/acl-2026-san-diego/poster-visit-apple.jpg",
+          src: "/images/feed/acl-2026-san-diego/poster-visit-apple.jpg",
           width: 900,
           height: 1600,
           alt: "An engineer from Apple looking at the WIGVO poster with a WIGTN team member.",
@@ -206,7 +206,7 @@ export const aclSanDiego2026: BlogPost = {
           aspect: "3/4",
         },
         {
-          src: "/images/blog/acl-2026-san-diego/poster-visit-amazon.jpg",
+          src: "/images/feed/acl-2026-san-diego/poster-visit-amazon.jpg",
           width: 900,
           height: 1600,
           alt: "Marcello Federico of Amazon, IWSLT 2026 conference chair, with three WIGTN team members at the poster boards.",
@@ -229,7 +229,7 @@ export const aclSanDiego2026: BlogPost = {
       t: "gallery",
       images: [
         {
-          src: "/images/blog/acl-2026-san-diego/iwslt-poster-prep.jpg",
+          src: "/images/feed/acl-2026-san-diego/iwslt-poster-prep.jpg",
           width: 1200,
           height: 1600,
           alt: "Two WIGTN team members mounting the WIGVO poster on board G44 before the IWSLT poster session.",
@@ -243,7 +243,7 @@ export const aclSanDiego2026: BlogPost = {
       t: "gallery",
       images: [
         {
-          src: "/images/blog/acl-2026-san-diego/iwslt-talk.jpg",
+          src: "/images/feed/acl-2026-san-diego/iwslt-talk.jpg",
           width: 1600,
           height: 898,
           alt: "A WIGTN researcher presenting WIGVO at the IWSLT 2026 invited oral session in San Diego.",
@@ -251,7 +251,7 @@ export const aclSanDiego2026: BlogPost = {
           aspect: "16/9",
         },
         {
-          src: "/images/blog/acl-2026-san-diego/iwslt-talk-2.jpg",
+          src: "/images/feed/acl-2026-san-diego/iwslt-talk-2.jpg",
           width: 1600,
           height: 843,
           alt: "The dual-session gated relay architecture on screen during the IWSLT 2026 talk, showing the two pipelines and the three-stage echo filter between them.",
@@ -267,7 +267,7 @@ export const aclSanDiego2026: BlogPost = {
       t: "gallery",
       images: [
         {
-          src: "/images/blog/acl-2026-san-diego/iwslt-poster-session.jpg",
+          src: "/images/feed/acl-2026-san-diego/iwslt-poster-session.jpg",
           width: 1200,
           height: 1600,
           alt: "The WIGVO poster on board G44 during the IWSLT 2026 poster session, with the team presenting.",
@@ -275,7 +275,7 @@ export const aclSanDiego2026: BlogPost = {
           aspect: "3/4",
         },
         {
-          src: "/images/blog/acl-2026-san-diego/iwslt-organizer.jpg",
+          src: "/images/feed/acl-2026-san-diego/iwslt-organizer.jpg",
           width: 900,
           height: 1600,
           alt: "A WIGTN researcher with Jan Niehues of KIT in front of the ACL-IWSLT 2026 workshop signage.",
@@ -293,14 +293,14 @@ export const aclSanDiego2026: BlogPost = {
       t: "gallery",
       images: [
         {
-          src: "/images/blog/acl-2026-san-diego/midway-deck.jpg",
+          src: "/images/feed/acl-2026-san-diego/midway-deck.jpg",
           width: 1200,
           height: 1600,
           alt: "The entrance to the USS Midway Museum in San Diego, with the carrier's island and flags above the ticket booths.",
           caption: "Up the gangway.",
         },
         {
-          src: "/images/blog/acl-2026-san-diego/midway-reception.jpg",
+          src: "/images/feed/acl-2026-san-diego/midway-reception.jpg",
           width: 1600,
           height: 1200,
           alt: "The conference reception on the USS Midway flight deck at sunset, with attendees gathered around the bar beside a parked aircraft.",

@@ -22,7 +22,7 @@ export async function generateMetadata({
     return {};
   }
 
-  const canonical = `${SITE_URL}/${project.slug}/`;
+  const canonical = `${SITE_URL}/tech/${project.slug}/`;
 
   return {
     // Brand token first: SERP truncates the tail, and `title` alone drops the

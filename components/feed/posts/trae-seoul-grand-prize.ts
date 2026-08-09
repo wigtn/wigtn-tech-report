@@ -9,7 +9,7 @@
  * rewritten to point at this one; the substance is unchanged, and the original
  * is in that repo's git history.
  *
- * Images live under `public/images/blog/trae-seoul-grand-prize/` and are
+ * Images live under `public/images/feed/trae-seoul-grand-prize/` and are
  * addressed as strings through `assetPath`, not imported. A rename therefore
  * breaks quietly at runtime rather than loudly at build time.
  *
@@ -57,9 +57,9 @@
  *   renders too hot; it is not recoverable from the committed file.
  */
 
-import type { BlogPost } from "../data";
+import type { FeedPost } from "../data";
 
-export const traeSeoulGrandPrize: BlogPost = {
+export const traeSeoulGrandPrize: FeedPost = {
   slug: "trae-seoul-grand-prize",
   tag: "GRAND PRIZE",
   title: "Grand Prize at Build with TRAE Seoul: WIGENT, built in three and a half hours",
@@ -70,7 +70,7 @@ export const traeSeoulGrandPrize: BlogPost = {
   readTime: "7 min",
   byline: "WIGTN",
   cover: {
-    src: "/images/blog/trae-seoul-grand-prize/grand-prize-certificate.jpg",
+    src: "/images/feed/trae-seoul-grand-prize/grand-prize-certificate.jpg",
     alt: "Grand Prize at Build with TRAE Seoul: WIGENT, built in three and a half hours",
     width: 2000,
     height: 1415,
@@ -95,7 +95,7 @@ export const traeSeoulGrandPrize: BlogPost = {
       t: "gallery",
       images: [
         {
-          src: "/images/blog/trae-seoul-grand-prize/stage-demo.jpg",
+          src: "/images/feed/trae-seoul-grand-prize/stage-demo.jpg",
           width: 1500,
           height: 2000,
           alt: "Three WIGTN engineers presenting WIGENT on stage at Build with TRAE Seoul, with the Wigent topic-entry screen open in a browser on the wall display behind them.",

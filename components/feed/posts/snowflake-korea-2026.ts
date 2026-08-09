@@ -9,7 +9,7 @@
  * rewritten to point at this one; the substance is unchanged, and the original
  * is in that repo's git history.
  *
- * Images live under `public/images/blog/snowflake-korea-2026/` and are
+ * Images live under `public/images/feed/snowflake-korea-2026/` and are
  * addressed as strings through `assetPath`, not imported. That is this
  * site's convention, and it means a rename reaches production as a broken
  * frame rather than a build error.
@@ -78,7 +78,7 @@
  *   `public/images/projects/`, which were kept while the /projects page read
  *   them, and `winners-on-stage.jpg` from `public/images/news/snowflake.jpeg`,
  *   which nothing else read. /projects is gone and so is the whole legacy
- *   image store, so the files under `public/images/blog/snowflake-korea-2026/`
+ *   image store, so the files under `public/images/feed/snowflake-korea-2026/`
  *   are the only copies. One exception: `winners-on-stage.jpg` also stayed
  *   behind in wigtn-webpage as a milestone cover, under `milestones/`
  *   there.
@@ -107,9 +107,9 @@
  *   and at gallery width that print closes up.
  */
 
-import type { BlogPost } from "../data";
+import type { FeedPost } from "../data";
 
-export const snowflakeKorea2026: BlogPost = {
+export const snowflakeKorea2026: FeedPost = {
   slug: "snowflake-korea-2026",
   tag: "2ND PLACE · TECH TRACK",
   title: "Tech Track 2nd at Snowflake Korea 2026: the eleven Cortex features that were really seven",
@@ -120,7 +120,7 @@ export const snowflakeKorea2026: BlogPost = {
   readTime: "9 min",
   byline: "WIGTN",
   cover: {
-    src: "/images/blog/snowflake-korea-2026/winners-on-stage.jpg",
+    src: "/images/feed/snowflake-korea-2026/winners-on-stage.jpg",
     alt: "Tech Track 2nd at Snowflake Korea 2026: the eleven Cortex features that were really seven",
     width: 2000,
     height: 1125,
@@ -143,7 +143,7 @@ export const snowflakeKorea2026: BlogPost = {
     { t: "p", text: "So WIGTN Flake starts from the goal rather than the query. You pick one of six purpose cards, cafe or restaurant location, rental-appliance target zones, billboard placement, real-estate investment, trade-area anomaly detection, or free-form input, and either name the districts you are weighing or let the system suggest them. The goal plus the districts become the brief." },
     { t: "p", text: "From there a GPT-4o orchestrator summons five purpose-tuned experts: a PM who facilitates, a data analyst on Cortex Analyst, a forecast analyst on FORECAST and ANOMALY_DETECTION, an insight analyst on AI_CLASSIFY, and a sentiment analyst on AI_SENTIMENT and Tavily web search. They argue in a Slack-style chat that streams as it happens, and they can disagree, because each is reading a different signal." },
     { t: "p", text: "What lands at the end is a Top 3 ranking with the reason each district that lost was excluded, anomaly badges on the ones behaving strangely, six-month FORECAST charts, and an action checklist written for the purpose you picked. For a cafe that reads like: secure a 500m radius around the Banpo subway exit, peak hours 12 to 14, lead with Instagram." },
-    { t: "image", figure: { src: "/images/blog/snowflake-korea-2026/three-layer-architecture.jpg",
+    { t: "image", figure: { src: "/images/feed/snowflake-korea-2026/three-layer-architecture.jpg",
           width: 1028,
           height: 726,
       alt: "The WIGTN Flake three-layer hybrid AI architecture: a green Brain Layer running GPT-4o for persona acting, tool invocation, semantic-model routing and external search; a blue Data Layer running Snowflake Cortex over four marketplace datasets, with ANOMALY_DETECTION marked as the demo climax; and a purple Render Layer running Cortex LLM for markdown streaming, ranking, forecasts and a GPT-4o garbage-detection fallback.",
@@ -177,7 +177,7 @@ export const snowflakeKorea2026: BlogPost = {
       t: "gallery",
       images: [
         {
-          src: "/images/blog/snowflake-korea-2026/final-round-stage.jpg",
+          src: "/images/feed/snowflake-korea-2026/final-round-stage.jpg",
           width: 2000,
           height: 1125,
           alt: "The Snowflake AI & Data Hackathon 2026 final round stage in Seoul, with the event banner filling the screen behind five empty chairs and a host at the microphone.",
@@ -185,7 +185,7 @@ export const snowflakeKorea2026: BlogPost = {
           aspect: "16/9",
         },
         {
-          src: "/images/blog/snowflake-korea-2026/tech-track-top3.jpg",
+          src: "/images/feed/snowflake-korea-2026/tech-track-top3.jpg",
           width: 2000,
           height: 1125,
           alt: "The Tech Track Top 3 announcement slide on stage, reading \"WIGTN Flake : Snowflake Cortex 기반 실시간 데이터 검증을 통한 '목적 중심 에이전트 토론' 플랫폼\" under a \"트랙 3\" badge.",
@@ -210,7 +210,7 @@ export const snowflakeKorea2026: BlogPost = {
       t: "quote",
       text: "Connected is not used. A slide that counts the difference is a slide that will not survive someone reading the code.",
     },
-    { t: "image", figure: { src: "/images/blog/snowflake-korea-2026/datasets-slide.jpg",
+    { t: "image", figure: { src: "/images/feed/snowflake-korea-2026/datasets-slide.jpg",
           width: 2000,
           height: 1125,
       alt: "The dataset slide during the presentation, headed \"해커톤 4개 데이터셋, 형태에 따라 역할을 분리\", with RichGo and SPH routed into Snowflake ML.FORECAST as three pre-trained models on the left, and NextTrade and 아정당 in smaller panels on the right.",

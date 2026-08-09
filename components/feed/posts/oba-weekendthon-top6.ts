@@ -9,7 +9,7 @@
  * rewritten to point at this one; the substance is unchanged, and the original
  * is in that repo's git history.
  *
- * The image lives under `public/images/blog/oba-weekendthon-top6/` and is
+ * The image lives under `public/images/feed/oba-weekendthon-top6/` and is
  * addressed as a string through `assetPath`, not imported, which is this
  * site's convention for every figure. Follows the hackathon template
  * (`../_template/hackathon/STRUCTURE.md`): lede → the brief and the
@@ -24,7 +24,7 @@
  *     path, what is mocked and what is live, the pending adapters;
  *   - the repo's own commit log via the GitHub API: eight commits, all on
  *     31 May, and the two merged pull requests;
- *   - the photo under `public/images/blog/oba-weekendthon-top6/`, which is a
+ *   - the photo under `public/images/feed/oba-weekendthon-top6/`, which is a
  *     picture of the event's sponsor
  *     board and is therefore also a source. At native resolution it gives the
  *     dates, the venue, and the sponsor tiers by name: 주최 (Hashed, Market
@@ -53,22 +53,22 @@
  * That one photo does two jobs, and they want different framings. In the body
  * it runs in a gallery at `aspect: "3/4"`, uncropped, so the shape of the
  * board survives. As the cover it is cropped 2:1 by the hero and 4:3 by the
- * blog list card, which keeps the title art: the event name, the dates, the venue
+ * feed list card, which keeps the title art: the event name, the dates, the venue
  *: and drops the board. That is the right trade for a cover: it says what
  * this was and when, and the board is two paragraphs down. Do not swap the
  * cover for a board crop to "fix" the hero; the body already carries it.
  *
  * What the body does NOT do is let you read the individual logos. A solo 3/4
- * gallery is capped at 460px by BlogPostPage, so the sponsor rows are legible
+ * gallery is capped at 460px by FeedPostPage, so the sponsor rows are legible
  * as rows and the logos inside them are about 30px wide. The caption therefore
  * describes what the row *is* rather than inviting the reader to read it off
  * the picture, and every company named in the prose is named there because a
  * source says so, not because it can be made out in the photo.
  */
 
-import type { BlogPost } from "../data";
+import type { FeedPost } from "../data";
 
-export const obaWeekendthonTop6: BlogPost = {
+export const obaWeekendthonTop6: FeedPost = {
   slug: "oba-weekendthon-top6",
   tag: "TOP 6",
   title: "Top 6 at OBA Weekendthon: MyunZy, an AI interviewer built in a weekend",
@@ -79,7 +79,7 @@ export const obaWeekendthonTop6: BlogPost = {
   readTime: "5 min",
   byline: "WIGTN",
   cover: {
-    src: "/images/blog/oba-weekendthon-top6/title-screen.jpg",
+    src: "/images/feed/oba-weekendthon-top6/title-screen.jpg",
     alt: "Top 6 at OBA Weekendthon: MyunZy, an AI interviewer built in a weekend",
     width: 768,
     height: 1024,
@@ -98,7 +98,7 @@ export const obaWeekendthonTop6: BlogPost = {
       t: "gallery",
       images: [
         {
-          src: "/images/blog/oba-weekendthon-top6/title-screen.jpg",
+          src: "/images/feed/oba-weekendthon-top6/title-screen.jpg",
           width: 768,
           height: 1024,
           alt: "The OBA Weekendthon title screen projected in the hall at the Kakao AI Campus, reading \"May 30–31, 2026\", above rows of organizer, sponsor, API-sponsor and VC logos.",

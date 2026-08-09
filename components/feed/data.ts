@@ -1,5 +1,5 @@
 /**
- * Blog posts: the narrative half of this site.
+ * Feed posts: the narrative half of this site.
  *
  * A technical report and a conference trip report are both writing, but they
  * are not the same kind of writing, and `ResearchProject` is shaped for the
@@ -20,7 +20,7 @@
  *
  * Two differences from the source repo, both deliberate:
  *
- *   1. Images are `/images/blog/<slug>/<file>` strings resolved through
+ *   1. Images are `/images/feed/<slug>/<file>` strings resolved through
  *      `assetPath`, not colocated static imports. This site runs under a
  *      GitHub Pages `basePath`, and every existing figure already goes through
  *      that helper; one asset convention beats two.
@@ -31,7 +31,7 @@
 
 import type { ReportAuthorId } from "../technical-reports/authors";
 
-export type BlogFigure = {
+export type FeedFigure = {
   src: string;
   alt: string;
   caption?: string;
@@ -44,17 +44,17 @@ export type BlogFigure = {
   aspect?: "16/9" | "3/4" | "1/1";
 };
 
-export type BlogBlock =
+export type FeedBlock =
   | { t: "p"; text: string }
   | { t: "h"; text: string }
   | { t: "quote"; text: string }
   | { t: "list"; items: string[] }
-  | { t: "image"; figure: BlogFigure }
-  | { t: "gallery"; images: BlogFigure[]; caption?: string };
+  | { t: "image"; figure: FeedFigure }
+  | { t: "gallery"; images: FeedFigure[]; caption?: string };
 
-export type BlogLink = { label: string; href: string };
+export type FeedLink = { label: string; href: string };
 
-export type BlogPost = {
+export type FeedPost = {
   slug: string;
   /* Short label above the title: "ACL 2026", "TOP 6". Editorial, not a
    * taxonomy; nothing filters on it. */
@@ -71,9 +71,9 @@ export type BlogPost = {
    * answerable, and is unused today. */
   byline: string;
   authorId?: ReportAuthorId;
-  cover: BlogFigure;
-  links?: BlogLink[];
-  body: BlogBlock[];
+  cover: FeedFigure;
+  links?: FeedLink[];
+  body: FeedBlock[];
 };
 
 import { aclSanDiego2026 } from "./posts/acl-2026-san-diego";
@@ -83,14 +83,14 @@ import { obaWeekendthonTop6 } from "./posts/oba-weekendthon-top6";
 
 /* Newest first. Sorted here rather than at render so the order is a property
  * of the data and every consumer agrees. */
-export const BLOG_POSTS: BlogPost[] = [
+export const FEED_POSTS: FeedPost[] = [
   aclSanDiego2026,
   obaWeekendthonTop6,
   snowflakeKorea2026,
   traeSeoulGrandPrize,
 ].sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
 
-export const blogHref = (slug: string) => `/blog/${slug}/`;
+export const feedHref = (slug: string) => `/feed/${slug}/`;
 
-export const getBlogPost = (slug: string) =>
-  BLOG_POSTS.find((post) => post.slug === slug);
+export const getFeedPost = (slug: string) =>
+  FEED_POSTS.find((post) => post.slug === slug);

@@ -1,15 +1,13 @@
 import type { Metadata } from "next";
-import { SITE_URL } from "@/lib/site";
-import { ReportHubPage } from "@/components/technical-reports/ReportHubPage";
+import { MovedPage, movedMetadata } from "@/components/shared/MovedPage";
 
-export const metadata: Metadata = {
-  /* `absolute` so the template does not render "WIG-log | WIG-log". */
-  title: { absolute: "WIG-log" },
-  alternates: {
-    canonical: `${SITE_URL}/`,
-  },
-};
+/**
+ * The root used to be the reports index. Both halves of the site now sit one
+ * level down, /tech and /feed, so the root is a doorway rather than a section.
+ * It forwards to /tech, which is what it always showed.
+ */
+export const metadata: Metadata = movedMetadata("/tech/");
 
-export default function HomePage() {
-  return <ReportHubPage />;
+export default function RootRoute() {
+  return <MovedPage to="/tech/" title="WIG-log" />;
 }

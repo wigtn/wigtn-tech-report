@@ -1,8 +1,8 @@
-# Blog post template
+# Feed post template
 
-A blog post is one file, `components/blog/posts/<slug>.ts`, plus its images
-under `public/images/blog/<slug>/`. `components/blog/data.ts` imports it and
-puts it in `BLOG_POSTS`.
+A feed post is one file, `components/feed/posts/<slug>.ts`, plus its images
+under `public/images/feed/<slug>/`. `components/feed/data.ts` imports it and
+puts it in `FEED_POSTS`.
 
 Two shapes, because a conference week and a two-day hackathon do not want the
 same sections:
@@ -12,13 +12,13 @@ same sections:
 
 Both moved here from `wigtn-webpage` on 2026-08-09 with the four posts they
 describe. They were written for that repo's `Article` type, so the field names
-in the examples differ from `BlogPost`:
+in the examples differ from `FeedPost`:
 
 | there | here |
 | --- | --- |
 | `summary` | `dek` |
 | `image` | `cover`, an object with `src`, `alt`, `width`, `height` |
-| colocated `import cover from "./x.jpg"` | `/images/blog/<slug>/x.jpg` string |
+| colocated `import cover from "./x.jpg"` | `/images/feed/<slug>/x.jpg` string |
 | `kind`, `channel`, `newsTopic`, `icon` | dropped |
 
 The section advice in each STRUCTURE.md is what matters and carries over

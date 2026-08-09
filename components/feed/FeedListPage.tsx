@@ -1,23 +1,47 @@
-import Image from "next/image";
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import { assetPath } from "@/lib/site";
 import { ReportShell } from "../technical-reports/ReportChrome";
 import type { ReportLocale } from "../technical-reports/localized-data";
+import { IndexCard, IndexGrid, IndexHeading } from "../shared/IndexCard";
 import { SectionTabs } from "./SectionTabs";
-import { BLOG_POSTS, blogHref } from "./data";
+import { FEED_POSTS, feedHref } from "./data";
 
 /**
- * Blog index: the newest post as a lead, the rest as a plain list.
+ * Feed index.
  *
- * Four posts do not need a grid. A three-up card wall would have set a trip
- * report that runs eleven minutes at the same weight as one that runs five,
- * which is the mistake the source page had already been corrected for. So the
- * newest gets the picture and the rest get a dated row, and the hierarchy
- * matches the reading time.
+ * Same masthead, same tab bar, same card grid as the reports index, because
+ * they are two halves of one site and a reader crossing between them should
+ * not feel a seam. The card is literally the same component
+ * (`shared/IndexCard`), so the two lists cannot drift apart by accident.
+ *
+ * The first pass had a lead post with a large image and a dated list under it.
+ * That was a second layout for a page whose whole job is to sit beside another
+ * one, and the hierarchy it added was not real: four posts do not need a
+ * headline act.
  */
-export function BlogListPage({ locale = "en" }: { locale?: ReportLocale }) {
-  const [lead, ...rest] = BLOG_POSTS;
+const HUB_COPY = {
+  en: {
+    title: "Feed",
+    description:
+      "Conferences, hackathons and the weekends in between. What we went to, what we built there, and what the room taught us.",
+    allPosts: "All posts",
+    /* "posts", not "articles". The reports index counts articles because a
+     * report is one: a piece with a method and a claim. A trip report is a
+     * post, and using one word for both flattened the distinction the two
+     * tabs exist to draw. */
+    post: "post",
+    posts: "posts",
+  },
+  ko: {
+    title: "피드",
+    description:
+      "학회와 해커톤, 그 사이의 주말들. 어디에 다녀왔고 거기서 무엇을 만들었는지 기록합니다.",
+    allPosts: "전체 글",
+    post: "편",
+    posts: "편",
+  },
+} as const;
+
+export function FeedListPage({ locale = "en" }: { locale?: ReportLocale }) {
+  const copy = HUB_COPY[locale];
 
   return (
     <ReportShell locale={locale}>
@@ -26,80 +50,53 @@ export function BlogListPage({ locale = "en" }: { locale?: ReportLocale }) {
           <p className="font-report-mono text-[20px] font-medium uppercase tracking-[0.12em] text-[#1457D9]">
             WIG-log
           </p>
-          <h1 className="mt-4 font-report-display text-[clamp(2.75rem,5vw,4.75rem)] font-semibold leading-[1.02] tracking-[-0.025em]">
-            Blog
+          <h1
+            className={`mt-4 font-semibold ${
+              locale === "ko"
+                ? "font-sans text-[clamp(2.5rem,4.5vw,4.25rem)] leading-[1.12] tracking-[-0.035em] [word-break:keep-all]"
+                : "font-report-display text-[clamp(2.75rem,5vw,4.75rem)] leading-[1.02] tracking-[-0.025em]"
+            }`}
+          >
+            {copy.title}
           </h1>
-          <p className="mx-auto mt-6 max-w-[640px] text-[17px] leading-[1.7] text-[#475467]">
-            Conferences, hackathons and the weekends in between. What we went
-            to, what we built there, and what the room taught us.
+          <p
+            className={`mx-auto mt-5 max-w-[54rem] text-pretty text-[16px] leading-7 text-[#667085] ${
+              locale === "ko" ? "[word-break:keep-all]" : ""
+            }`}
+          >
+            {copy.description}
           </p>
         </div>
       </header>
 
-      <SectionTabs active="blog" />
+      <SectionTabs active="feed" />
 
-      <div className="mx-auto max-w-[1180px] px-5 py-16 md:px-8 md:py-20">
-        {lead && (
-          <Link
-            href={blogHref(lead.slug)}
-            className="group grid items-center gap-8 md:grid-cols-2 md:gap-12"
-          >
-            <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-[#F2F4F7]">
-              <Image
-                src={assetPath(lead.cover.src)}
-                alt={lead.cover.alt}
-                width={lead.cover.width}
-                height={lead.cover.height}
-                className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-                priority
+      <section aria-labelledby="feed-index-title">
+        <div className="mx-auto max-w-[1180px] px-5 py-14 md:px-8 md:py-20">
+          <IndexHeading
+            id="feed-index-title"
+            title={copy.allPosts}
+            count={FEED_POSTS.length}
+            unit={FEED_POSTS.length === 1 ? copy.post : copy.posts}
+          />
+
+          <IndexGrid>
+            {FEED_POSTS.map((post, index) => (
+              <IndexCard
+                key={post.slug}
+                index={index}
+                locale={locale}
+                item={{
+                  href: feedHref(post.slug),
+                  title: post.title,
+                  date: post.date,
+                  image: { src: post.cover.src, alt: post.cover.alt },
+                }}
               />
-            </div>
-            <div>
-              <p className="font-report-mono text-[12px] uppercase tracking-[0.12em] text-[#1457D9]">
-                {lead.tag}
-              </p>
-              <h2 className="mt-3 font-report-display text-[clamp(1.75rem,3vw,2.5rem)] font-semibold leading-[1.1] tracking-[-0.02em] text-[#101828] transition-colors group-hover:text-[#1457D9]">
-                {lead.title}
-              </h2>
-              <p className="mt-4 text-[16px] leading-[1.7] text-[#475467]">{lead.dek}</p>
-              <p className="mt-5 font-report-mono text-[12px] uppercase tracking-[0.1em] text-[#667085]">
-                {lead.date}
-                {lead.place ? ` · ${lead.place}` : ""} · {lead.readTime}
-              </p>
-            </div>
-          </Link>
-        )}
-
-        {rest.length > 0 && (
-          <ul className="mt-16 divide-y divide-[#E4E7EC] border-t border-[#E4E7EC]">
-            {rest.map((post) => (
-              <li key={post.slug}>
-                <Link
-                  href={blogHref(post.slug)}
-                  className="group flex flex-col gap-2 py-6 md:flex-row md:items-baseline md:gap-8"
-                >
-                  <span className="shrink-0 font-report-mono text-[12px] uppercase tracking-[0.1em] text-[#667085] md:w-32">
-                    {post.date}
-                  </span>
-                  <span className="flex-1">
-                    <span className="block font-report-display text-[20px] font-semibold leading-snug tracking-[-0.01em] text-[#101828] transition-colors group-hover:text-[#1457D9]">
-                      {post.title}
-                    </span>
-                    <span className="mt-1 block text-[15px] leading-[1.65] text-[#475467]">
-                      {post.dek}
-                    </span>
-                  </span>
-                  <ArrowRight
-                    aria-hidden
-                    size={16}
-                    className="mt-1 shrink-0 text-[#98A2B3] transition-transform group-hover:translate-x-0.5"
-                  />
-                </Link>
-              </li>
             ))}
-          </ul>
-        )}
-      </div>
+          </IndexGrid>
+        </div>
+      </section>
     </ReportShell>
   );
 }
