@@ -57,6 +57,18 @@ const CAROUSEL_COPY = {
 
 const ROTATE_MS = 6000;
 
+/* One slide's left edge to the next: slide width plus the track gap.
+   Measured from the DOM instead of assuming clientWidth, so the gap between
+   slides stays a pure CSS decision — every scroll computation below works in
+   strides and none of it changes if the gap does. Siblings share an
+   offsetParent, so the offsetLeft difference is the stride regardless of how
+   the track itself is positioned. */
+const slideStride = (track: HTMLDivElement) => {
+  const first = track.children[0] as HTMLElement | undefined;
+  const second = track.children[1] as HTMLElement | undefined;
+  return first && second ? second.offsetLeft - first.offsetLeft : track.clientWidth;
+};
+
 export function HeroCarousel({
   slides,
   locale = "en",
@@ -96,11 +108,12 @@ export function HeroCarousel({
          swipe the state hasn't caught up with yet is never fought. From the
          last slide this targets the clone one further right; the scroll
          handler swaps it for the real first slide on arrival. */
+      const stride = slideStride(track);
       const next = Math.min(
-        Math.round(track.scrollLeft / track.clientWidth) + 1,
+        Math.round(track.scrollLeft / stride) + 1,
         slides.length,
       );
-      track.scrollTo({ left: next * track.clientWidth });
+      track.scrollTo({ left: next * stride });
     }, ROTATE_MS);
     return () => clearInterval(id);
   }, [handed, slides.length]);
@@ -114,7 +127,7 @@ export function HeroCarousel({
   const goTo = (i: number) => {
     handOver();
     const track = trackRef.current;
-    if (track) track.scrollTo({ left: i * track.clientWidth });
+    if (track) track.scrollTo({ left: i * slideStride(track) });
   };
 
   return (
@@ -137,14 +150,15 @@ export function HeroCarousel({
           onScroll={(event) => {
             const track = event.currentTarget;
             if (!track.clientWidth) return;
-            const position = track.scrollLeft / track.clientWidth;
+            const stride = slideStride(track);
+            const position = track.scrollLeft / stride;
             /* Settled on the clone — the frame on screen is slide one, so
                jumping to the real slide one changes nothing the eye can see.
                The tolerance is two pixels, not a percentage: it only needs to
                absorb the fraction a snap point can land on, and anything
                looser fires mid-deceleration, eating the animation's tail as
                a visible hitch. Fires for timer and manual swipe alike. */
-            if (slides.length > 1 && position >= slides.length - 2 / track.clientWidth) {
+            if (slides.length > 1 && position >= slides.length - 2 / stride) {
               track.scrollTo({ left: 0, behavior: "instant" });
               setIndex(0);
               return;
@@ -157,7 +171,11 @@ export function HeroCarousel({
           /* Smooth only behind motion-safe: the timer never runs under
              reduced motion, and dot jumps go instant there via the same
              CSS switch — scrollTo() without a behavior obeys it. */
-          className="flex snap-x snap-mandatory overflow-x-auto motion-safe:scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          /* The gap only ever shows mid-transition, as the seam between the
+             outgoing and incoming slide; at rest the neighbour sits offscreen
+             by the same amount. Without it, one slide's banner butts straight
+             into the next slide's headline while they roll past. */
+          className="flex snap-x snap-mandatory gap-10 overflow-x-auto motion-safe:scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:gap-16"
         >
           {loopSlides.map((slide, i) => (
             <article
