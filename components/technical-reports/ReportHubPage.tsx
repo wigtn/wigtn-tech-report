@@ -3,7 +3,7 @@ import {
   type ReportLocale,
 } from "./localized-data";
 import { ReportShell, reportHref } from "./ReportChrome";
-import { SectionTabs } from "../feed/SectionTabs";
+import { HeroCarousel } from "./HeroCarousel";
 import { IndexCard, IndexGrid, IndexHeading } from "../shared/IndexCard";
 
 const HUB_COPY = {
@@ -31,12 +31,37 @@ export function ReportHubPage({ locale = "en" }: { locale?: ReportLocale }) {
   const projects = getResearchProjects(locale);
   const copy = HUB_COPY[locale];
 
+  /* The three newest reports, picked here rather than curated: the array is
+     already sorted newest-first, so a new report takes the strip on landing.
+     Banner-less reports are skipped, not padded around — the split layout is
+     half image, and the metric-tile fallback the grid uses would leave the
+     hero half empty. */
+  const heroSlides = projects
+    .flatMap((project) =>
+      project.heroFigure
+        ? [
+            {
+              href: reportHref(project.slug, locale),
+              title: project.title,
+              dek: project.dek,
+              date: project.date,
+              lang: project.language ?? "en",
+              image: {
+                src: project.heroFigure.src,
+                alt: project.heroFigure.alt,
+              },
+            },
+          ]
+        : [],
+    )
+    .slice(0, 3);
+
   return (
     <ReportShell locale={locale}>
       <header className="border-b border-[#E4E7EC]">
         <div className="mx-auto max-w-[1180px] px-5 py-16 text-center md:px-8 md:py-24">
-          <p className="font-report-mono text-[20px] font-medium uppercase tracking-[0.12em] text-[#1457D9]">
-            WIG-log
+          <p className="font-report-mono text-[24px] font-medium uppercase tracking-[0.12em] text-[#1457D9] md:text-[28px]">
+            WIGTN TECH
           </p>
           <h1
             className={`mt-4 font-semibold ${
@@ -59,7 +84,7 @@ export function ReportHubPage({ locale = "en" }: { locale?: ReportLocale }) {
         </div>
       </header>
 
-      <SectionTabs active="reports" />
+      <HeroCarousel slides={heroSlides} locale={locale} />
 
       <section aria-labelledby="report-index-title">
         <div className="mx-auto max-w-[1180px] px-5 py-14 md:px-8 md:py-20">

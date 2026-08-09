@@ -1,13 +1,21 @@
 import type { Metadata } from "next";
-import { MovedPage, movedMetadata } from "@/components/shared/MovedPage";
+import { SITE_URL } from "@/lib/site";
+import { ReportHubPage } from "@/components/technical-reports/ReportHubPage";
 
 /**
- * The root used to be the reports index. Both halves of the site now sit one
- * level down, /tech and /feed, so the root is a doorway rather than a section.
- * It forwards to /tech, which is what it always showed.
+ * The root is the reports hub, as it has been since launch. This repo
+ * publishes technical reports and nothing else, so the site's front door and
+ * its one real section are the same page. Title comes from layout.tsx, which
+ * already names the site; the canonical is pinned here because the layout
+ * default lacks the trailing slash, and GitHub Pages only serves this page
+ * at the slashed URL — the sitemap and every report page agree on that form.
  */
-export const metadata: Metadata = movedMetadata("/tech/");
+export const metadata: Metadata = {
+  alternates: {
+    canonical: `${SITE_URL}/`,
+  },
+};
 
 export default function RootRoute() {
-  return <MovedPage to="/tech/" title="WIG-log" />;
+  return <ReportHubPage />;
 }

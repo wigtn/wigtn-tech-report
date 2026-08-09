@@ -26,16 +26,17 @@ const WIGTN_HOME = "https://wigtn.com";
  * pointing at the new path once that rename ships. */
 const WIGTN_LINKS = [{ label: "About", href: `${WIGTN_HOME}/team` }];
 
-/* Reports sit under /tech, matching /feed. They were at the root until
- * 2026-08-09, which made the two halves asymmetric and the root ambiguous:
- * it was both the site's front door and one of its two sections. Those old
- * URLs are live and linked, so `app/[slug]` still exports a redirect for
- * every report slug. */
+/* Reports live at the site root: the hub is `/` and a report is `/<slug>/`,
+ * which is what the deployed site has served since launch. A branch briefly
+ * moved them under /tech to sit symmetrically beside /feed, but this repo
+ * publishes technical reports and nothing else, so the root belongs to them —
+ * the front door and the section are the same thing. The /tech URLs never
+ * reached production, which is why there are no redirects for them. */
 export const reportHomeHref = (locale: ReportLocale) =>
-  locale === "ko" ? "/ko/tech/" : "/tech/";
+  locale === "ko" ? "/ko/" : "/";
 
 export const reportHref = (slug: string, locale: ReportLocale = "en") =>
-  locale === "ko" ? `/ko/tech/${slug}/` : `/tech/${slug}/`;
+  locale === "ko" ? `/ko/${slug}/` : `/${slug}/`;
 
 export function ReportHeader({
   locale,
@@ -69,11 +70,10 @@ export function ReportHeader({
               back-link, keeping this on a phone squeezes the flex row until
               the nav text wraps mid-word ("한 / 국 / 어"). */}
           <span className="hidden h-4 w-px bg-white/20 sm:block" />
-          {/* The site's name, not the section's. Both sections hang off it,
-              so this stays put when the reader moves between the tabs; the
-              tab bar below the masthead is what says which half you are in. */}
+          {/* The site's name. It reads as WIGTN's tech section, which is
+              exactly what this site is. */}
           <span className="hidden whitespace-nowrap font-report-mono text-xs uppercase tracking-[0.13em] text-[#B7B4C2] sm:inline">
-            WIG-log
+            WIGTN TECH
           </span>
         </Link>
         {/* One item, so no flex row to hold it and no width rule to hide it
@@ -95,7 +95,7 @@ export function ReportFooter({ locale }: { locale: ReportLocale }) {
   return (
     <footer className="border-t border-[#D8DDE5] bg-[#F7F8FA]">
       <div className="mx-auto flex max-w-[1180px] flex-col gap-3 px-5 py-8 font-report-mono text-[12px] uppercase tracking-[0.08em] text-[#667085] sm:flex-row sm:items-center sm:justify-between md:px-8">
-        <span>WIG-log</span>
+        <span>WIGTN TECH</span>
         <span>
           {locale === "ko"
             ? "방법 · 측정 · 한계"
