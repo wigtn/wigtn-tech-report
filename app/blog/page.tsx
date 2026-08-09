@@ -3,7 +3,8 @@ import { SITE_URL } from "@/lib/site";
 import { BlogListPage } from "@/components/blog/BlogListPage";
 
 export const metadata: Metadata = {
-  title: "Blog | WIGTN Tech",
+  /* Just the segment: layout.tsx owns the `%s | WIG-log` template. */
+  title: "Blog",
   description:
     "Conferences, hackathons and the weekends in between. What WIGTN went to, what we built there, and what the room taught us.",
   alternates: {

@@ -39,7 +39,7 @@ export function ReportHubPage({ locale = "en" }: { locale?: ReportLocale }) {
       <header className="border-b border-[#E4E7EC]">
         <div className="mx-auto max-w-[1180px] px-5 py-16 text-center md:px-8 md:py-24">
           <p className="font-report-mono text-[20px] font-medium uppercase tracking-[0.12em] text-[#1457D9]">
-            WIGTN Tech
+            WIG-log
           </p>
           <h1
             className={`mt-4 font-semibold ${

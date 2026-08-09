@@ -59,12 +59,15 @@ export function ReportHeader({
               back-link, keeping this on a phone squeezes the flex row until
               the nav text wraps mid-word ("한 / 국 / 어"). */}
           <span className="hidden h-4 w-px bg-white/20 sm:block" />
+          {/* The site's name, not the section's. Both sections hang off it,
+              so this stays put when the reader moves between the tabs; the
+              tab bar below the masthead is what says which half you are in. */}
           <span className="hidden whitespace-nowrap font-report-mono text-xs uppercase tracking-[0.13em] text-[#B7B4C2] sm:inline">
-            Technical reports
+            WIG-log
           </span>
         </Link>
         <div className="flex shrink-0 items-center gap-4 font-report-mono text-[12px] uppercase tracking-[0.1em] sm:gap-5 sm:text-[13px]">
-          {/* Hidden below sm for the same reason the "Technical reports" label
+          {/* Hidden below sm for the same reason the WIG-log label
               is: three items plus the wordmark overflow a 375px row, and the
               nav text starts wrapping mid-word. The footer carries all three
               unconditionally, so a phone still has the route. */}
@@ -94,7 +97,7 @@ export function ReportFooter({ locale }: { locale: ReportLocale }) {
   return (
     <footer className="border-t border-[#D8DDE5] bg-[#F7F8FA]">
       <div className="mx-auto flex max-w-[1180px] flex-col gap-3 px-5 py-8 font-report-mono text-[12px] uppercase tracking-[0.08em] text-[#667085] sm:flex-row sm:items-center sm:justify-between md:px-8">
-        <span>WIGTN Technical Reports</span>
+        <span>WIG-log</span>
         <span>
           {locale === "ko"
             ? "방법 · 측정 · 한계"

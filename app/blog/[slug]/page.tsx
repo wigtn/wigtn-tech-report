@@ -22,14 +22,14 @@ export async function generateMetadata({
   const canonical = `${SITE_URL}/blog/${post.slug}/`;
 
   return {
-    title: `${post.title} | WIGTN Tech`,
+    title: post.title,
     description: post.dek,
     alternates: { canonical },
     openGraph: {
       title: post.title,
       description: post.dek,
       url: canonical,
-      siteName: "WIGTN Tech",
+      siteName: "WIG-log",
       type: "article",
       publishedTime: post.date,
       images: [{ url: `${SITE_URL}${post.cover.src}` }],

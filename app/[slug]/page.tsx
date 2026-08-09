@@ -36,7 +36,7 @@ export async function generateMetadata({
       title: `${project.shortTitle}: ${project.title}`,
       description: project.dek,
       url: canonical,
-      siteName: "WIGTN Tech",
+      siteName: "WIG-log",
       type: "article",
       publishedTime: project.date,
     },
