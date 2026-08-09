@@ -1,3 +1,112 @@
+/**
+ * Update: Snowflake AI & Data Hackathon Korea 2026: hackathon report.
+ *
+ * MOVED. This post was written in wigtn-webpage under
+ * `mockups/research-led/updates/<slug>/index.ts` and came here on 2026-08-09
+ * with the other three story posts. Everything below is the record it was
+ * written with; it is kept because it is what stops a future editor from
+ * "fixing" a number that is right. References to that repo's layout have been
+ * rewritten to point at this one; the substance is unchanged, and the original
+ * is in that repo's git history.
+ *
+ * Images live under `public/images/blog/snowflake-korea-2026/` and are
+ * addressed as strings through `assetPath`, not imported. That is this
+ * site's convention, and it means a rename reaches production as a broken
+ * frame rather than a build error.
+ *
+ * Follows the hackathon template (`../_template/hackathon/STRUCTURE.md`):
+ * lede → brief and constraints → what we built → the bet → what shipped → the
+ * result → what survived. Two deviations from that outline, both deliberate:
+ *
+ *   1. The code-path audit gets its own section between "the result" and
+ *      "what survived". STRUCTURE.md files it under one of those two, but it
+ *      is the spine of this post and it does not fit inside either as a
+ *      subordinate clause.
+ *   2. There is no hour or commit count in "what shipped". We do not have a
+ *      clean one for the month, and the template is explicit that an invented
+ *      number is worse than a missing one. The post says so out loud rather
+ *      than quietly skipping the section.
+ *
+ * WHERE THE NUMBERS COME FROM
+ *
+ *   Event facts: March 17 kickoff, April 29 finals, "more than 500"
+ *   participants, two tracks with three finalists each, the three judging
+ *   criteria, the four Marketplace datasets, and the Tech Track placings: *   come from Snowflake's Newswire announcement (no. 1033575), linked in
+ *   `links` as "Press".
+ *
+ *   There is no tech-report link. WIGTN Flake had a report on the report site
+ *   and it was removed, on the grounds that a hackathon build is a thing the
+ *   team did rather than a finding. This post is now the only account of the
+ *   project, which is why the audit section below stays long.
+ *
+ *   System facts, the streaming benchmark (17.3s / 1,657 chars / 0 garbage
+ *   tokens against snowflake-llama-3.3-70b's 38.4s) and the audit came from
+ *   `constants/wigtn-flake-sections.ts`, itself sourced from the
+ *   wigtn-for-snowflake repository README and PRD. That file was deleted with
+ *   the /projects tree; the WIGTN Flake tech report is the live source now.
+ *
+ * THE CAPABILITY COUNT IS SEVEN, NOT ELEVEN: DO NOT "CORRECT" IT BACK.
+ *
+ *   The April presentation claimed eleven Cortex capabilities across four
+ *   datasets. A later code-path audit cut that to seven capabilities across
+ *   three actively selected datasets: NextTrade was connected but never
+ *   actively selected, Cortex Agent was dead code, and TOP_INSIGHTS fell back
+ *   to dynamic-table SQL. Seven and three are the audited numbers and they are
+ *   what the whole post argues for. The eleven and the four still appear in
+ *   two places on purpose: printed on the architecture diagram and on the
+ *   dataset slide, both of which are photographs of the deck as presented.
+ *   Their captions say so. The deleted `constants/wigtn-flake-sections.ts`
+ *   carried the pre-audit "11" and "4" in its by-the-numbers table; if that
+ *   table resurfaces anywhere, it is not a source for this post.
+ *
+ * NAMING
+ *
+ *   Competing teams are named as teams; their individual members are not,
+ *   even though the press release lists some. Judges are referred to by the
+ *   rubric they applied rather than by name, because the only quotes we have
+ *   are machine translations of a Korean press release and a misattributed
+ *   quote is worse than no quote.
+ *
+ *   There is no teammate credits line. The WIGTN Flake roster is not recorded
+ *   anywhere in this repository and the template's rule is to cut rather than
+ *   guess. If you know who built it, add the line: that is an addition, not
+ *   a correction.
+ *
+ * IMAGES
+ *
+ *   All five were prepped from `public/images/`. Four came from
+ *   `public/images/projects/`, which were kept while the /projects page read
+ *   them, and `winners-on-stage.jpg` from `public/images/news/snowflake.jpeg`,
+ *   which nothing else read. /projects is gone and so is the whole legacy
+ *   image store, so the files under `public/images/blog/snowflake-korea-2026/`
+ *   are the only copies. One exception: `winners-on-stage.jpg` also stayed
+ *   behind in wigtn-webpage as a milestone cover, under `milestones/`
+ *   there.
+ *
+ *   Three of the five came from Display P3 originals and are converted to
+ *   sRGB before the strip: `final-round-stage`, `tech-track-top3` and
+ *   `datasets-slide`. Dropping the profile without converting leaves P3 values
+ *   that the browser reads as sRGB, and the stage lighting in these shots is
+ *   exactly the saturated content that shows it: the dataset slide measures
+ *   52% off at its worst pixel. `three-layer-architecture.jpg` and
+ *   `winners-on-stage.jpg` carried no profile at all; there was nothing to
+ *   convert, and both reproduce bit-exact under a plain strip.
+ *
+ *   Five images is more than the hackathon template's "two or three", and
+ *   deliberately: they do five different jobs: the winners, the room, the
+ *   placing slide, the architecture, and the dataset slide the audit section
+ *   argues against. Drop one and a section loses its evidence. If a sixth
+ *   stage shot ever gets added, that one is a third crowd shot and the budget
+ *   should win.
+ *
+ *   Two full-width `image` blocks, for two different reasons, both deliberate:
+ *   the architecture diagram is 1028px wide natively, so the breakout renders
+ *   it at about 1:1 and any gallery crop would cut a layer off it; the dataset
+ *   slide is a 16:9 photo like the two in the gallery above it, but it carries
+ *   fine print the reader has to be able to follow against the audit section,
+ *   and at gallery width that print closes up.
+ */
+
 import type { BlogPost } from "../data";
 
 export const snowflakeKorea2026: BlogPost = {

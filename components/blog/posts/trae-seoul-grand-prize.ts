@@ -1,3 +1,62 @@
+/**
+ * Update: Build with TRAE Seoul (ByteDance), March 2026: hackathon report.
+ *
+ * MOVED. This post was written in wigtn-webpage under
+ * `mockups/research-led/updates/<slug>/index.ts` and came here on 2026-08-09
+ * with the other three story posts. Everything below is the record it was
+ * written with; it is kept because it is what stops a future editor from
+ * "fixing" a number that is right. References to that repo's layout have been
+ * rewritten to point at this one; the substance is unchanged, and the original
+ * is in that repo's git history.
+ *
+ * Images live under `public/images/blog/trae-seoul-grand-prize/` and are
+ * addressed as strings through `assetPath`, not imported. A rename therefore
+ * breaks quietly at runtime rather than loudly at build time.
+ *
+ * Follows `../_template/hackathon`: lede → the brief and the constraints
+ * → what we built → the bet → what shipped and in how long → the result →
+ * what survived → built by. Read `../_template/README.md` for the rules every
+ * template shares, including the field-name map from the old Article type.
+ *
+ * Every figure here came from the WIGENT project page that used to live in
+ * `constants/wigent-sections.ts`, which carried the 12:30 to 16:00 timeline,
+ * the commit log and the by-the-numbers table, or from the award certificate
+ * that runs as the cover. Nothing is rounded, restated or inferred. That
+ * constants file was deleted with the /projects tree; this post is now the
+ * surviving account of the build, and git history has the rest.
+ *
+ * One number will look wrong to a future editor: the post says 26 commits,
+ * and the repo's main branch shows a higher count today. 26 is the figure the
+ * project timeline gives for the 3.5-hour window, which is what this post is
+ * about. Do not reconcile the two by editing the post upward.
+ *
+ * Editorial decisions worth knowing before you undo one:
+ *
+ * - The prize amount (KRW 500,000) and the certificate number are printed on
+ *   the cover image in plain sight, so the post states them rather than being
+ *   coy about a figure the reader can already see.
+ * - The team wrote WIGENT with Claude Code, at a hackathon named for
+ *   ByteDance's TRAE. It is in the source and it is load-bearing for the
+ *   55-minute claim, so it stays. It is stated once, flatly, and is not made
+ *   into a joke at the organizer's expense.
+ * - Template section 7 ("what survived") is scoped to what we can point at:
+ *   what was thrown away inside the 3.5 hours, what the team listed as
+ *   knowingly unfinished, and the one observable follow-on (the Snowflake
+ *   build a month later is again a panel of experts arguing over evidence).
+ *   There is no evidence for "this became how we start every project", so no
+ *   such claim is made.
+ * - The certificate is the cover, and the hero crops it 2:1; the band that
+ *   survives the crop is the one with the placing and the names on it.
+ * - The stage photo's original carries EXIF Orientation=6, so `-auto-orient`
+ *   is not optional here: without it `-strip` removes the tag the browser was
+ *   relying on and the shot ships sideways. It is now portrait, and portrait
+ *   shots never run as a full-width `image` block: it goes in a gallery with
+ *   `aspect: "3/4"`, which caps a lone portrait at 460px.
+ * - Both originals are Display P3 and are converted to sRGB before the strip.
+ *   Skipping that leaves P3 pixel values labelled as sRGB, which the browser
+ *   renders too hot; it is not recoverable from the committed file.
+ */
+
 import type { BlogPost } from "../data";
 
 export const traeSeoulGrandPrize: BlogPost = {

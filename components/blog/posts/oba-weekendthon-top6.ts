@@ -1,3 +1,71 @@
+/**
+ * Update: OBA Weekendthon S1, Kakao AI Campus: hackathon report.
+ *
+ * MOVED. This post was written in wigtn-webpage under
+ * `mockups/research-led/updates/<slug>/index.ts` and came here on 2026-08-09
+ * with the other three story posts. Everything below is the record it was
+ * written with; it is kept because it is what stops a future editor from
+ * "fixing" a number that is right. References to that repo's layout have been
+ * rewritten to point at this one; the substance is unchanged, and the original
+ * is in that repo's git history.
+ *
+ * The image lives under `public/images/blog/oba-weekendthon-top6/` and is
+ * addressed as a string through `assetPath`, not imported, which is this
+ * site's convention for every figure. Follows the hackathon template
+ * (`../_template/hackathon/STRUCTURE.md`): lede → the brief and the
+ * constraints → what we built → the bet → what shipped → the result.
+ *
+ * Sources, and nothing outside them:
+ *   - the event page, https://luma.com/y3nz68hw: dates, hours, venue, the
+ *     fifty-person cap, teams of up to three, the Open API rule, the ten-plus
+ *     API-sharing companies, the 50/50 judging split, the first-evening pitch;
+ *   - the repo README, https://github.com/wigtn/myunzy-hackathone: the stack,
+ *     the four personas, the mock-first architecture, the env-var promotion
+ *     path, what is mocked and what is live, the pending adapters;
+ *   - the repo's own commit log via the GitHub API: eight commits, all on
+ *     31 May, and the two merged pull requests;
+ *   - the photo under `public/images/blog/oba-weekendthon-top6/`, which is a
+ *     picture of the event's sponsor
+ *     board and is therefore also a source. At native resolution it gives the
+ *     dates, the venue, and the sponsor tiers by name: 주최 (Hashed, Market
+ *     Fit Lab, vooy), Main (OpenAI), Premium (Nexon, LG U+, GS Neotek), and
+ *     the ten-company API Sponsor row. The tiers are distinct and the post
+ *     keeps them distinct; an earlier draft called Nexon and LG U+ API
+ *     sponsors, which the board contradicts.
+ *
+ * Two editorial decisions a future editor would otherwise undo:
+ *
+ * 1. **The "what survived" section is deliberately absent.** The template
+ *    names it as the section that carries a hackathon post, and it is, but
+ *    nothing in any of the sources says which parts of this build the team
+ *    still runs. Writing that list would have meant inventing it. Cut instead.
+ *    If someone later confirms what carried forward, that is the section to
+ *    add, and it goes after "Top 6".
+ *
+ * 2. **The commit count is presented as a count of what was pushed, not of
+ *    what was built**, because the public repo was created at 13:51 on the
+ *    second day. Eight commits is real; "built in two hours" would not be.
+ *
+ * One photo, and that is the whole budget: it is the only image that exists
+ * for this event. Do not fill the gap with a stock shot or borrow a figure
+ * from another project. A one-image post is fine; an invented one is not.
+ *
+ * That one photo does two jobs, and they want different framings. In the body
+ * it runs in a gallery at `aspect: "3/4"`, uncropped, so the shape of the
+ * board survives. As the cover it is cropped 2:1 by the hero and 4:3 by the
+ * blog list card, which keeps the title art: the event name, the dates, the venue
+ *: and drops the board. That is the right trade for a cover: it says what
+ * this was and when, and the board is two paragraphs down. Do not swap the
+ * cover for a board crop to "fix" the hero; the body already carries it.
+ *
+ * What the body does NOT do is let you read the individual logos. A solo 3/4
+ * gallery is capped at 460px by BlogPostPage, so the sponsor rows are legible
+ * as rows and the logos inside them are about 30px wide. The caption therefore
+ * describes what the row *is* rather than inviting the reader to read it off
+ * the picture, and every company named in the prose is named there because a
+ * source says so, not because it can be made out in the photo.
+ */
+
 import type { BlogPost } from "../data";
 
 export const obaWeekendthonTop6: BlogPost = {

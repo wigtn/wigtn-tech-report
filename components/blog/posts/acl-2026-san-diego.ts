@@ -1,3 +1,42 @@
+/**
+ * Update: ACL 2026 / IWSLT 2026, San Diego: trip report.
+ *
+ * MOVED. This post was written in wigtn-webpage under
+ * `mockups/research-led/updates/<slug>/index.ts` and came here on 2026-08-09
+ * with the other three story posts. Everything below is the record it was
+ * written with; it is kept because it is what stops a future editor from
+ * "fixing" a number that is right. References to that repo's layout have been
+ * rewritten to point at this one; the substance is unchanged, and the original
+ * is in that repo's git history.
+ *
+ * Images are no longer colocated. They live under
+ * `public/images/blog/acl-2026-san-diego/` and are addressed as strings
+ * through `assetPath`, because this site builds under a GitHub Pages
+ * basePath and every other figure on it already resolves that way. The cost
+ * is the one the original arrangement was avoiding: a rename now reaches
+ * production as a broken frame instead of a build error. Check the folder
+ * when you rename.
+ *
+ * Structure follows the standard conference-recap shape: arrival → what we
+ * brought → what happened on the floor → what people asked → the side
+ * sessions → what we are changing → thanks. The "what changes" section is
+ * deliberately a list of decisions, not a reflection: a recap that ends on
+ * "it was inspiring" tells the reader nothing they can use.
+ *
+ * Every number here comes from the WIGVO system paper (ACL 2026 System
+ * Demonstrations, pp. 336-344) and its tech report. Do not add figures that
+ * are not in that source.
+ *
+ * Naming people: Jan Niehues, Antonios Anastasopoulos and Marcello Federico
+ * are named with their roles as listed in the IWSLT 2026 proceedings. Visitor
+ * photos name the company only, never the individual, and the section carries
+ * an explicit no-endorsement line: conference interest is not adoption.
+ *
+ * Portrait photos never run as a full-width `image` block: at the 1080px media
+ * breakout a 3:4 shot is 1440px tall and buries what follows. They go in a
+ * gallery instead, where `aspect: "3/4"` caps a lone portrait at 460px.
+ */
+
 import type { BlogPost } from "../data";
 
 export const aclSanDiego2026: BlogPost = {
