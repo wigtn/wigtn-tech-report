@@ -6,6 +6,8 @@ import {
   getResearchProject,
 } from "@/components/technical-reports/data";
 
+/* The static route /feed takes precedence over this segment, the way static
+ * routes always do, so report slugs and the feed can share the root. */
 export function generateStaticParams() {
   return RESEARCH_PROJECTS.map((project) => ({ slug: project.slug }));
 }
@@ -36,9 +38,12 @@ export async function generateMetadata({
       title: `${project.shortTitle}: ${project.title}`,
       description: project.dek,
       url: canonical,
-      siteName: "WIGTN Tech",
+      siteName: "WIGTN TECH",
       type: "article",
-      publishedTime: project.date,
+      /* Report dates are dot-separated ("2026.07.28", "2026.07");
+         article:published_time must be ISO 8601, and both full dates and
+         year-month reduced precision survive the same swap. */
+      publishedTime: project.date.replaceAll(".", "-"),
     },
   };
 }

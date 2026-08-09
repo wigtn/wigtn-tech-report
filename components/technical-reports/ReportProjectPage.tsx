@@ -7,6 +7,7 @@ import {
   Play,
 } from "lucide-react";
 import { assetPath } from "@/lib/site";
+import { figureMaxWidth } from "../shared/figure";
 import {
   type ResearchFigure,
   type ResearchTable,
@@ -54,26 +55,6 @@ const PROJECT_COPY = {
   },
 } as const;
 
-/* Figures render at their own aspect ratio, with no frame around them.
- *
- * The previous version put every image inside a fixed 16:9 box with a border, a
- * grey fill and up to 32px of padding, then used object-contain. The images in
- * this repository run from 0.64:1 to 3.18:1, so that box was mostly empty for
- * most of them: the OmniDocBench chart is 3.18:1 and was losing 44% of its
- * height to grey, and the WIGVO pipeline diagram is taller than it is wide and
- * came out small in the middle of a landscape frame. A chart is already a
- * rectangle on white. Framing it adds a second rectangle and nothing else.
- *
- * The width cap comes from the measured ratio rather than a hand-set flag,
- * because the failure it prevents is a portrait image rendering 1300px tall. */
-function figureMaxWidth(figure: ResearchFigure) {
-  if (figure.portrait) return "max-w-[28rem]";
-  if (!figure.width || !figure.height) return "max-w-[52rem]";
-  const ratio = figure.width / figure.height;
-  if (ratio < 1) return "max-w-[28rem]";
-  if (ratio < 1.6) return "max-w-[42rem]";
-  return "max-w-[52rem]";
-}
 
 /* The byline names a person, not a department.
  *
