@@ -7,6 +7,7 @@ import {
   type ReportLocale,
 } from "./localized-data";
 import { ReportShell, reportHref } from "./ReportChrome";
+import { SectionTabs } from "../blog/SectionTabs";
 
 const HUB_COPY = {
   en: {
@@ -60,6 +61,8 @@ export function ReportHubPage({ locale = "en" }: { locale?: ReportLocale }) {
           </p>
         </div>
       </header>
+
+      <SectionTabs active="reports" />
 
       <section aria-labelledby="report-index-title">
         <div className="mx-auto max-w-[1180px] px-5 py-14 md:px-8 md:py-20">
