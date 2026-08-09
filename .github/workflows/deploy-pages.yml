@@ -15,9 +15,11 @@ concurrency:
   group: pages
   cancel-in-progress: false
 
+# The custom domain serves the site at its root, so there is no base path.
+# NEXT_PUBLIC_BASE_PATH stays unset on purpose — setting it again is the
+# github.io fallback, not a tweak.
 env:
-  NEXT_PUBLIC_BASE_PATH: /wigtn-tech-report
-  NEXT_PUBLIC_SITE_URL: https://wigtn.github.io/wigtn-tech-report
+  NEXT_PUBLIC_SITE_URL: https://tech.wigtn.com
 
 jobs:
   build:
