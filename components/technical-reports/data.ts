@@ -133,6 +133,256 @@ export type ResearchProject = {
 
 export const researchHref = (slug: string) => `/${slug}/`;
 
+const custosEvidenceGatedActivation: ResearchProject = {
+  slug: "custos-evidence-gated-activation",
+  shortTitle: "Custos",
+  title: "Evidence-gated rule activation for a self-evolving GitLab reviewer",
+  cardTitle: "Blocking unsafe self-written review rules before activation",
+  dek: "Custos can turn incidents into candidate rules, quarantine them and apply active rules to later GitLab reviews. On an authored synthetic fixture, an evidence-gated activation condition rejected all 180 negative scenario rows while accepting 24 of 30 positive fixture rows. This tests decision logic, not production rule graduations.",
+  language: "en",
+  track: "Agentic engineering",
+  status: "Engineering note",
+  format: "Hackathon prototype and mechanism regression",
+  date: "2026.08.05",
+  authorId: "hyeonsang-kim",
+  venue: "Built for Google Cloud Rapid Agent Hackathon 2026 · GitLab Track",
+  featured: true,
+  heroFigure: {
+    src: "/images/projects/custos_image_v1.jpg",
+    width: 1600,
+    height: 1000,
+    alt: "Custos routes candidate code-review rules through evidence gates, activating supported rules and stopping unsupported ones",
+    caption: "",
+  },
+  links: [
+    {
+      label: "Custos source repository",
+      href: "https://gitlab.com/wigtn1/wigtn-gitlab-custos",
+      primary: true,
+    },
+    {
+      label: "Activation-decision regression v1",
+      href: "https://gitlab.com/wigtn1/wigtn-gitlab-custos/-/tree/9db588a288ca459f9251ed758b9ec93f1aecfb84/artifacts/ablation/induction-v1-controlled",
+    },
+  ],
+  metrics: [
+    {
+      value: "72 → 0",
+      label: "Negative rows accepted, A3 → A4",
+      detail: "Paired authored scenarios; a 40-point reduction, not a production error estimate",
+    },
+    {
+      value: "24 / 30",
+      label: "Positive fixture rows accepted",
+      detail: "Six rows were attached to two broad pattern families rejected by the clean-code gate",
+    },
+    {
+      value: "9 → 0",
+      label: "Clean-pair hits, A1 → screened policies",
+      detail: "120 candidate–snippet pairs from 30 candidates and four reused clean snippets",
+    },
+    {
+      value: "2",
+      label: "Broad pattern families rejected",
+      detail: "open\\( and \\.get\\( accounted for all six rejected candidate rows",
+    },
+  ],
+  sections: [
+    {
+      id: "prototype",
+      eyebrow: "The prototype",
+      title: "Custos can write a rule, quarantine it and apply active rules to later reviews",
+      lead:
+        "WIGTN built Custos for the Google Cloud Rapid Agent Hackathon 2026 as a GitLab reviewer that can extend its own deterministic rule library from incidents.",
+      paragraphs: [
+        "For each merge request, three checker lenses are dispatched together. A combined Gemini critic augments their findings, then a deterministic Team Lead stage deduplicates them and calculates the final risk decision. This is not four independent LLM agents running in parallel; it is three analysis lenses, one combined model critique and one deterministic aggregation stage.",
+        "The induction path is separate. Gemini can synthesize a regex or Semgrep candidate from an incident, Custos stores it as quarantined with provenance to the source incident, and active induced rules can inspect later diffs. In this report, self-evolving means adding validated deterministic rules; it does not mean fine-tuning the model.",
+      ],
+      callout: {
+        label: "The product idea",
+        text: "Let the agent propose its next review rule, but do not let authorship by an AI count as evidence that the rule is safe to activate.",
+      },
+    },
+    {
+      id: "problem",
+      eyebrow: "The problem",
+      title: "A self-written rule can make the reviewer noisier instead of smarter",
+      paragraphs: [
+        "A candidate such as open\\( can flag an unmanaged file handle, but it also fires on an ordinary with open(...) block. A candidate such as \\.get\\( can match the intended network call and also normal configuration lookup or a health check. One broad rule is enough to put a comment on many clean merge requests.",
+        "That changes the design question. The hard part is not whether a model can emit a pattern. It is what evidence the pattern must earn before it may affect a real review.",
+      ],
+      callout: {
+        label: "Decision under test",
+        text: "What should a candidate rule have to prove before Custos moves it from quarantine to active review?",
+      },
+    },
+    {
+      id: "target-policy",
+      eyebrow: "Target policy",
+      title: "Three gates separate rule generation from activation",
+      lead: "The target policy treats missing evidence as a reason to hold, not as evidence of safety.",
+      steps: [
+        {
+          label: "Gate 1",
+          title: "Screen on non-empty clean code",
+          body: "Run the candidate on a known-clean corpus and require zero hits. An empty or unavailable corpus must fail the gate; otherwise a data-load failure is indistinguishable from perfect precision.",
+        },
+        {
+          label: "Gate 2",
+          title: "Quarantine",
+          body: "Store a passing candidate with its source incident and generation provenance, but give it no authority to comment on a merge request.",
+        },
+        {
+          label: "Gate 3",
+          title: "Require executable recurrence evidence",
+          body: "For a later incident in the same project, fetch the attached diff and execute the candidate. Only an actual hit can activate it; a missing diff or unavailable backend keeps the candidate quarantined.",
+        },
+      ],
+      callout: {
+        label: "Status",
+        text: "These gates describe the target A4 policy evaluated below. The current production graduation function does not yet enforce the complete path.",
+      },
+    },
+    {
+      id: "comparison",
+      eyebrow: "Comparison",
+      title: "Four activation decisions were checked on one frozen synthetic fixture",
+      table: {
+        caption: "Policy conditions",
+        headers: ["Policy", "Clean-code screen", "Quarantine", "Executable diff hit"],
+        rows: [
+          { cells: ["A1 · Active on creation", "✗", "✗", "✗"] },
+          { cells: ["A2 · Clean-code screen only", "✓", "✗", "✗"] },
+          { cells: ["A3 · Metadata activation", "✓", "✓", "✗"] },
+          { cells: ["A4 · Evidence-gated target", "✓", "✓", "✓"], highlight: true },
+        ],
+      },
+      paragraphs: [
+        "The fixture contains ten unique regex families, each repeated three times as 30 candidate rows. Four unique clean snippets are reused across those candidates, producing 120 candidate–snippet pairs. Each candidate also has seven authored scenario rows, producing 210 decision rows: 30 positive fixture rows and 180 negative rows.",
+        "The six negative scenario types are a same-file but unrelated change, the same path in another project, a matching event before the source incident, a same-project event in another file, a missing diff and an unavailable rule backend. Each candidate contributes one row of every type.",
+        "The candidates and labels were written by the team to expose the policy boundary. They are not 30 naturally observed projects, and the candidates in this regression are not frozen outputs from live Gemini generation.",
+        "The evaluator is stateless across rows. It asks what each policy would decide for one candidate–scenario pair; it does not replay generation, quarantine, first activation and later active use as a chronological rule lifecycle. The results therefore describe decision-logic regression, not production graduation rates.",
+      ],
+    },
+    {
+      id: "results",
+      eyebrow: "Results",
+      title: "Executable evidence removed the fixture's remaining negative decisions",
+      table: {
+        caption: "Independent candidate–scenario decisions in the authored fixture",
+        headers: [
+          "Policy",
+          "Negative rows accepted",
+          "Positive fixture rows accepted",
+          "Clean-code pair hits",
+        ],
+        rows: [
+          { cells: ["A1 · Active on creation", "180 / 180", "30 / 30", "9 / 120"] },
+          { cells: ["A2 · Clean-code screen only", "144 / 180", "24 / 30", "0 / 120"] },
+          { cells: ["A3 · Metadata activation", "72 / 180", "24 / 30", "0 / 120"] },
+          { cells: ["A4 · Evidence-gated target", "0 / 180", "24 / 30", "0 / 120"], highlight: true },
+        ],
+      },
+      paragraphs: [
+        "A3 passed 72 negative rows: 24 same-file but unrelated changes, 24 rows with no fetchable diff, and 24 rows where the rule backend was unavailable. A4 rejected all three groups because none contained executable evidence that the candidate matched.",
+        "The 0/180 result means the A4 condition function behaved as authored on this truth-table-style fixture. It does not estimate a production false-activation rate, and it does not mean that 24 rules were activated in a live Custos library.",
+      ],
+      callout: {
+        label: "What the regression establishes",
+        text: "On the authored boundary cases, metadata could not distinguish absence of evidence from evidence of recurrence; requiring an executable hit could.",
+      },
+    },
+    {
+      id: "cost",
+      eyebrow: "Cost",
+      title: "The clean-code gate rejected two useful but over-broad pattern families",
+      table: {
+        caption: "The six rejected candidate rows are three repetitions of each family",
+        headers: ["Candidate rows", "Pattern", "Normal code it also matched"],
+        rows: [
+          { cells: ["cand-025–027", "open\\(", 'with open("README.md") as handle:'] },
+          { cells: ["cand-028–030", "\\.get\\(", 'config.get("timeout", 5) · client.get("/health")'] },
+        ],
+      },
+      paragraphs: [
+        "Those two families produced all nine clean-code pair hits. Rejecting their six repeated candidate rows also rejected the six positive fixture rows attached to them. These are authored fixture rows, not six independently observed production incidents.",
+        "The next move is not to bypass the gate. The file rule should target unmanaged direct reads such as open(user_path).read(), and the request rule should identify the intended receiver and call shape rather than every .get() call. Where regex cannot express that context, a Semgrep AST rule is the appropriate candidate.",
+      ],
+    },
+    {
+      id: "implementation-gap",
+      eyebrow: "Implementation gap",
+      title: "The production graduation path is not yet the A4 policy",
+      paragraphs: [
+        "The current graduation function relies on later-incident file overlap and does not fetch that incident's diff and re-run the candidate before activation. Its recurrence check also needs explicit project isolation and ordering from candidate creation, not only from the source incident.",
+        "The clean-code path must also distinguish clean results from unavailable validation. An empty regex corpus can currently pass, and Semgrep execution failures can collapse into an empty-hit result. Until those states are separated, the production path is not fail-closed.",
+        "Corpus coverage is a separate production gap. At the audited ba967f4 revision, _golden_negative_lines() extracted 16 lines from ten should_not_trigger cases. The broad \\.get\\( pattern hit two lines and would be rejected, but open\\( hit none and would pass because the fixture's ordinary with open(...) example was absent. The gate's result therefore depends on what the clean corpus covers; the four-snippet report fixture is not the production corpus.",
+      ],
+      callout: {
+        label: "Current claim boundary",
+        text: "Custos implements rule generation, quarantine and active-rule application. This report validates the target activation condition on a synthetic mechanism fixture, not a completed production learning loop.",
+      },
+    },
+    {
+      id: "next-steps",
+      eyebrow: "Next steps",
+      title: "Connect the policy to production, then evaluate the complete lifecycle",
+      steps: [
+        {
+          label: "1",
+          title: "Make production enforce A4",
+          body: "Require the same project, an incident after candidate creation, a fetchable diff, an available backend and an actual candidate hit before activation.",
+        },
+        {
+          label: "2",
+          title: "Fail closed on unavailable validation",
+          body: "Represent clean, hit, unavailable and failed as separate outcomes for regex and Semgrep. Add regression tests for empty corpora, missing diffs, timeouts and parse failures.",
+        },
+        {
+          label: "3",
+          title: "Replay the state machine",
+          body: "Evaluate candidate generation, gating, quarantine, chronological incidents, first activation and later active-rule findings as separate stages rather than independent scenario decisions.",
+        },
+        {
+          label: "4",
+          title: "Test generated candidates on a holdout",
+          body: "Freeze actual Gemini outputs, use independently labeled project-and-time-separated incidents, and report activation precision, recurrence recall, review noise and time to activation.",
+        },
+        {
+          label: "5",
+          title: "Extend the published v1 packet",
+          body: "The pinned v1 packet publishes the evaluator, authored fixture, blind-label sheet, raw decisions, manifest and checksums. Add one chronological candidate-to-active trace with the state-machine replay in step 3 rather than presenting the stateless packet as lifecycle evidence.",
+        },
+      ],
+      callout: {
+        label: "Completion threshold",
+        text: "Call the learning loop shipped only after production enforces the evidence path and the chronological lifecycle holds on independently judged incidents.",
+      },
+    },
+    {
+      id: "verdict",
+      eyebrow: "In summary",
+      title: "The agent may propose its next rule; evidence decides whether that rule gets authority",
+      paragraphs: [
+        "Custos is a self-evolving GitLab-review prototype because it can synthesize, quarantine and later apply deterministic review rules. The useful design decision is that generation and activation are separate authorities.",
+        "The authored regression supports the target policy's mechanism: requiring an executable later-diff hit rejected every negative scenario row that metadata alone still accepted. It does not establish live graduation of 24 rules, production precision or generalization beyond the fixture.",
+      ],
+      callout: {
+        label: "Result",
+        text: "WIGTN built the rule-induction skeleton and tested an evidence-gated activation boundary. Production alignment and lifecycle evaluation remain the next release threshold.",
+      },
+    },
+  ],
+  limitations: [
+    "The comparison is an authored synthetic mechanism fixture: ten unique regex families are repeated as 30 candidate rows, and four unique clean snippets are reused across 120 candidate–snippet pairs.",
+    "The evaluator makes independent candidate–scenario decisions; it does not replay a chronological rule lifecycle or mutate the production store.",
+    "The regression uses team-authored regex candidates, not frozen candidates generated by Gemini, and it does not evaluate Semgrep candidates.",
+    "The production graduation function is not yet equivalent to A4 and does not currently support a fail-closed claim across missing validation and rule-execution failures.",
+    "No production false-activation rate, recurrence recall, review-noise rate or time-to-activation is established by this fixture.",
+    "The pinned v1 reproduction packet is public, but an independent project-and-time holdout and chronological lifecycle trace remain future thresholds.",
+  ],
+};
+
 const codexSelectiveHarness: ResearchProject = {
   slug: "codex-selective-harness",
   shortTitle: "WIGTN Plugin for Codex",
@@ -1534,6 +1784,7 @@ const wigtnCoding: ResearchProject = {
  * bottom. The series numbering in the titles is what carries the reading order;
  * the sort does not. */
 export const RESEARCH_PROJECTS: ResearchProject[] = [
+  custosEvidenceGatedActivation,
   codexSelectiveHarness,
   wigtnOcr,
   wigvo,
