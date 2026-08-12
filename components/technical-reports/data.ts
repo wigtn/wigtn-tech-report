@@ -134,7 +134,7 @@ export type ResearchProject = {
 export const researchHref = (slug: string) => `/${slug}/`;
 
 const custosEvidenceGatedActivation: ResearchProject = {
-  slug: "custos-fail-closed-induction",
+  slug: "custos-evidence-gated-activation",
   shortTitle: "Custos",
   title: "Evidence-gated rule activation for a self-evolving GitLab reviewer",
   cardTitle: "Blocking unsafe self-written review rules before activation",
@@ -145,10 +145,10 @@ const custosEvidenceGatedActivation: ResearchProject = {
   format: "Hackathon prototype and mechanism regression",
   date: "2026.08.05",
   authorId: "hyeonsang-kim",
-  venue: "Google Cloud Rapid Agent Hackathon 2026 · GitLab Track",
+  venue: "Built for Google Cloud Rapid Agent Hackathon 2026 · GitLab Track",
   featured: true,
   heroFigure: {
-    src: "/images/projects/custos_image_v1.png",
+    src: "/images/projects/custos_image_v1.jpg",
     width: 1600,
     height: 1000,
     alt: "Custos routes candidate code-review rules through evidence gates, activating supported rules and stopping unsupported ones",
@@ -160,12 +160,16 @@ const custosEvidenceGatedActivation: ResearchProject = {
       href: "https://gitlab.com/wigtn1/wigtn-gitlab-custos",
       primary: true,
     },
+    {
+      label: "Activation-decision regression v1",
+      href: "https://gitlab.com/wigtn1/wigtn-gitlab-custos/-/tree/9db588a288ca459f9251ed758b9ec93f1aecfb84/artifacts/ablation/induction-v1-controlled",
+    },
   ],
   metrics: [
     {
-      value: "0 / 180",
-      label: "Negative scenario rows accepted by A4",
-      detail: "Authored synthetic fixture; 72 of the same rows passed the metadata-only policy",
+      value: "72 → 0",
+      label: "Negative rows accepted, A3 → A4",
+      detail: "Paired authored scenarios; a 40-point reduction, not a production error estimate",
     },
     {
       value: "24 / 30",
@@ -173,9 +177,9 @@ const custosEvidenceGatedActivation: ResearchProject = {
       detail: "Six rows were attached to two broad pattern families rejected by the clean-code gate",
     },
     {
-      value: "0 / 120",
-      label: "Candidate–clean-snippet pairs hit after gating",
-      detail: "Four unique clean snippets were reused across the 30 candidate rows",
+      value: "9 → 0",
+      label: "Clean-pair hits, A1 → screened policies",
+      detail: "120 candidate–snippet pairs from 30 candidates and four reused clean snippets",
     },
     {
       value: "2",
@@ -255,6 +259,7 @@ const custosEvidenceGatedActivation: ResearchProject = {
       },
       paragraphs: [
         "The fixture contains ten unique regex families, each repeated three times as 30 candidate rows. Four unique clean snippets are reused across those candidates, producing 120 candidate–snippet pairs. Each candidate also has seven authored scenario rows, producing 210 decision rows: 30 positive fixture rows and 180 negative rows.",
+        "The six negative scenario types are a same-file but unrelated change, the same path in another project, a matching event before the source incident, a same-project event in another file, a missing diff and an unavailable rule backend. Each candidate contributes one row of every type.",
         "The candidates and labels were written by the team to expose the policy boundary. They are not 30 naturally observed projects, and the candidates in this regression are not frozen outputs from live Gemini generation.",
         "The evaluator is stateless across rows. It asks what each policy would decide for one candidate–scenario pair; it does not replay generation, quarantine, first activation and later active use as a chronological rule lifecycle. The results therefore describe decision-logic regression, not production graduation rates.",
       ],
@@ -311,6 +316,7 @@ const custosEvidenceGatedActivation: ResearchProject = {
       paragraphs: [
         "The current graduation function relies on later-incident file overlap and does not fetch that incident's diff and re-run the candidate before activation. Its recurrence check also needs explicit project isolation and ordering from candidate creation, not only from the source incident.",
         "The clean-code path must also distinguish clean results from unavailable validation. An empty regex corpus can currently pass, and Semgrep execution failures can collapse into an empty-hit result. Until those states are separated, the production path is not fail-closed.",
+        "Corpus coverage is a separate production gap. At the audited ba967f4 revision, _golden_negative_lines() extracted 16 lines from ten should_not_trigger cases. The broad \\.get\\( pattern hit two lines and would be rejected, but open\\( hit none and would pass because the fixture's ordinary with open(...) example was absent. The gate's result therefore depends on what the clean corpus covers; the four-snippet report fixture is not the production corpus.",
       ],
       callout: {
         label: "Current claim boundary",
@@ -344,8 +350,8 @@ const custosEvidenceGatedActivation: ResearchProject = {
         },
         {
           label: "5",
-          title: "Publish a reproducible packet",
-          body: "Release the evaluator, fixture, raw decisions, checksums and one end-to-end candidate-to-active trace from a clean, pinned source revision.",
+          title: "Extend the published v1 packet",
+          body: "The pinned v1 packet publishes the evaluator, authored fixture, blind-label sheet, raw decisions, manifest and checksums. Add one chronological candidate-to-active trace with the state-machine replay in step 3 rather than presenting the stateless packet as lifecycle evidence.",
         },
       ],
       callout: {
@@ -373,7 +379,7 @@ const custosEvidenceGatedActivation: ResearchProject = {
     "The regression uses team-authored regex candidates, not frozen candidates generated by Gemini, and it does not evaluate Semgrep candidates.",
     "The production graduation function is not yet equivalent to A4 and does not currently support a fail-closed claim across missing validation and rule-execution failures.",
     "No production false-activation rate, recurrence recall, review-noise rate or time-to-activation is established by this fixture.",
-    "An independent project-and-time holdout and a pinned public reproduction packet remain future thresholds.",
+    "The pinned v1 reproduction packet is public, but an independent project-and-time holdout and chronological lifecycle trace remain future thresholds.",
   ],
 };
 
