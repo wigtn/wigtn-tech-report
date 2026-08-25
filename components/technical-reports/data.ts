@@ -1549,9 +1549,8 @@ const rcps: ResearchProject = {
   /* Formal credit line: the paper is five-author, so the byline names the
    * report's author without dropping the other four. Same treatment as WIGVO,
    * but NOT WIGVO's order — this is the RCPS camera-ready order, with the
-   * corresponding author (Hyeong-seob Kim) last. The research repo's README
-   * §Authors still shows the older OpenReview submission order; the author's
-   * published CV records the confirmed one. */
+   * corresponding author (Hyeong-seob Kim) last, matching the research repo's
+   * README §Authors and the author's published CV. */
   authors: "Sang-Woo Son · Hyeonsang Kim · Hyun-woo Cho · Jinmo Kim · Hyeong-seob Kim",
   /* Brand banner: no caption and no `heroSectionId`, so it identifies the
    * report on the hub card and above section 01 and never poses as a figure. */
