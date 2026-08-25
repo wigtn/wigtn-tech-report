@@ -1520,6 +1520,171 @@ const wigtnCoding: ResearchProject = {
   ],
 };
 
+/* Published 2026.08.26 on acceptance to the EMNLP 2026 Industry Track. The
+ * report sat in drafts/ (gitignored) through the anonymity period, because the
+ * banner alone named the venue, the organisation and the title; the same
+ * article was pulled from wigtn.com on 2026-08-08 for that reason. Every figure
+ * is quoted at the precision the private WigtnOCR-RADP README uses — do not
+ * round them. */
+const rcps: ResearchProject = {
+  slug: "rcps",
+  shortTitle: "RCPS",
+  title: "Choosing document parsers by retrieval, not by appearance",
+  cardTitle: "The cleanest-looking parser retrieves worst",
+  dek: "Retrieval-Conditional Parsing Score ranks a document parser by the retrieval it enables rather than by how clean its output looks. The two do not agree: the parser with the highest boundary clarity retrieves worst, and parser choice alone moves Hit@1 by 35 points.",
+  track: "Models & evaluation",
+  /* Set together, from the acceptance notification, not from the poster. */
+  status: "Peer reviewed",
+  venue: "EMNLP 2026 Industry Track",
+  format: "Evaluation protocol",
+  date: "2026.08.26",
+  authorId: "sangwoo-son",
+  /* Formal credit line: the paper is five-author, so the byline names the
+   * report's author without dropping the other four. Same treatment as WIGVO. */
+  authors: "Hyeong-seob Kim · Sang-Woo Son · Hyun-woo Cho · Hyeonsang Kim · Jinmo Kim",
+  /* Brand banner: no caption and no `heroSectionId`, so it identifies the
+   * report on the hub card and above section 01 and never poses as a figure. */
+  heroFigure: {
+    src: "/images/projects/rcps_image_v1.png",
+    width: 1536,
+    height: 1024,
+    alt: "RCPS, Retrieval-Conditional Parsing Score",
+    caption: "",
+  },
+  links: [
+    {
+      label: "KoGovDoc-Bench",
+      href: "https://huggingface.co/datasets/Wigtn/KoGovDoc-Bench",
+      primary: true,
+    },
+    { label: "WigtnOCR v1", href: "https://huggingface.co/Wigtn/Qwen3-VL-2B-WigtnOCR" },
+  ],
+  metrics: [
+    {
+      value: "r = −0.81",
+      label: "Boundary Clarity vs retrieval",
+      detail: "Anti-correlated across 5 parsers",
+    },
+    {
+      value: "+35.1pp",
+      label: "Hit@1 from parser choice alone",
+      detail: "0.197 → 0.549, a 2.8× relative change",
+    },
+    {
+      value: "20.2%",
+      label: "Answers absent from parser output",
+      detail: "Against ≤2.3% split by chunking",
+    },
+    {
+      value: "+1.22pp",
+      label: "OHR-Bench Hit@5 from distillation",
+      detail: "[+0.35, +2.15] over 2,264 samples",
+    },
+  ],
+  sections: [
+    {
+      id: "problem",
+      eyebrow: "Problem",
+      title: "The cleanest parser was the worst retriever",
+      paragraphs: [
+        "A practitioner choosing a parser for a retrieval system runs the candidates, compares intrinsic parsing quality, and ships the one with the cleanest output. On Korean government PDFs that procedure selects MinerU, which tops the intrinsic grid on MoC Boundary Clarity at 0.72. Its retrieval Hit@1 is 0.20, the worst of the six parsers evaluated.",
+        "Across 6 parsers, 3 retrievers and 663 question-answer pairs, Boundary Clarity anti-correlates with retrieval at Pearson r = −0.81 over the five parsers where both are measured. Under controlled semantic-noise perturbation on English OHR-Bench, Boundary Clarity stays flat while retrieval collapses. The intrinsic metric is tracking formatting, and retrieval depends on content.",
+      ],
+      callout: {
+        label: "What the number means",
+        text: "Parser choice alone moves Hit@1 from 0.197 to 0.549, a 35.1-point change and 2.8× relative. That is a selection decision made before any training, and it is larger than most of what the pipeline layers above it can recover.",
+      },
+    },
+    {
+      id: "diagnostic",
+      eyebrow: "Diagnosis",
+      title: "Deciding which layer is at fault before running a retriever",
+      lead:
+        "A low retrieval score indicts the whole pipeline. This diagnostic localizes the fault to one layer, and it needs no retriever to compute.",
+      paragraphs: [
+        "Hold the parser output fixed, vary the chunker, and classify every gold answer three ways. Covered means the answer is present and whole in some chunk. Split means a boundary cut through it, which is a chunker fault and is recoverable with overlap. Absent means the answer is not in the parser output at all, which is a parser fault and no chunking strategy can recover it.",
+        "On this corpus 20.2% of answers are absent, against no more than 2.3% split, and the absent fraction stays constant across 8 different chunkers. The parser is dropping a fifth of the answers before chunking is even a question. Tuning the chunker cannot reach that.",
+      ],
+      callout: {
+        label: "The rule",
+        text: "If absent dominates, fix the parser. If split dominates, fix the chunker. It is computable before any retriever runs, which is what makes it usable early.",
+      },
+    },
+    {
+      id: "rcps",
+      eyebrow: "Protocol",
+      title: "RCPS: score the parser by what retrieval can recover",
+      lead:
+        "RCPS is not a new similarity function. It is ordinary retrieval MRR wrapped in three choices, none of which is novel alone and all of which change the ranking.",
+      steps: [
+        {
+          label: "Extrinsic",
+          title: "Score on a probe, not on the text",
+          body: "Held-out question-answer pairs decide the score, so the parser is judged on what a downstream reader can find rather than on how its markdown looks.",
+        },
+        {
+          label: "Retriever-averaged",
+          title: "Average over several embedders",
+          body: "BGE-M3, multilingual-e5-large and Qwen3-Embedding-8B, at k of 1, 5 and 10, so the ranking does not hinge on whichever embedder happens to be in production.",
+        },
+        {
+          label: "Format-normalised",
+          title: "Relevance ignores formatting",
+          body: "A chunk counts as relevant if its source page matches and the gold span appears in it as a substring, insensitive to whitespace and markdown.",
+        },
+      ],
+      paragraphs: [
+        "The protocol needs no training and runs on a few hundred held-out pairs. An ablation confirms it is not simply single-embedder MRR under a new name: retriever-averaging flips which parser comes first, and the naive ranking agrees with the averaged one only at Kendall τ = 0.80.",
+      ],
+    },
+    {
+      id: "training",
+      eyebrow: "What worked",
+      title: "One parser-side lever paid, and two did not",
+      lead:
+        "When the coverage diagnostic points at the parser, the next question is whether the parser can be trained toward retrieval. Three approaches, one result.",
+      steps: [
+        {
+          label: "Paid",
+          title: "Best-of-K fidelity distillation",
+          body: "RADP-Distill improves OHR-Bench Hit@5 by 1.22 points, with a confidence interval of +0.35 to +2.15 over 2,264 samples.",
+        },
+        {
+          label: "Sub-threshold",
+          title: "Hidden-state auxiliary loss",
+          body: "RADP-aux adds a contrastive term between the parser's pooled answer-span state and a frozen embedding. The signal reaches the deployed markdown only through diffuse gradient back-flow, and the effect stays below threshold.",
+        },
+        {
+          label: "Negative",
+          title: "Reference-free preference optimization",
+          body: "SimPO on the same preference data is negative.",
+        },
+      ],
+      callout: {
+        label: "The result we expected to be the paper",
+        text: "The retrieval-reward apparatus, sampling K parses and training on preference pairs scored by a page-local RCPS, is the part that looks most like a contribution and adds nothing measurable over fidelity-based selection. A matched control shows substantially overlapping confidence intervals. Selection, not training, is the headline.",
+      },
+    },
+    {
+      id: "limits",
+      eyebrow: "Boundaries",
+      title: "What this does not establish",
+      bullets: [
+        "The anti-correlation is measured over five parsers. It is a strong direction on a small n, not a law.",
+        "The corpus is Korean government documents. The same direction is reported independently in English and enterprise settings, but that is corroboration from other work rather than a result of this one.",
+        "RCPS ranks parsers for a given corpus and probe set. It does not predict how a parser will behave on a corpus it has not been scored on.",
+        "The distillation gain is one point on one benchmark. It is significant and it is small.",
+      ],
+    },
+  ],
+  limitations: [
+    "Boundary Clarity is one intrinsic metric among several; the disconnect is demonstrated against it and against edit distance, not against every intrinsic metric in use.",
+    "The retrieval-reward negative result is a null with overlapping intervals, which is evidence of no measurable gain rather than proof of no effect.",
+    "The evaluation uses pseudo-ground-truth for part of the corpus rather than human-curated answers throughout.",
+    "All figures come from one evaluation run per configuration except where a confidence interval is given.",
+  ],
+};
+
 
 /* Ordered by date, newest first, rather than by hand. `date` is zero-padded
  * "YYYY.MM" or "YYYY.MM.DD", so a plain string compare is already chronological;
@@ -1534,6 +1699,7 @@ const wigtnCoding: ResearchProject = {
  * bottom. The series numbering in the titles is what carries the reading order;
  * the sort does not. */
 export const RESEARCH_PROJECTS: ResearchProject[] = [
+  rcps,
   codexSelectiveHarness,
   wigtnOcr,
   wigvo,
