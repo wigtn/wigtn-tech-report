@@ -1523,15 +1523,22 @@ const wigtnCoding: ResearchProject = {
 /* Published 2026.08.26 on acceptance to the EMNLP 2026 Industry Track. The
  * report sat in drafts/ (gitignored) through the anonymity period, because the
  * banner alone named the venue, the organisation and the title; the same
- * article was pulled from wigtn.com on 2026-08-08 for that reason. Every figure
- * is quoted at the precision the private WigtnOCR-RADP README uses — do not
- * round them. */
+ * article was pulled from wigtn.com on 2026-08-08 for that reason.
+ *
+ * Every figure is quoted at the precision the private WigtnOCR-RADP README
+ * uses — do not round them. That README went through a version audit between
+ * the staged draft (2026-08-09) and publication, and the audit moved numbers:
+ * the correlation is r = −0.74 (not −0.81), the headline Hit@1 gap is 42.6
+ * points against the audited MinerU-on run (not 35.2 against the submitted-
+ * output diagnostic), and the distillation result was withdrawn outright when
+ * its per-QA artifact could not be recovered. Re-quote from the README, not
+ * from an earlier version of this report. */
 const rcps: ResearchProject = {
   slug: "rcps",
   shortTitle: "RCPS",
   title: "Choosing document parsers by retrieval, not by appearance",
   cardTitle: "The cleanest-looking parser retrieves worst",
-  dek: "Retrieval-Conditional Parsing Score ranks a document parser by the retrieval it enables rather than by how clean its output looks. The two do not agree: the parser with the highest boundary clarity retrieves worst, and parser choice alone moves Hit@1 by 35 points.",
+  dek: "Retrieval-Conditional Parsing Score ranks a document parser by the retrieval it enables rather than by how clean its output looks. The two do not agree: the parser with the highest boundary clarity retrieves worst, and parser choice alone moves Hit@1 by 42.6 points.",
   track: "Models & evaluation",
   /* Set together, from the acceptance notification, not from the poster. */
   status: "Peer reviewed",
@@ -1561,14 +1568,14 @@ const rcps: ResearchProject = {
   ],
   metrics: [
     {
-      value: "r = −0.81",
+      value: "r = −0.74",
       label: "Boundary Clarity vs retrieval",
-      detail: "Anti-correlated across 5 parsers",
+      detail: "Anti-correlated, audited deployment grid",
     },
     {
-      value: "+35.1pp",
+      value: "+42.6pp",
       label: "Hit@1 from parser choice alone",
-      detail: "0.197 → 0.549, a 2.8× relative change",
+      detail: "0.123 → 0.549, 4.47× relative",
     },
     {
       value: "20.2%",
@@ -1576,9 +1583,9 @@ const rcps: ResearchProject = {
       detail: "Against ≤2.3% split by chunking",
     },
     {
-      value: "+1.22pp",
-      label: "OHR-Bench Hit@5 from distillation",
-      detail: "[+0.35, +2.15] over 2,264 samples",
+      value: "+1.15pp",
+      label: "OHR-Bench Hit@5 from DPO training",
+      detail: "[+0.31, +2.05] over 2,036 samples",
     },
   ],
   sections: [
@@ -1587,12 +1594,12 @@ const rcps: ResearchProject = {
       eyebrow: "Problem",
       title: "The cleanest parser was the worst retriever",
       paragraphs: [
-        "A practitioner choosing a parser for a retrieval system runs the candidates, compares intrinsic parsing quality, and ships the one with the cleanest output. On Korean government PDFs that procedure selects MinerU, which tops the intrinsic grid on MoC Boundary Clarity at 0.72. Its retrieval Hit@1 is 0.20, the worst of the six parsers evaluated.",
-        "Across 6 parsers, 3 retrievers and 663 question-answer pairs, Boundary Clarity anti-correlates with retrieval at Pearson r = −0.81 over the five parsers where both are measured. Under controlled semantic-noise perturbation on English OHR-Bench, Boundary Clarity stays flat while retrieval collapses. The intrinsic metric is tracking formatting, and retrieval depends on content.",
+        "A practitioner choosing a parser for a retrieval system runs the candidates, compares intrinsic parsing quality, and ships the one with the cleanest output. On Korean government PDFs that procedure selects MinerU, whose audited table-enabled run tops the deployment grid on MoC Boundary Clarity at 0.713. Its retrieval Hit@1 is 0.123, the worst of the five complete configurations evaluated.",
+        "Across those five configurations, three retrievers and 663 question-answer pairs, Boundary Clarity anti-correlates with retrieval: Pearson r = −0.74 over the four parsers where both are measured, −0.83 when a fifth, 38-page partial run is added, both reported descriptively. Under controlled semantic-noise perturbation on English OHR-Bench, retrieval collapses while Boundary Clarity holds still or moves the other way — one parser's clarity rises as its retrieval falls. The intrinsic metric is tracking formatting, and retrieval depends on content.",
       ],
       callout: {
         label: "What the number means",
-        text: "Parser choice alone moves Hit@1 from 0.197 to 0.549, a 35.1-point change and 2.8× relative. That is a selection decision made before any training, and it is larger than most of what the pipeline layers above it can recover.",
+        text: "Parser choice alone moves Hit@1 from 0.123 to 0.549, a 42.6-point change and 4.47× relative. That is a selection decision made before any training, and it is larger than most of what the pipeline layers above it can recover.",
       },
     },
     {
@@ -1602,7 +1609,7 @@ const rcps: ResearchProject = {
       lead:
         "A low retrieval score indicts the whole pipeline. This diagnostic localizes the fault to one layer, and it needs no retriever to compute.",
       paragraphs: [
-        "Hold the parser output fixed, vary the chunker, and classify every gold answer three ways. Covered means the answer is present and whole in some chunk. Split means a boundary cut through it, which is a chunker fault and is recoverable with overlap. Absent means the answer is not in the parser output at all, which is a parser fault and no chunking strategy can recover it.",
+        "Hold the parser output fixed, vary the chunker, and classify every gold answer three ways. Covered means the answer is present and whole in some chunk. Split means a boundary cut through it, which is a chunker fault and is recoverable with overlap. Absent means the answer has no exact match in the parser's normalised output, which is a parser fault and no chunking strategy can recover as an exact span.",
         "On this corpus 20.2% of answers are absent, against no more than 2.3% split, and the absent fraction stays constant across 8 different chunkers. The parser is dropping a fifth of the answers before chunking is even a question. Tuning the chunker cannot reach that.",
       ],
       callout: {
@@ -1634,35 +1641,35 @@ const rcps: ResearchProject = {
         },
       ],
       paragraphs: [
-        "The protocol needs no training and runs on a few hundred held-out pairs. An ablation confirms it is not simply single-embedder MRR under a new name: retriever-averaging flips which parser comes first, and the naive ranking agrees with the averaged one only at Kendall τ = 0.80.",
+        "The protocol needs no training and runs on a few hundred held-out pairs. An ablation confirms it is not simply single-embedder MRR under a new name: scoring with BGE-M3 alone inverts which parser comes first — the production parser, where full RCPS puts the 30B teacher first — and the rankings otherwise agree at Kendall τ = 0.80.",
       ],
     },
     {
       id: "training",
-      eyebrow: "What worked",
-      title: "One parser-side lever paid, and two did not",
+      eyebrow: "Training",
+      title: "Parser-side training buys about a point",
       lead:
-        "When the coverage diagnostic points at the parser, the next question is whether the parser can be trained toward retrieval. Three approaches, one result.",
+        "When the coverage diagnostic points at the parser, the next question is whether the parser can be trained toward retrieval. Three approaches; none meets the pre-specified pilot target.",
       steps: [
         {
-          label: "Paid",
-          title: "Best-of-K fidelity distillation",
-          body: "RADP-Distill improves OHR-Bench Hit@5 by 1.22 points, with a confidence interval of +0.35 to +2.15 over 2,264 samples.",
+          label: "About a point",
+          title: "Retrieval-reward DPO",
+          body: "RADP-DPO samples K parses, scores them with a page-local retrieval reward, and trains on the resulting preference pairs. On the post-audit six-domain OHR-Bench subset its two checkpoints improve Hit@5 over the production parser by 0.95 and 1.15 points, with confidence intervals of [+0.33, +1.54] and [+0.31, +2.05] over 2,036 samples.",
         },
         {
           label: "Sub-threshold",
           title: "Hidden-state auxiliary loss",
-          body: "RADP-aux adds a contrastive term between the parser's pooled answer-span state and a frozen embedding. The signal reaches the deployed markdown only through diffuse gradient back-flow, and the effect stays below threshold.",
+          body: "RADP-aux adds a contrastive term between the parser's pooled answer-span state and a frozen embedding. The signal reaches the deployed markdown only through diffuse gradient back-flow, and its best pilot estimate stays below the pre-specified success criterion.",
         },
         {
-          label: "Negative",
+          label: "Inconclusive",
           title: "Reference-free preference optimization",
-          body: "SimPO on the same preference data is negative.",
+          body: "SimPO on the same preference data has negative point estimates, −0.85 and −0.70 Hit@5 depending on the chunker, but both confidence intervals cross zero.",
         },
       ],
       callout: {
         label: "The result we expected to be the paper",
-        text: "The retrieval-reward apparatus, sampling K parses and training on preference pairs scored by a page-local RCPS, is the part that looks most like a contribution and adds nothing measurable over fidelity-based selection. A matched control shows substantially overlapping confidence intervals. Selection, not training, is the headline.",
+        text: "The pre-specified pilot target — at least five RCPS points with a confidence interval clear of zero — is missed by every trained variant, and the planned fidelity-distillation control cannot be compared at all: the version audit could not recover its per-QA artifact, so no distillation-versus-DPO claim survives. Selection moves Hit@1 by 42.6 points; training moves Hit@5 by about one. Selection, not training, is the headline.",
       },
     },
     {
@@ -1670,16 +1677,16 @@ const rcps: ResearchProject = {
       eyebrow: "Boundaries",
       title: "What this does not establish",
       bullets: [
-        "The anti-correlation is measured over five parsers. It is a strong direction on a small n, not a law.",
+        "The anti-correlation is measured over four complete parser configurations, five with a 38-page partial run, and is reported descriptively. It is a strong direction on a small n, not a law.",
         "The corpus is Korean government documents. The same direction is reported independently in English and enterprise settings, but that is corroboration from other work rather than a result of this one.",
         "RCPS ranks parsers for a given corpus and probe set. It does not predict how a parser will behave on a corpus it has not been scored on.",
-        "The distillation gain is one point on one benchmark. It is significant and it is small.",
+        "The training gain is about one point of Hit@5 on a compatibility subset defined after a version audit — neither the original confirmatory analysis nor a full OHR-Bench v2 evaluation.",
       ],
     },
   ],
   limitations: [
     "Boundary Clarity is one intrinsic metric among several; the disconnect is demonstrated against it and against edit distance, not against every intrinsic metric in use.",
-    "The retrieval-reward negative result is a null with overlapping intervals, which is evidence of no measurable gain rather than proof of no effect.",
+    "The fidelity-distillation control's aligned per-QA artifact is unavailable, so the report makes no distillation-versus-DPO comparison; the DPO gains stand without their planned fidelity baseline.",
     "The evaluation uses pseudo-ground-truth for part of the corpus rather than human-curated answers throughout.",
     "All figures come from one evaluation run per configuration except where a confidence interval is given.",
   ],
