@@ -1547,8 +1547,10 @@ const rcps: ResearchProject = {
   date: "2026.08.26",
   authorId: "sangwoo-son",
   /* Formal credit line: the paper is five-author, so the byline names the
-   * report's author without dropping the other four. Same treatment as WIGVO. */
-  authors: "Hyeong-seob Kim · Sang-Woo Son · Hyun-woo Cho · Hyeonsang Kim · Jinmo Kim",
+   * report's author without dropping the other four. Same treatment as WIGVO,
+   * but NOT WIGVO's order — this is the RCPS paper's OpenReview order, which
+   * the camera-ready plan fixes as submitted. */
+  authors: "Sang-Woo Son · Hyeong-seob Kim · Hyeonsang Kim · Hyun-woo Cho · Jinmo Kim",
   /* Brand banner: no caption and no `heroSectionId`, so it identifies the
    * report on the hub card and above section 01 and never poses as a figure. */
   heroFigure: {
@@ -1609,8 +1611,8 @@ const rcps: ResearchProject = {
       lead:
         "A low retrieval score indicts the whole pipeline. This diagnostic localizes the fault to one layer, and it needs no retriever to compute.",
       paragraphs: [
-        "Hold the parser output fixed, vary the chunker, and classify every gold answer three ways. Covered means the answer is present and whole in some chunk. Split means a boundary cut through it, which is a chunker fault and is recoverable with overlap. Absent means the answer has no exact match in the parser's normalised output, which is a parser fault and no chunking strategy can recover as an exact span.",
-        "On this corpus 20.2% of answers are absent, against no more than 2.3% split, and the absent fraction stays constant across 8 different chunkers. The parser is dropping a fifth of the answers before chunking is even a question. Tuning the chunker cannot reach that.",
+        "Hold the parser output fixed, vary the chunker, and classify every gold answer three ways. Covered means the answer is present and whole in some chunk. Split means a boundary cut through it, which is a chunker fault and is recoverable with overlap. Absent means the answer has no exact match in the parser's normalised output, which points at the parser layer, and no chunking strategy can recover it as an exact span.",
+        "On this corpus 20.2% of answers are absent, against no more than 2.3% split, and the absent fraction stays constant across 8 different chunkers. A fifth of the answers have no exact match before chunking is even a question, and tuning the chunker cannot reach that — though an absent span can be a genuine omission or a recoverable surface-form mismatch, which only case-level review distinguishes.",
       ],
       callout: {
         label: "The rule",
@@ -1641,7 +1643,7 @@ const rcps: ResearchProject = {
         },
       ],
       paragraphs: [
-        "The protocol needs no training and runs on a few hundred held-out pairs. An ablation confirms it is not simply single-embedder MRR under a new name: scoring with BGE-M3 alone inverts which parser comes first — the production parser, where full RCPS puts the 30B teacher first — and the rankings otherwise agree at Kendall τ = 0.80.",
+        "The protocol needs no training and runs on a few hundred held-out pairs. An ablation confirms it is not simply single-embedder MRR under a new name: scoring with BGE-M3 alone inverts which parser comes first — the production parser, where full RCPS puts the near-tied 30B teacher first — and the rankings otherwise agree at Kendall τ = 0.80.",
       ],
     },
     {
@@ -1685,9 +1687,9 @@ const rcps: ResearchProject = {
     },
   ],
   limitations: [
-    "Boundary Clarity is one intrinsic metric among several; the disconnect is demonstrated against it and against edit distance, not against every intrinsic metric in use.",
+    "Boundary Clarity is one intrinsic metric among several; the disconnect is demonstrated against it, not against every intrinsic metric in use.",
     "The fidelity-distillation control's aligned per-QA artifact is unavailable, so the report makes no distillation-versus-DPO comparison; the DPO gains stand without their planned fidelity baseline.",
-    "The evaluation uses pseudo-ground-truth for part of the corpus rather than human-curated answers throughout.",
+    "The question-answer probe is LLM-generated throughout; a sampled check accepted 94 of 100 pairs, which is not human verification of the complete probe.",
     "All figures come from one evaluation run per configuration except where a confidence interval is given.",
   ],
 };
