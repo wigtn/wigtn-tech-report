@@ -49,6 +49,7 @@ export function ReportHubPage({ locale = "en" }: { locale?: ReportLocale }) {
               image: {
                 src: project.heroFigure.src,
                 alt: project.heroFigure.alt,
+                contain: project.heroFigure.contain,
               },
             },
           ]

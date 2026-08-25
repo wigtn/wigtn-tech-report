@@ -1553,13 +1553,17 @@ const rcps: ResearchProject = {
    * README §Authors and the author's published CV. */
   authors: "Sang-Woo Son · Hyeonsang Kim · Hyun-woo Cho · Jinmo Kim · Hyeong-seob Kim",
   /* Brand banner: no caption and no `heroSectionId`, so it identifies the
-   * report on the hub card and above section 01 and never poses as a figure. */
+   * report on the hub card and above section 01 and never poses as a figure.
+   * `contain`, because this art has no crop margins: a venue badge touches the
+   * top edge and the wordmark the bottom, and the 16:9/16:10 cover crops the
+   * other banners tolerate beheaded both. */
   heroFigure: {
     src: "/images/projects/rcps_image_v1.png",
     width: 1536,
     height: 1024,
     alt: "RCPS, Retrieval-Conditional Parsing Score",
     caption: "",
+    contain: true,
   },
   links: [
     {

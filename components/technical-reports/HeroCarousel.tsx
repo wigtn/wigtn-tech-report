@@ -39,7 +39,7 @@ export type HeroSlide = {
   dek: string;
   date: string;
   lang: string;
-  image: { src: string; alt: string };
+  image: { src: string; alt: string; contain?: boolean };
 };
 
 const CAROUSEL_COPY = {
@@ -228,16 +228,28 @@ export function HeroCarousel({
                   </div>
                 </div>
 
-                <div className="relative order-1 aspect-[16/9] overflow-hidden rounded-xl bg-[#F2F4F7] md:order-2">
-                  {/* All five banners are centred wordmark compositions, so a
-                      16:9 cover crop is safe even for the square one. */}
+                <div
+                  className={`relative order-1 aspect-[16/9] overflow-hidden rounded-xl md:order-2 ${
+                    slide.image.contain ? "bg-white" : "bg-[#F2F4F7]"
+                  }`}
+                >
+                  {/* Cover-cropping to 16:9 is safe only for banners whose art
+                      keeps clear margins around a centred wordmark. `contain`
+                      is the per-report escape hatch, same as the hub card and
+                      the report-page banner: the RCPS art carries a badge at
+                      the top edge and a wordmark at the bottom, and the crop
+                      beheaded both. The contained tile is white, not the gray
+                      of the cover tiles, so the pillarbox blends into that
+                      art's near-white ground instead of framing it. */}
                   <Image
                     src={assetPath(slide.image.src)}
                     alt={slide.image.alt}
                     fill
                     priority={i === 0}
                     sizes="(min-width: 1180px) 660px, (min-width: 768px) 55vw, 100vw"
-                    className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                    className={`transition-transform duration-300 group-hover:scale-[1.02] ${
+                      slide.image.contain ? "object-contain" : "object-cover"
+                    }`}
                   />
                 </div>
               </Link>
