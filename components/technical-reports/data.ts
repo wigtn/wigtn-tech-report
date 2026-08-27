@@ -1560,6 +1560,7 @@ const rcps: ResearchProject = {
     height: 1024,
     alt: "RCPS, Retrieval-Conditional Parsing Score",
     caption: "",
+    contain: true,
   },
   links: [
     {
