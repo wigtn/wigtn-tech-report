@@ -1563,17 +1563,9 @@ const rcps: ResearchProject = {
   },
   links: [
     {
-      label: "Research repository and RCPS implementation",
-      href: "https://github.com/wigtn/WigtnOCR-RADP",
-      primary: true,
-    },
-    {
-      label: "Camera-ready paper",
-      href: "https://github.com/wigtn/WigtnOCR-RADP/blob/camera-ready-final/paper/latex/main_camera_ready.pdf",
-    },
-    {
       label: "KoGovDoc-Bench source dataset",
       href: "https://huggingface.co/datasets/Wigtn/KoGovDoc-Bench",
+      primary: true,
     },
     {
       label: "WigtnOCR v1 production parser",
