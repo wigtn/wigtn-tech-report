@@ -1525,8 +1525,9 @@ const wigtnCoding: ResearchProject = {
  * banner alone named the venue, the organisation and the title; the same
  * article was pulled from wigtn.com on 2026-08-08 for that reason.
  *
- * Every figure is quoted at the precision the private WigtnOCR-RADP README
- * uses — do not round them. That README went through a version audit between
+ * Every figure is quoted at the precision the WigtnOCR-RADP camera-ready
+ * manuscript and audited README use — do not round them. The source record
+ * went through a version audit between
  * the staged draft (2026-08-09) and publication, and the audit moved numbers:
  * the correlation is r = −0.74 (not −0.81), the headline Hit@1 gap is 42.6
  * points against the audited MinerU-on run (not 35.2 against the submitted-
@@ -1564,9 +1565,17 @@ const rcps: ResearchProject = {
   },
   links: [
     {
+      label: "Research repository and RCPS implementation",
+      href: "https://github.com/wigtn/WigtnOCR-RADP",
+      primary: true,
+    },
+    {
+      label: "Final camera-ready paper",
+      href: "https://github.com/wigtn/WigtnOCR-RADP/blob/main/output/pdf/EMNLP2026_Industry_384_camera_ready_final.pdf",
+    },
+    {
       label: "KoGovDoc-Bench source dataset",
       href: "https://huggingface.co/datasets/Wigtn/KoGovDoc-Bench",
-      primary: true,
     },
     {
       label: "WigtnOCR v1 production parser",
@@ -1697,9 +1706,9 @@ const rcps: ResearchProject = {
         },
       ],
       paragraphs: [
-        "For Prod, 134 of 663 reference spans, 20.2%, have no normalised exact match before chunking. Across eight chunkers, no configuration splits more than 15 spans, or 2.3%. The absent rate stays fixed because it is measured on parser output before chunks exist.",
-        "MinerU-on's exact-match absent rate is 66.1%, 45.9 points above Prod. Matcher choice changes the absolute rate but not the broad OCR-parser gap: under a character-tolerant longest-common-substring criterion, Prod is 16.9% absent while MinerU-off is 68.6%. A GPT-5.4 case judge classifies 56% of Prod's exact-match-absent cases as recoverable surface artifacts, yet the MinerU-off–Prod retrieval-unusable gap remains 50.4 points.",
-        "Two authors also labelled 100 parser-masked absent cases. After adjudication, 84% of the sampled MinerU-on cases, 40% of Prod cases and 95% of PaddleOCR cases were retrieval-unusable. The sample verifies the direction of the gap, not a population rate.",
+        "For Prod, 134 of 663 reference spans, 20.2%, have no normalised exact match before chunking. Across eight chunkers, no configuration splits more than 15 spans, or 2.3%. The absent rate stays fixed because it is measured on parser output before chunks exist. In one audited example, MinerU-on transcribes A = 180 m² as A = 180m; no chunker can restore the missing exponent as an exact span.",
+        "MinerU-on's exact-match absent rate is 66.1%, 45.9 points above Prod. Matcher choice changes the absolute rate but not that audited gap: under the character-tolerant L4 criterion, MinerU-on remains 62.1% absent versus 16.9% for Prod, a 45.2-point difference. In a separate full-set check limited to the retained MinerU-off output, a GPT-5.4 case judge classifies 56% of Prod's exact-match-absent cases as recoverable surface artifacts, yet the MinerU-off–Prod retrieval-unusable gap remains 50.4 points.",
+        "Two authors also labelled 100 parser-masked absent cases, agreeing on 81 before adjudication (κ = 0.615). The final labels mark 42 of 50 sampled MinerU-on cases, 12 of 30 Prod cases and 19 of 20 PaddleOCR cases as retrieval-unusable. The stratified sample verifies the direction of the gap, not population rates.",
       ],
       figures: [
         {
@@ -1743,6 +1752,7 @@ const rcps: ResearchProject = {
       paragraphs: [
         "The 30B teacher ranks first at 0.584 RCPS, only 0.001 above Prod at 0.583. Prod has slightly higher Hit@1, 0.549 versus 0.545. In 1,000 fixed-seed probe subsets, the teacher stays above Prod in only 62.5% of draws, so latency and compute may decide between them more honestly than the point estimate.",
         "MinerU-on is the opposite case: its Boundary Clarity is the highest measured, but its RCPS and Hit@1 are the lowest among complete outputs. PaddleOCR is near MinerU-on on retrieval but has no adjacent parser-native boundaries, so Boundary Clarity is undefined for that configuration rather than missing by accident.",
+        "The mixed-corpus score also hides domain sensitivity. MinerU-on reaches 0.046 RCPS on the 527 government-document questions but 0.486 on the 136 arXiv questions. RCPS should therefore be rerun on the intended deployment probe rather than treated as a portable parser leaderboard.",
       ],
       table: {
         caption: "Audited parser comparison · 294 pages and 663 Q–A",
@@ -1817,6 +1827,7 @@ const rcps: ResearchProject = {
         "RADP asks a narrower follow-up: if RCPS has selected the pipeline and coverage still identifies genuine parser-side loss, does retrieval-oriented parser training help? It is not the main contribution or the first deployment action.",
       paragraphs: [
         "The pre-specified pilot misses its five-point RCPS target. On the audited 2,036-Q–A OHR compatibility subset, two DPO checkpoints improve Hit@5 by 0.95 and 1.15 points, while a matched edit-distance control improves it by 1.36 points. Direct control-versus-DPO intervals include zero, and SimPO's point estimates are negative. The study therefore does not isolate a retrieval-reward training benefit.",
+        "The same 294-page selection frame provides a cleaner scale comparison: fine-tuning raises Prod Hit@1 by 4.9 points over Base, while choosing Prod over MinerU-on changes Hit@1 by 42.6 points. This is descriptive scale, not a causal upper bound on training, but it reinforces selection before optimisation.",
         "The practical result is a stop rule, not a new training recipe: prefer the large, immediate gains from candidate selection; use coverage to decide which layer to change; train only when required evidence is genuinely absent and switching parsers is not enough.",
       ],
       callout: {
