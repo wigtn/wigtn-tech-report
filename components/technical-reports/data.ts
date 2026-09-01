@@ -1655,7 +1655,7 @@ const rcps: ResearchProject = {
         {
           label: "Extrinsic",
           title: "Score on a probe, not on the text",
-          body: "Held-out question–answer pairs judge whether a downstream reader can retrieve the evidence, rather than whether the Markdown resembles a reference transcription.",
+          body: "Held-out question–answer pairs judge whether the downstream retriever can find the evidence, rather than whether the Markdown resembles a reference transcription.",
         },
         {
           label: "Averaged",
@@ -1757,7 +1757,8 @@ const rcps: ResearchProject = {
         "The mixed-corpus score also hides domain sensitivity. MinerU-on reaches 0.046 RCPS on the 527 government-document questions but 0.486 on the 136 arXiv questions. RCPS should therefore be rerun on the intended deployment probe rather than treated as a portable parser leaderboard.",
       ],
       table: {
-        caption: "Audited parser comparison · 294 pages and 663 Q–A",
+        caption:
+          "Audited parser comparison · 294 pages and 663 Q–A · BC = Boundary Clarity (higher is better); CS = Chunk Stickiness (lower is better)",
         headers: ["Parser", "BC ↑", "CS ↓", "RCPS ↑", "Hit@1 ↑"],
         rows: [
           {
@@ -1784,6 +1785,7 @@ const rcps: ResearchProject = {
       eyebrow: "Chunker selection",
       title: "Changing the parser moves more than changing the chunker in this pool",
       paragraphs: [
+        "The candidates expose four different boundary policies. md-h3 splits at Markdown headings through level 3; parser-native follows blank-line paragraph boundaries; fixed-500 uses 500-character windows; and LumberChunker asks a local instruction model to find topic shifts between line-level segments.",
         "With Prod fixed, md-h3 ranks first at 0.593 RCPS, followed by parser-native at 0.583, LumberChunker at 0.557 and fixed-500 at 0.535. The 0.058 chunker range is much smaller than the 0.447 range across the heterogeneous parser pool, and close to the 0.052 range among its three vision–language parsers.",
         "The decision is not tied to one lucky probe draw. Across 1,000 subsets of 500 from the 663 Q–A, the four-chunker order is unchanged in 96.1% of draws, and md-h3 remains above parser-native in 96.5%. The six-configuration parser ranking has mean Kendall τa = 0.902; all changes are confined to the near-tied teacher–Prod and PaddleOCR–MinerU-on pairs. Prod stays above Base, MinerU-off, PaddleOCR and MinerU-on in every draw.",
       ],
