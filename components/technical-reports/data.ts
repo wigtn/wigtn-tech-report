@@ -1632,7 +1632,7 @@ const rcps: ResearchProject = {
         "RCPS is a deployment workflow around an existing text-RAG stack, not another parser or similarity model.",
       paragraphs: [
         "The fixed frame contains 294 pages — 229 Korean government pages and 65 arXiv pages — and 663 held-out question–answer pairs. Every parser produces one page-level Markdown corpus. Every chunker turns each parser output into a candidate index. The same queries, retrievers, retrieval depths and relevance rule score every parser–chunker pair, producing an RCPS matrix rather than one number tied to one production stack.",
-        "The highest-ranked pair becomes the provisional deployment choice. Coverage then checks the selected parser output and chunks without running a retriever. Covered spans proceed; split spans call for rechunking or overlap; absent spans call for parser inspection or replacement. Any changed parser or chunker returns to the same RCPS evaluation before deployment. Parser training is the last branch, not the first.",
+        "The highest-ranked pair becomes the provisional deployment choice. Coverage then checks the selected parser output and chunks without running a retriever. A covered span clears the parser and chunker, so a continuing retrieval miss points downstream to the index or retriever. Split spans call for rechunking or overlap. Absent spans call for parser-output inspection first, with switching or training reserved for evidence that is genuinely missing. Any changed parser or chunker returns to the same RCPS evaluation before deployment.",
       ],
       figures: [
         {
@@ -1655,7 +1655,7 @@ const rcps: ResearchProject = {
         {
           label: "Extrinsic",
           title: "Score on a probe, not on the text",
-          body: "Held-out question–answer pairs judge whether a downstream reader can retrieve the evidence, rather than whether the Markdown resembles a reference transcription.",
+          body: "Held-out question–answer pairs judge whether the downstream retriever can find the evidence, rather than whether the Markdown resembles a reference transcription.",
         },
         {
           label: "Averaged",
@@ -1669,7 +1669,7 @@ const rcps: ResearchProject = {
         },
       ],
       paragraphs: [
-        "Formally, RCPS(P,C) is the mean of MRR@k(r, C(P), D) over every declared retriever r and depth k. C(P) is the corpus produced by parser P and chunker C; D is the fixed probe. Fixing C ranks parsers, while fixing P ranks chunkers. The result is relative to the candidate pool and probe, not an intrinsic score that travels unchanged to another corpus.",
+        "Formally, RCPS(P,C) is the mean of MRR@k(r, C(P), D) over every declared retriever r and depth k. For each query, MRR@k is the reciprocal rank of the first relevant chunk within the top k, or zero if none is retrieved: rank 1 scores 1.0 and rank 5 scores 0.2. C(P) is the corpus produced by parser P and chunker C; D is the fixed probe. RCPS averages these query-level values across retrievers and depths, so higher is better. Fixing C ranks parsers, while fixing P ranks chunkers. The result is relative to the candidate pool and probe, not an intrinsic score that travels unchanged to another corpus.",
         "Execution parses each page once per parser, then chunks, indexes and searches each candidate corpus. With m parsers, c chunkers and |R| retrievers, the evaluation requires m parsing runs and mc|R| retrieval evaluations. It needs no training and no manually labelled chunks because the answer span and source page define relevance.",
       ],
       figures: [
@@ -1692,13 +1692,13 @@ const rcps: ResearchProject = {
       steps: [
         {
           label: "Absent",
-          title: "Inspect or replace the parser",
-          body: "The normalised answer span has no exact match in the source-page transcription. Rechunking cannot reconstruct the exact span, although case review may find a recoverable surface-form mismatch.",
+          title: "Inspect the parser output first",
+          body: "The normalised answer span has no exact match in the source-page transcription. Rechunking cannot reconstruct it, but case review must separate a surface-form mismatch from genuine evidence loss before switching or training the parser.",
         },
         {
           label: "Covered",
-          title: "Keep the current path",
-          body: "The reference span appears whole inside at least one chunk. The evidence survived both parser and chunker under the operational matcher.",
+          title: "Move the diagnosis downstream",
+          body: "The reference span appears whole inside at least one chunk, so it survived both parser and chunker under the operational matcher. If retrieval still fails, inspect the index or retriever.",
         },
         {
           label: "Split",
@@ -1738,7 +1738,7 @@ const rcps: ResearchProject = {
         "Probe: 663 verbatim-answerable Q–A, split into 527 government and 136 arXiv questions.",
         "Evidence frame: answers occur on 242 pages; the other 52 pages remain in every selection index as Q–A-free distractors. Coverage still inspects all 294 parser outputs.",
         "External check: 1,043 source-aligned Law–Manual Q–A from OHR-Bench test semantic perturbations. Its variants share source outputs and are not independent parsers.",
-        "Secondary training results use separate pilot and compatibility frames. They are kept out of the RCPS and coverage denominators and are not compared as though they came from the main experiment.",
+        "Training frames: the pooled KoGovDoc-RAG analysis retrieves the same 663 Q–A against only the 242 evidence-bearing pages; the pre-specified pilot uses 202 Q–A on 73 pages; the OHR compatibility analysis uses 2,036 Q–A across six domains. None of these denominators is interchangeable with the 294-page selection frame.",
       ],
       paragraphs: [
         "Qwen3-VL-30B produced the pseudo-reference Markdown, which was manually de-noised. GPT-5.4 generated the question–answer probe. A separate LLM-assisted check accepted 94 of 100 sampled pairs for question clarity, answer correctness and support in the reference context. The complete pseudo-reference and probe were not human-verified.",
@@ -1757,7 +1757,8 @@ const rcps: ResearchProject = {
         "The mixed-corpus score also hides domain sensitivity. MinerU-on reaches 0.046 RCPS on the 527 government-document questions but 0.486 on the 136 arXiv questions. RCPS should therefore be rerun on the intended deployment probe rather than treated as a portable parser leaderboard.",
       ],
       table: {
-        caption: "Audited parser comparison · 294 pages and 663 Q–A",
+        caption:
+          "Audited parser comparison · 294 pages and 663 Q–A · BC = Boundary Clarity (higher is better); CS = Chunk Stickiness (lower is better)",
         headers: ["Parser", "BC ↑", "CS ↓", "RCPS ↑", "Hit@1 ↑"],
         rows: [
           {
@@ -1784,6 +1785,7 @@ const rcps: ResearchProject = {
       eyebrow: "Chunker selection",
       title: "Changing the parser moves more than changing the chunker in this pool",
       paragraphs: [
+        "The candidates expose four different boundary policies. md-h3 splits at Markdown headings through level 3; parser-native follows blank-line paragraph boundaries; fixed-500 uses 500-character windows; and LumberChunker asks a local instruction model to find topic shifts between line-level segments.",
         "With Prod fixed, md-h3 ranks first at 0.593 RCPS, followed by parser-native at 0.583, LumberChunker at 0.557 and fixed-500 at 0.535. The 0.058 chunker range is much smaller than the 0.447 range across the heterogeneous parser pool, and close to the 0.052 range among its three vision–language parsers.",
         "The decision is not tied to one lucky probe draw. Across 1,000 subsets of 500 from the 663 Q–A, the four-chunker order is unchanged in 96.1% of draws, and md-h3 remains above parser-native in 96.5%. The six-configuration parser ranking has mean Kendall τa = 0.902; all changes are confined to the near-tied teacher–Prod and PaddleOCR–MinerU-on pairs. Prod stays above Base, MinerU-off, PaddleOCR and MinerU-on in every draw.",
       ],
@@ -1828,7 +1830,7 @@ const rcps: ResearchProject = {
       lead:
         "RADP asks a narrower follow-up: if RCPS has selected the pipeline and coverage still identifies genuine parser-side loss, does retrieval-oriented parser training help? It is not the main contribution or the first deployment action.",
       paragraphs: [
-        "The pre-specified pilot misses its five-point RCPS target. On the audited 2,036-Q–A OHR compatibility subset, two DPO checkpoints improve Hit@5 by 0.95 and 1.15 points, while a matched edit-distance control improves it by 1.36 points. Direct control-versus-DPO intervals include zero, and SimPO's point estimates are negative. The study therefore does not isolate a retrieval-reward training benefit.",
+        "The pre-specified pilot misses its success gate: at least a five-percentage-point RCPS gain with the 95% confidence-interval lower bound above zero. On the audited 2,036-Q–A OHR compatibility subset, two DPO checkpoints improve Hit@5 by 0.95 and 1.15 points, while a matched edit-distance control improves it by 1.36 points. Direct control-versus-DPO intervals include zero, and SimPO's point estimates are negative. The study therefore does not isolate a retrieval-reward training benefit.",
         "In the pooled 242-page KoGovDoc-RAG analysis, the three DPO checkpoints have Hit@5 point estimates 1.96–2.11 points above Prod, but every two-sided confidence interval crosses zero. The reporting configuration was selected after multiple settings were examined, so these estimates remain exploratory rather than confirmatory.",
         "The same 294-page selection frame provides a cleaner scale comparison: fine-tuning raises Prod Hit@1 by 4.9 points over Base, while choosing Prod over MinerU-on changes Hit@1 by 42.6 points. This is descriptive scale, not a causal upper bound on training, but it reinforces selection before optimisation.",
         "The practical result is a stop rule, not a new training recipe: prefer the large, immediate gains from candidate selection; use coverage to decide which layer to change; train only when required evidence is genuinely absent and switching parsers is not enough.",
