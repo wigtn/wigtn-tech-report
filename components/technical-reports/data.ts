@@ -1554,16 +1554,18 @@ const rcps: ResearchProject = {
   authors: "Sang-Woo Son · Hyeonsang Kim · Hyun-woo Cho · Jinmo Kim · Hyeong-seob Kim",
   /* Brand banner: no caption and no `heroSectionId`, so it identifies the
    * report on the hub card and above section 01 and never poses as a figure.
-   * `contain`, because this art has no crop margins: a venue badge touches the
-   * top edge and the wordmark the bottom, and the 16:9/16:10 cover crops the
-   * other banners tolerate beheaded both. */
+   * Not `contain`: this art has thin crop margins — the venue badge starts
+   * ~55px from the top and the wordmark ends ~100px from the bottom — and the
+   * 16:10 cover every surface now uses trims 32px from each, badge and
+   * wordmark intact even under the hover scale. It was `contain` while the
+   * carousel still cropped to 16:9, which took 80px and beheaded both; the fix
+   * was the tile, not this flag, because contained it sat in a pillarbox. */
   heroFigure: {
     src: "/images/projects/rcps_image_v1.png",
     width: 1536,
     height: 1024,
     alt: "RCPS, Retrieval-Conditional Parsing Score",
     caption: "",
-    contain: true,
   },
   links: [
     {
