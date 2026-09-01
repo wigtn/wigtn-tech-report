@@ -1139,6 +1139,10 @@ const wigss: ResearchProject = {
       label: "Source repository",
       href: "https://github.com/wigtn/wigss",
     },
+    {
+      label: "v3 implementation PR",
+      href: "https://github.com/wigtn/wigss/pull/5",
+    },
   ],
   metrics: [
     {
@@ -1506,7 +1510,7 @@ const wigss: ResearchProject = {
           height: 1346,
           alt: "Escalation from a deterministic AST edit to a scoped model edit to a user prompt, with every tier passing the same linter, apply guards and on-screen check before a failed check rolls back and returns the next candidate",
           caption:
-            "Every tier writes through the same linter, the same guards and the same check. The retry edge on the right is the loop the current build does not have: verification stops at a warning and waits for a person.",
+            "Every tier writes through the same linter, the same guards and the same check. The retry edge on the right is the loop the build did not have when this was measured; the addendum below records it landing.",
         },
       ],
       callout: {
@@ -1530,6 +1534,73 @@ const wigss: ResearchProject = {
       callout: {
         label: "Publication rule",
         text: "Until the fixed repository set, the scripted edit suite and the recorded outcomes ship together, WIGSS stays an engineering note rather than a benchmark report.",
+      },
+    },
+    {
+      id: "addendum",
+      eyebrow: "Addendum",
+      title: "The roadmap ran, and the screen check now has teeth",
+      lead:
+        "This report argued for an address join, a verification loop and a canvas surface. Between its measurements and pull request 5 on the repository, all three were built. This section records what shipped and what shipping surfaced, from the same test bench.",
+      paragraphs: [
+        "The gate at the head of the roadmap opened. Next 14's SWC honours a jsxImportSource override, so the development transform stamps file, line and column onto every element it renders: 12 of 12 detected components carry an address on the demo page. The harness columns moved with it — the shipped pipeline now lands the intended edit on 10 of 10 patterns, holds 100% at every duplicate density, and reads one file per save instead of forty. Addresses exist only in development builds; production falls back to the search join this report measured.",
+        "The canvas mock-ups became a route. A rail lists the routes found by a static walk of the target's app directory and, under them, the component tree of the active card; the active card's width decides which breakpoint token an edit rewrites; an insertion line is the only gesture that commits a reorder. The first sessions on it also produced the honest embarrassments: a scripted resize wrote a 1,901-pixel height into the demo because the test picked its target by geometry, and a margin written into a centred container moved nothing on screen. Both became same-day fixes, and the second became the test case below.",
+        "Dragging now shows the page's answer while the pointer is still down. Each frame posts one message into the iframe and the styles land on the live DOM only — the source is never touched — so the reflow a resize will cause is visible as it happens, neighbours included. Releasing writes the code edit, and the reload that follows replaces the preview with whatever the code actually renders.",
+        "The verification edge the escalation figure named as missing is closed on the canvas too: apply, rescan, verify, and on mismatch an automatic reverse-edit rollback, one scoped model repair, and a re-verify. The centred-container case shows why the screen keeps the last word. Dragging the main column sideways writes a margin class, and whether that margin beats the auto-centring depended on the order the generated stylesheet happened to take: across builds the same edit rendered as 0 pixels of movement in one run and 96 in another. Both miss the 102-pixel expectation, and both end as a clean file.",
+        "Closing the loop surfaced two failures no plan listed. A rescan can measure the page before the dev server has compiled the edit, and judging that stale render rolled back a correct edit — so the loop now waits until the class it wrote is visible in the scan before it judges. And the development server bundles API routes separately, which quietly gave apply and rollback two different in-memory backup stores; the store moved to the process global, and the canvas run is what caught it — the unit tests share one module instance and never could.",
+      ],
+      figures: [
+        {
+          src: "/images/projects/wigss-canvas-rail.jpg",
+          width: 2880,
+          height: 1800,
+          alt: "The shipped canvas route: a left rail with routes and a component tree, three viewport cards, and the active breakpoint in the top bar",
+          caption:
+            "The canvas as shipped. Routes from a static walk on the left, the live component tree under them, and the breakpoint that will receive the edit always in the top bar.",
+        },
+        {
+          src: "/images/projects/wigss-canvas-preview.jpg",
+          width: 2880,
+          height: 1800,
+          alt: "Mid-drag on the hero: the page itself is taller inside the iframe while the drag is still in progress",
+          caption:
+            "Mid-drag, before release: the hero is already 428 pixels tall in the page itself, neighbours reflowing, while the source still says lg:h-96. The styles exist only in the DOM.",
+        },
+        {
+          src: "/images/projects/wigss-canvas-verified.jpg",
+          width: 2880,
+          height: 1800,
+          alt: "After release the toast reports that the lg token was rewritten and the on-screen check passed in 733 milliseconds",
+          caption:
+            "Release plus 733 milliseconds: the edit landed on the lg token, the page was re-measured, and the toast reports the check that passed — not the write that happened.",
+        },
+        {
+          src: "/images/projects/wigss-canvas-mismatch.jpg",
+          width: 2880,
+          height: 1800,
+          alt: "A margin edit on a centred container fails verification: rendered 96 pixels against an expected 102, rolled back automatically",
+          caption:
+            "The screen keeps the last word. A margin written into a centred container rendered 96 pixels of movement against an expected 102; by the time the toast is readable, the file is already back to what it was.",
+        },
+      ],
+      table: {
+        caption: "The report's numbers, then and after pull request 5",
+        headers: ["Measurement", "At writing", "Shipped"],
+        rows: [
+          { cells: ["Intended edit, ten patterns", "5/10", "10/10"], highlight: true },
+          { cells: ["Join accuracy at 32 duplicates", "3%", "100%"], highlight: true },
+          { cells: ["Files read per save", "40", "1"] },
+          { cells: ["Feedback during a drag", "None until reload", "Same-frame DOM preview"] },
+          { cells: ["A wrong edit's fate", "A warning that waits", "Rolled back, one repair attempt, re-verified"] },
+          { cells: ["Release to verified, demo page", "Not built", "0.8 s"] },
+        ],
+      },
+      bullets: [
+        "Still open, in order: the drop arbitration list this report sketched is still a silent heuristic; edits whose correct diff lives on the parent — a grid child's width — are refused rather than redirected; the prompt tier is unbuilt; React Server Components remain unmeasured.",
+      ],
+      callout: {
+        label: "Evidence status, updated",
+        text: "The missing number named above — the share of model edits the on-screen check rejects — now records: every attempt logs tier, outcome and failure reason to a local file from the first release. The publication rule stands until the fixed repository set exists.",
       },
     },
   ],
