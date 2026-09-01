@@ -1531,9 +1531,10 @@ const wigtnCoding: ResearchProject = {
  * the staged draft (2026-08-09) and publication, and the audit moved numbers:
  * the correlation is r = −0.74 (not −0.81), the headline Hit@1 gap is 42.6
  * points against the audited MinerU-on run (not 35.2 against the submitted-
- * output diagnostic), and the distillation result was withdrawn outright when
- * its per-QA artifact could not be recovered. Re-quote from the README, not
- * from an earlier version of this report. */
+ * output diagnostic), and the aligned Distill audit reports +1.36 Hit@5 points
+ * as a matched fidelity control whose direct comparisons with R2 and R3 both
+ * cross zero. Re-quote from the README, not from an earlier version of this
+ * report. */
 const rcps: ResearchProject = {
   slug: "rcps",
   shortTitle: "RCPS",
@@ -1547,12 +1548,9 @@ const rcps: ResearchProject = {
   format: "Evaluation protocol",
   date: "2026.08.26",
   authorId: "sangwoo-son",
-  /* Formal credit line: the paper is five-author, so the byline names the
-   * report's author without dropping the other four. Same treatment as WIGVO,
-   * but NOT WIGVO's order — this is the RCPS camera-ready order, with the
-   * corresponding author (Hyeong-seob Kim) last, matching the research repo's
-   * README §Authors and the author's published CV. */
-  authors: "Sang-Woo Son · Hyeonsang Kim · Hyun-woo Cho · Jinmo Kim · Hyeong-seob Kim",
+  /* Formal credit line follows the frozen OpenReview and camera-ready order.
+   * Hyeong-seob Kim is corresponding author without changing that order. */
+  authors: "Sang-Woo Son · Hyeong-seob Kim · Hyeonsang Kim · Hyun-woo Cho · Jinmo Kim",
   /* Brand banner: no caption and no `heroSectionId`, so it identifies the
    * report on the hub card and above section 01 and never poses as a figure.
    * `contain`, because this art has no crop margins: a venue badge touches the
@@ -1712,6 +1710,7 @@ const rcps: ResearchProject = {
         "For Prod, 134 of 663 reference spans, 20.2%, have no normalised exact match before chunking. Across eight chunkers, no configuration splits more than 15 spans, or 2.3%. The absent rate stays fixed because it is measured on parser output before chunks exist. In one audited example, MinerU-on transcribes A = 180 m² as A = 180m; no chunker can restore the missing exponent as an exact span.",
         "MinerU-on's exact-match absent rate is 66.1%, 45.9 points above Prod. Matcher choice changes the absolute rate but not that audited gap: under the character-tolerant L4 criterion, MinerU-on remains 62.1% absent versus 16.9% for Prod, a 45.2-point difference. In a separate full-set check limited to the retained MinerU-off output, a GPT-5.4 case judge classifies 56% of Prod's exact-match-absent cases as recoverable surface artifacts, yet the MinerU-off–Prod retrieval-unusable gap remains 50.4 points.",
         "Two authors also labelled 100 parser-masked absent cases, agreeing on 81 before adjudication (κ = 0.615). The final labels mark 42 of 50 sampled MinerU-on cases, 12 of 30 Prod cases and 19 of 20 PaddleOCR cases as retrieval-unusable. The stratified sample verifies the direction of the gap, not population rates.",
+        "The failure review also makes the diagnosis actionable. For table-evidence answers, exact-match absence is 87.9% with MinerU-off, 41.7% with MinerU-on and 13.9% with Prod. Recurring causes include dropped table cells, text left inside captions, stamps, seals or figure labels, and numerals or units corrupted beyond the tolerant matchers.",
       ],
       figures: [
         {
@@ -1830,6 +1829,7 @@ const rcps: ResearchProject = {
         "RADP asks a narrower follow-up: if RCPS has selected the pipeline and coverage still identifies genuine parser-side loss, does retrieval-oriented parser training help? It is not the main contribution or the first deployment action.",
       paragraphs: [
         "The pre-specified pilot misses its five-point RCPS target. On the audited 2,036-Q–A OHR compatibility subset, two DPO checkpoints improve Hit@5 by 0.95 and 1.15 points, while a matched edit-distance control improves it by 1.36 points. Direct control-versus-DPO intervals include zero, and SimPO's point estimates are negative. The study therefore does not isolate a retrieval-reward training benefit.",
+        "In the pooled 242-page KoGovDoc-RAG analysis, the three DPO checkpoints have Hit@5 point estimates 1.96–2.11 points above Prod, but every two-sided confidence interval crosses zero. The reporting configuration was selected after multiple settings were examined, so these estimates remain exploratory rather than confirmatory.",
         "The same 294-page selection frame provides a cleaner scale comparison: fine-tuning raises Prod Hit@1 by 4.9 points over Base, while choosing Prod over MinerU-on changes Hit@1 by 42.6 points. This is descriptive scale, not a causal upper bound on training, but it reinforces selection before optimisation.",
         "The practical result is a stop rule, not a new training recipe: prefer the large, immediate gains from candidate selection; use coverage to decide which layer to change; train only when required evidence is genuinely absent and switching parsers is not enough.",
       ],
@@ -1860,7 +1860,7 @@ const rcps: ResearchProject = {
     "The complete parser comparison contains five 294-page outputs, and its Boundary Clarity correlation uses only the four outputs where that metric is defined. Adding one 38-page partial run does not make the result a general law.",
     "KoGovDoc-RAG uses manually de-noised Qwen3-VL-30B pseudo-references and GPT-5.4-generated question–answer pairs. A 100-pair check accepted 94, but neither complete set was human-verified and shared model lineage may bias the fixed probe.",
     "RCPS evaluates verbatim answer-span retrieval for a particular corpus, probe, candidate pool, retriever set and relevance rule. It does not predict performance on an unscored corpus or measure implicit and paraphrased answers.",
-    "The 20.2% absent rate is matcher-defined rather than a semantic-loss rate. GPT-5.4 reclassifies 56% of Prod's exact-match-absent cases as surface artifacts, although tolerant matchers and a masked human sample preserve the broader parser gap.",
+    "The 20.2% absent rate is matcher-defined rather than a semantic-loss rate. GPT-5.4 reclassifies 56% of Prod's exact-match-absent cases as surface artifacts. Tolerant matchers preserve the broader gap, while the stratified parser-masked human sample confirms only its direction and does not estimate population rates.",
     "The end-to-end check covers only three parsers and uses the same GPT-5.4 checkpoint to generate and judge answers. It supports the top choice but not the full RCPS ordering.",
     "The secondary RADP evidence is not confirmatory: its OHR frame is an audited compatibility subset rather than a full v2 rerun, the matched fidelity control performs similarly to DPO, and the available measurements do not identify a causal training mechanism.",
     "A clean checkout can audit released results and nine adapters, but it cannot reproduce the full chain without external source documents, missing parser outputs and embedding caches.",
