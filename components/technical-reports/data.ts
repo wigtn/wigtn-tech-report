@@ -1669,7 +1669,7 @@ const rcps: ResearchProject = {
         },
       ],
       paragraphs: [
-        "Formally, RCPS(P,C) is the mean of MRR@k(r, C(P), D) over every declared retriever r and depth k. C(P) is the corpus produced by parser P and chunker C; D is the fixed probe. Fixing C ranks parsers, while fixing P ranks chunkers. The result is relative to the candidate pool and probe, not an intrinsic score that travels unchanged to another corpus.",
+        "Formally, RCPS(P,C) is the mean of MRR@k(r, C(P), D) over every declared retriever r and depth k. For each query, MRR@k is the reciprocal rank of the first relevant chunk within the top k, or zero if none is retrieved: rank 1 scores 1.0 and rank 5 scores 0.2. C(P) is the corpus produced by parser P and chunker C; D is the fixed probe. RCPS averages these query-level values across retrievers and depths, so higher is better. Fixing C ranks parsers, while fixing P ranks chunkers. The result is relative to the candidate pool and probe, not an intrinsic score that travels unchanged to another corpus.",
         "Execution parses each page once per parser, then chunks, indexes and searches each candidate corpus. With m parsers, c chunkers and |R| retrievers, the evaluation requires m parsing runs and mc|R| retrieval evaluations. It needs no training and no manually labelled chunks because the answer span and source page define relevance.",
       ],
       figures: [
