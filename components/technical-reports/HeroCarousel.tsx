@@ -229,18 +229,21 @@ export function HeroCarousel({
                 </div>
 
                 <div
-                  className={`relative order-1 aspect-[16/9] overflow-hidden rounded-xl md:order-2 ${
+                  className={`relative order-1 aspect-[16/10] overflow-hidden rounded-xl md:order-2 ${
                     slide.image.contain ? "bg-white" : "bg-[#F2F4F7]"
                   }`}
                 >
-                  {/* Cover-cropping to 16:9 is safe only for banners whose art
-                      keeps clear margins around a centred wordmark. `contain`
-                      is the per-report escape hatch, same as the hub card and
-                      the report-page banner: the RCPS art carries a badge at
-                      the top edge and a wordmark at the bottom, and the crop
-                      beheaded both. The contained tile is white, not the gray
-                      of the cover tiles, so the pillarbox blends into that
-                      art's near-white ground instead of framing it. */}
+                  {/* 16:10, the same tile as the hub card and the report-page
+                      banner, so one crop identifies a report on all three
+                      surfaces. This used to be 16:9, and that extra 6% of
+                      height cost the RCPS art its venue badge at the top and
+                      its wordmark at the bottom; at 16:10 the 3:2 banners lose
+                      3% top and bottom, which is inside the margins every
+                      banner keeps. Contained slides sat in a pillarbox here
+                      and read as a small picture on a white slab, which is
+                      why nothing uses `contain` now. It stays as the
+                      per-report escape hatch the other two surfaces share, on
+                      white so the pillarbox blends into near-white art. */}
                   <Image
                     src={assetPath(slide.image.src)}
                     alt={slide.image.alt}
