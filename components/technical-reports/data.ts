@@ -1643,7 +1643,7 @@ const rcps: ResearchProject = {
           height: 1772,
           alt: "RCPS workflow from a fixed evaluation frame through candidate parser and chunker pipelines, retrieval scoring, coverage diagnosis and deployment",
           caption:
-            "The complete RCPS workflow. A fixed held-out probe scores every parser–chunker pair, coverage separates parser-side absence from chunk-boundary splitting, and only changed configurations are re-evaluated before deployment.",
+            "The complete RCPS workflow. A fixed held-out probe scores every parser–chunker pair, coverage separates parser-side absence from chunk-boundary splitting, and only changed configurations are re-evaluated before deployment. Contribution labels follow the paper: C1 shows that intrinsic rankings can mislead; C2 ranks candidates with RCPS; C3 localises loss with coverage; and C4 reserves parser training for unresolved parser-side failures.",
         },
       ],
     },
