@@ -1540,7 +1540,7 @@ const rcps: ResearchProject = {
   shortTitle: "RCPS",
   title: "Choosing document parsers by retrieval, not by appearance",
   cardTitle: "The cleanest-looking parser retrieves worst",
-  dek: "Retrieval-Conditional Parsing Score ranks parser–chunker pipelines on a fixed retrieval probe instead of judging parser output in isolation. Across five complete 294-page outputs, RCPS spans 0.137–0.584; coverage then locates whether lost evidence belongs to the parser or the chunker, and training is reserved for what selection cannot fix.",
+  dek: "Retrieval-Conditional Parsing Score ranks parser–chunker pipelines on a fixed retrieval probe instead of judging parser output in isolation. Across five complete 294-page outputs, RCPS spans 0.137–0.584; coverage then identifies whether evidence was lost during parsing or chunking, and training is reserved for what selection cannot fix.",
   track: "Models & evaluation",
   /* Set together, from the acceptance notification, not from the poster. */
   status: "Peer reviewed",
@@ -1601,12 +1601,12 @@ const rcps: ResearchProject = {
       detail: "0.123 → 0.549; 4.47× relative",
     },
     {
-      value: "20.2 / ≤2.3%",
+      value: "20.2% / ≤2.3%",
       label: "Absent / split reference spans",
       detail: "Prod fixed, eight chunkers, no retriever",
     },
     {
-      value: "66.1 / 20.2%",
+      value: "66.1% / 20.2%",
       label: "MinerU-on / Prod absent spans",
       detail: "Normalised exact match before chunking",
     },
@@ -1633,8 +1633,8 @@ const rcps: ResearchProject = {
       lead:
         "RCPS is a deployment workflow around an existing text-RAG stack, not another parser or similarity model.",
       paragraphs: [
-        "The fixed frame contains 294 pages — 229 Korean government pages and 65 arXiv pages — and 663 held-out question–answer pairs. Every parser produces one page-level Markdown corpus. Every chunker turns each parser output into a candidate index. The same queries, retrievers, retrieval depths and relevance rule score every parser–chunker pair, producing an RCPS matrix rather than one number tied to one production stack.",
-        "The highest-ranked pair becomes the provisional deployment choice. Coverage then checks the selected parser output and chunks without running a retriever. A covered span clears the parser and chunker, so a continuing retrieval miss points downstream to the index or retriever. Split spans call for rechunking or overlap. Absent spans call for parser-output inspection first, with switching or training reserved for evidence that is genuinely missing. Any changed parser or chunker returns to the same RCPS evaluation before deployment.",
+        "The fixed frame contains 294 pages — 229 Korean government pages and 65 arXiv pages — and 663 held-out question–answer pairs. Every parser produces one page-level Markdown corpus, and every chunker turns each parser output into a candidate index. Each parser–chunker pair is scored with the same queries, retrievers, retrieval depths and relevance rule, producing an RCPS matrix rather than a single score tied to one production stack.",
+        "The highest-ranked pair becomes the provisional deployment choice. Coverage then checks the selected parser output and chunks without running a retriever. A covered span rules out parser- and chunker-side loss under the operational matcher, so a continuing retrieval miss points downstream to the index or retriever. Split spans call for rechunking or overlap. Absent spans call for parser-output inspection first, with switching or training reserved for evidence that is genuinely missing. Any changed configuration is re-evaluated with the same RCPS protocol before deployment.",
       ],
       figures: [
         {
@@ -1652,7 +1652,7 @@ const rcps: ResearchProject = {
       eyebrow: "Protocol",
       title: "One retrieval score for every parser–chunker pair",
       lead:
-        "RCPS is standard mean reciprocal rank placed inside a controlled comparison. The score is simple; keeping the probe and decision rule fixed is the contribution.",
+        "RCPS uses standard mean reciprocal rank within a controlled comparison. The score is simple; keeping the probe and decision rule fixed is the contribution.",
       steps: [
         {
           label: "Extrinsic",
@@ -1671,7 +1671,8 @@ const rcps: ResearchProject = {
         },
       ],
       paragraphs: [
-        "Formally, RCPS(P,C) is the mean of MRR@k(r, C(P), D) over every declared retriever r and depth k. For each query, MRR@k is the reciprocal rank of the first relevant chunk within the top k, or zero if none is retrieved: rank 1 scores 1.0 and rank 5 scores 0.2. C(P) is the corpus produced by parser P and chunker C; D is the fixed probe. RCPS averages these query-level values across retrievers and depths, so higher is better. Fixing C ranks parsers, while fixing P ranks chunkers. The result is relative to the candidate pool and probe, not an intrinsic score that travels unchanged to another corpus.",
+        "Let C(P) be the corpus produced by parser P and chunker C, and let D be the fixed probe. Formally, RCPS(P,C) is the mean of MRR@k(r, C(P), D) over every declared retriever r and depth k. For each query, the reciprocal-rank contribution is 1/j when the first relevant chunk appears at rank j ≤ k, and zero otherwise: rank 1 contributes 1.0, while rank 5 contributes 0.2 when k ≥ 5. MRR@k averages these contributions over D, and RCPS then averages MRR@k across retrievers and depths, so higher is better.",
+        "Fixing C ranks parsers, while fixing P ranks chunkers. The result is relative to the candidate pool and probe, not an intrinsic score that travels unchanged to another corpus.",
         "Execution parses each page once per parser, then chunks, indexes and searches each candidate corpus. With m parsers, c chunkers and |R| retrievers, the evaluation requires m parsing runs and mc|R| retrieval evaluations. It needs no training and no manually labelled chunks because the answer span and source page define relevance.",
       ],
       figures: [
@@ -1690,7 +1691,7 @@ const rcps: ResearchProject = {
       eyebrow: "Diagnosis",
       title: "Coverage identifies the layer that lost the answer",
       lead:
-        "A retrieval score selects the better pipeline but cannot say whether a miss came from parsing or chunking. Coverage performs that localization before a retriever runs.",
+        "A retrieval score selects the better pipeline but cannot say whether a miss came from parsing or chunking. Coverage performs that localisation before a retriever runs.",
       steps: [
         {
           label: "Absent",
@@ -1700,18 +1701,18 @@ const rcps: ResearchProject = {
         {
           label: "Covered",
           title: "Move the diagnosis downstream",
-          body: "The reference span appears whole inside at least one chunk, so it survived both parser and chunker under the operational matcher. If retrieval still fails, inspect the index or retriever.",
+          body: "The reference span appears intact within at least one chunk, so it survived both parser and chunker under the operational matcher. If retrieval still fails, inspect the index or retriever.",
         },
         {
           label: "Split",
           title: "Change chunking or overlap",
-          body: "The span exists in the page transcription but crosses chunk boundaries. This is the class a chunker change can repair directly.",
+          body: "The span exists in the page transcription but crosses chunk boundaries. This is the failure class that a chunker change can repair directly.",
         },
       ],
       paragraphs: [
-        "For Prod, 134 of 663 reference spans, 20.2%, have no normalised exact match before chunking. Across eight chunkers, no configuration splits more than 15 spans, or 2.3%. The absent rate stays fixed because it is measured on parser output before chunks exist. In one audited example, MinerU-on transcribes A = 180 m² as A = 180m; no chunker can restore the missing exponent as an exact span.",
-        "MinerU-on's exact-match absent rate is 66.1%, 45.9 points above Prod. Matcher choice changes the absolute rate but not that audited gap: under the character-tolerant L4 criterion, MinerU-on remains 62.1% absent versus 16.9% for Prod, a 45.2-point difference. In a separate full-set check limited to the retained MinerU-off output, a GPT-5.4 case judge classifies 56% of Prod's exact-match-absent cases as recoverable surface artifacts, yet the MinerU-off–Prod retrieval-unusable gap remains 50.4 points.",
-        "Two authors also labelled 100 parser-masked absent cases, agreeing on 81 before adjudication (κ = 0.615). The final labels mark 42 of 50 sampled MinerU-on cases, 12 of 30 Prod cases and 19 of 20 PaddleOCR cases as retrieval-unusable. The stratified sample verifies the direction of the gap, not population rates.",
+        "For Prod, 134 of 663 reference spans (20.2%) have no normalised exact match before chunking. Across eight chunkers, no configuration splits more than 15 spans, or 2.3%. The absent rate stays fixed because it is measured on parser output before chunks exist. In one audited example, MinerU-on transcribes A = 180 m² as A = 180m; no chunker can restore the missing exponent as an exact span.",
+        "MinerU-on's exact-match absent rate is 66.1%, 45.9 percentage points above Prod. Matcher choice changes the absolute rate but not that audited gap: under the character-tolerant L4 criterion, MinerU-on remains 62.1% absent versus 16.9% for Prod, a 45.2-percentage-point difference. In a separate full-set check limited to the retained MinerU-off output, a GPT-5.4 case judge classifies 56% of Prod's exact-match-absent cases as recoverable surface artifacts, yet the MinerU-off–Prod retrieval-unusable gap remains 50.4 percentage points.",
+        "Two authors also labelled 100 parser-masked absent cases and agreed on 81 before adjudication (κ = 0.615). The final labels mark 42 of 50 sampled MinerU-on cases, 12 of 30 Prod cases and 19 of 20 PaddleOCR cases as retrieval-unusable. The stratified sample verifies the direction of the gap, not population rates.",
         "The failure review also makes the diagnosis actionable. For table-evidence answers, exact-match absence is 87.9% with MinerU-off, 41.7% with MinerU-on and 13.9% with Prod. Recurring causes include dropped table cells, text left inside captions, stamps, seals or figure labels, and numerals or units corrupted beyond the tolerant matchers.",
       ],
       figures: [
@@ -1734,17 +1735,17 @@ const rcps: ResearchProject = {
       eyebrow: "Evaluation design",
       title: "The main comparison keeps one 294-page frame fixed",
       lead:
-        "RCPS and coverage share the same corpus and held-out probe so that a parser or chunker changes without the question set changing underneath it.",
+        "RCPS and coverage use the same corpus and held-out probe, allowing candidate pipelines to change while the question set remains fixed.",
       bullets: [
         "Corpus: 294 pages, split into 229 Korean government pages and 65 arXiv pages.",
         "Probe: 663 verbatim-answerable Q–A, split into 527 government and 136 arXiv questions.",
         "Evidence frame: answers occur on 242 pages; the other 52 pages remain in every selection index as Q–A-free distractors. Coverage still inspects all 294 parser outputs.",
-        "External check: 1,043 source-aligned Law–Manual Q–A from OHR-Bench test semantic perturbations. Its variants share source outputs and are not independent parsers.",
+        "External check: 1,043 source-aligned Law–Manual Q–A pairs from OHR-Bench are used to test semantic perturbations. These variants share source outputs and are not independent parsers.",
         "Training frames: the pooled KoGovDoc-RAG analysis retrieves the same 663 Q–A against only the 242 evidence-bearing pages; the pre-specified pilot uses 202 Q–A on 73 pages; the OHR compatibility analysis uses 2,036 Q–A across six domains. None of these denominators is interchangeable with the 294-page selection frame.",
       ],
       paragraphs: [
-        "Qwen3-VL-30B produced the pseudo-reference Markdown, which was manually de-noised. GPT-5.4 generated the question–answer probe. A separate LLM-assisted check accepted 94 of 100 sampled pairs for question clarity, answer correctness and support in the reference context. The complete pseudo-reference and probe were not human-verified.",
-        "MinerU-off is the originally submitted output with table recognition disabled. MinerU-on is a later audited, table-enabled 294-page run used for the deployment comparison. Software and retrieval environments also changed, so their difference is not a controlled table-recognition ablation.",
+        "Qwen3-VL-30B produced the pseudo-reference Markdown, which was manually de-noised. GPT-5.4 generated the question–answer probe. A separate LLM-assisted check accepted 94 of 100 sampled pairs as clear, correct and supported by the reference context. The complete pseudo-reference and probe were not human-verified.",
+        "MinerU-off is the output originally submitted with table recognition disabled. MinerU-on is a later audited, table-enabled 294-page run used for the deployment comparison. Software and retrieval environments also changed, so their difference is not a controlled table-recognition ablation.",
       ],
     },
     {
@@ -1754,8 +1755,8 @@ const rcps: ResearchProject = {
       lead:
         "The full grid compares five complete 294-page parser outputs under the same parser-native chunking and RCPS protocol. Marker remains a separately labelled 38-page partial run.",
       paragraphs: [
-        "The 30B teacher ranks first at 0.584 RCPS, only 0.001 above Prod at 0.583. Prod has slightly higher Hit@1, 0.549 versus 0.545. In 1,000 fixed-seed probe subsets, the teacher stays above Prod in only 62.5% of draws, so latency and compute may decide between them more honestly than the point estimate.",
-        "MinerU-on is the opposite case: its Boundary Clarity is the highest measured, but its RCPS and Hit@1 are the lowest among complete outputs. PaddleOCR is near MinerU-on on retrieval but has no adjacent parser-native boundaries, so Boundary Clarity is undefined for that configuration rather than missing by accident.",
+        "The 30B teacher ranks first at 0.584 RCPS, only 0.001 above Prod at 0.583. Prod has slightly higher Hit@1, 0.549 versus 0.545. In 1,000 fixed-seed probe subsets, the teacher ranks above Prod in only 62.5% of draws, so latency and compute cost provide a more defensible tie-break than the point estimate.",
+        "MinerU-on is the opposite case: its Boundary Clarity is the highest measured, but its RCPS and Hit@1 are the lowest among complete outputs. PaddleOCR performs similarly to MinerU-on in retrieval but has no adjacent parser-native boundaries, so Boundary Clarity is undefined for that configuration rather than missing by accident.",
         "The mixed-corpus score also hides domain sensitivity. MinerU-on reaches 0.046 RCPS on the 527 government-document questions but 0.486 on the 136 arXiv questions. RCPS should therefore be rerun on the intended deployment probe rather than treated as a portable parser leaderboard.",
       ],
       table: {
@@ -1779,7 +1780,7 @@ const rcps: ResearchProject = {
       },
       callout: {
         label: "Tie policy",
-        text: "RCPS ranks candidates; it does not pretend a 0.001 point gap is operationally decisive. When the probe cannot separate two systems, latency, compute, licensing and failure review should break the tie.",
+        text: "RCPS ranks candidates; it does not treat a 0.001-point gap as operationally decisive. When the probe cannot separate two systems, latency, compute, licensing and failure review should break the tie.",
       },
     },
     {
@@ -1787,9 +1788,9 @@ const rcps: ResearchProject = {
       eyebrow: "Chunker selection",
       title: "Changing the parser moves more than changing the chunker in this pool",
       paragraphs: [
-        "The candidates expose four different boundary policies. md-h3 splits at Markdown headings through level 3; parser-native follows blank-line paragraph boundaries; fixed-500 uses 500-character windows; and LumberChunker asks a local instruction model to find topic shifts between line-level segments.",
-        "With Prod fixed, md-h3 ranks first at 0.593 RCPS, followed by parser-native at 0.583, LumberChunker at 0.557 and fixed-500 at 0.535. The 0.058 chunker range is much smaller than the 0.447 range across the heterogeneous parser pool, and close to the 0.052 range among its three vision–language parsers.",
-        "The decision is not tied to one lucky probe draw. Across 1,000 subsets of 500 from the 663 Q–A, the four-chunker order is unchanged in 96.1% of draws, and md-h3 remains above parser-native in 96.5%. The six-configuration parser ranking has mean Kendall τa = 0.902; all changes are confined to the near-tied teacher–Prod and PaddleOCR–MinerU-on pairs. Prod stays above Base, MinerU-off, PaddleOCR and MinerU-on in every draw.",
+        "The candidates implement four different boundary policies. md-h3 splits at Markdown headings through level 3; parser-native follows blank-line paragraph boundaries; fixed-500 uses 500-character windows; and LumberChunker uses a local instruction model to find topic shifts between line-level segments.",
+        "With Prod fixed, md-h3 ranks first at 0.593 RCPS, followed by parser-native at 0.583, LumberChunker at 0.557 and fixed-500 at 0.535. The 0.058 chunker range is much smaller than the 0.447 range across the heterogeneous parser pool and is comparable to the 0.052 range among its three vision–language parsers.",
+        "The decision is not tied to one lucky probe draw. Across 1,000 random subsets of 500 from the 663 Q–A, the four-chunker order is unchanged in 96.1% of draws, and md-h3 remains above parser-native in 96.5%. The six-configuration parser ranking has mean Kendall τa = 0.902; all changes are confined to the near-tied teacher–Prod and PaddleOCR–MinerU-on pairs. Prod stays above Base, MinerU-off, PaddleOCR and MinerU-on in every draw.",
       ],
       table: {
         caption: "Chunker comparison with Prod fixed · 294 pages and 663 Q–A",
@@ -1813,7 +1814,7 @@ const rcps: ResearchProject = {
       title: "The top RCPS choice also wins the end-to-end check",
       paragraphs: [
         "BGE-M3 retrieves five chunks for each of the 663 questions, then GPT-5.4 generates an answer and judges it against the reference. Prod reaches 72.5% answer accuracy, compared with 23.8% for MinerU-on and 20.5% for PaddleOCR. The RCPS top choice therefore remains the top choice when a reader is added.",
-        "The lower pair reverses relative to RCPS, so this experiment does not validate the full ranking. It also uses one retriever instead of the three-retriever RCPS average, and the same GPT-5.4 checkpoint generates and judges the answers. We treat it only as an end-to-end check of the winner.",
+        "The ordering of the two lower-scoring parsers is reversed relative to RCPS, so this experiment does not validate the full ranking. It also uses one retriever instead of the three-retriever RCPS average, and the same GPT-5.4 checkpoint generates and judges the answers. We treat it only as an end-to-end check of the winner.",
       ],
       table: {
         caption: "Three-parser answer-generation check · BGE-M3 top five · 663 Q–A",
@@ -1832,9 +1833,9 @@ const rcps: ResearchProject = {
       lead:
         "RADP asks a narrower follow-up: if RCPS has selected the pipeline and coverage still identifies genuine parser-side loss, does retrieval-oriented parser training help? It is not the main contribution or the first deployment action.",
       paragraphs: [
-        "The pre-specified pilot misses its success gate: at least a five-percentage-point RCPS gain with the 95% confidence-interval lower bound above zero. On the audited 2,036-Q–A OHR compatibility subset, two DPO checkpoints improve Hit@5 by 0.95 and 1.15 points, while a matched edit-distance control improves it by 1.36 points. Direct control-versus-DPO intervals include zero, and SimPO's point estimates are negative. The study therefore does not isolate a retrieval-reward training benefit.",
+        "The pre-specified pilot misses its success gate: at least a five-percentage-point RCPS gain with the 95% confidence-interval lower bound above zero. On the audited 2,036-Q–A OHR compatibility subset, two DPO checkpoints improve Hit@5 by 0.95 and 1.15 points, while a matched edit-distance control improves it by 1.36 points. Confidence intervals for the direct control-versus-DPO comparisons include zero, and SimPO's point estimates are negative. The study therefore does not isolate a retrieval-reward training benefit.",
         "In the pooled 242-page KoGovDoc-RAG analysis, the three DPO checkpoints have Hit@5 point estimates 1.96–2.11 points above Prod, but every two-sided confidence interval crosses zero. The reporting configuration was selected after multiple settings were examined, so these estimates remain exploratory rather than confirmatory.",
-        "The same 294-page selection frame provides a cleaner scale comparison: fine-tuning raises Prod Hit@1 by 4.9 points over Base, while choosing Prod over MinerU-on changes Hit@1 by 42.6 points. This is descriptive scale, not a causal upper bound on training, but it reinforces selection before optimisation.",
+        "The same 294-page selection frame provides a cleaner scale comparison: fine-tuning raises Prod Hit@1 by 4.9 points over Base, while choosing Prod over MinerU-on changes Hit@1 by 42.6 points. This comparison is descriptive, not a causal upper bound on training, but it reinforces selection before optimisation.",
         "The practical result is a stop rule, not a new training recipe: prefer the large, immediate gains from candidate selection; use coverage to decide which layer to change; train only when required evidence is genuinely absent and switching parsers is not enough.",
       ],
       callout: {
@@ -1849,7 +1850,7 @@ const rcps: ResearchProject = {
       lead:
         "The release separates claims supported by tracked artifacts from the parts of the experiment that still depend on external or author-held material.",
       bullets: [
-        "Tracked in the research repository: the frozen 663-Q–A probe, portable 294-page source map, RCPS and coverage implementations, both MinerU configurations' 294-page outputs, aligned per-Q–A arrays, stability results and deterministic compatibility audits.",
+        "Tracked in the research repository: the frozen 663-Q–A probe, portable 294-page source map, RCPS and coverage implementations, 294-page outputs for both MinerU configurations, aligned per-Q–A arrays, stability results and deterministic compatibility audits.",
         "Released separately: all nine evaluated LoRA adapters with portable configurations, source and release hashes, and available structured trainer states. The release was checked from a clean checkout with CPU-only artifact gates.",
         "Not public in full: original source documents, every third-party parser output, embedding caches, raw preference-pair text and complete original training logs. A complete fresh-clone end-to-end rerun therefore remains unavailable.",
         "The adjudicated human-study inputs remain in an author-only audit package; the public repository reports aggregate results. The mixed-version OHR seven-domain artifact is excluded rather than repaired into a full v2 claim.",
