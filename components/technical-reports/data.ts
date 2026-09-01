@@ -1105,32 +1105,23 @@ const wigvo: ResearchProject = {
 const wigss: ResearchProject = {
   slug: "wigss",
   shortTitle: "WIGSS",
-  title: "Fixing the last ten pixels in the browser without losing the diff",
-  cardTitle: "Open-source drag-to-edit that rewrites your source",
-  dek: "An engineering note on why we moved small visual corrections into the browser while keeping the repository, reviewable diffs and rollback as the source of truth.",
+  title: "Editing source from the browser by address, not by class string",
+  cardTitle: "Matching by class string picked the wrong element half the time",
+  dek: "WIGSS joins a rendered element to its source by searching every project file for a matching className string. Over ten common React and Tailwind patterns that join produced the intended edit 5 times out of 10, and its accuracy falls as 1/N when N components share a class string: 3% at N = 32. Reading an address that the development JSX transform already carries brought both figures to 100% and cut the bytes read per save from 162,606 to 284.",
   track: "Agentic engineering",
   status: "Engineering note",
-  format: "Open-source architecture",
-  date: "2026.04.10",
+  format: "Architecture evaluation",
+  date: "2026.09.02",
   authorId: "jinmo-kim",
-  /* Brand banner, same treatment as the other four: no caption, no
-   * `heroSectionId`, so it runs on the hub card and above section 01. The npm
-   * screenshot it replaced moved into `architecture`.
+  /* Brand banner, same treatment as the other reports: no caption, no
+   * `heroSectionId`, so it runs on the hub card and above section 01.
    *
-   * ⚠ THE ART IS WRONG AND IS NOW LEGIBLE. It shows `npm i @wigtn/wigss` three
-   * times, once as a large centred pill, plus `from '@wigtn/wigss'` in the code
-   * panel. That scoped package does not exist; the published one is `wigss`,
-   * which is what every link in this file points at.
-   *
-   * The earlier note here said the string was illegible at card size and that
-   * the art should be corrected before being used anywhere at full size. The
-   * banner above section 01 is that full size — roughly 820px against the
-   * card's 370px — so a reader can now read an install command that fails.
-   *
-   * Shipping it anyway was decided deliberately on 2026-08-09, with the banner
-   * change, rather than holding this one report back. It is a known debt, not
-   * an oversight: re-export the art with `npm i wigss` and replace the file.
-   * The fix belongs in the image, not in a caption apologising for it. */
+   * ⚠ THE ART IS STILL WRONG AND IS STILL LEGIBLE. It shows `npm i
+   * @wigtn/wigss`; the published package is `wigss`, which is what every link
+   * here points at. The debt was taken knowingly on 2026-08-09 rather than
+   * holding a report back, and it survives this revision for the same reason.
+   * Re-export the art with `npm i wigss` and replace the file. The fix belongs
+   * in the image, not in a caption apologising for it. */
   heroFigure: {
     src: "/images/projects/wigss_image_v1.jpg",
     width: 1536,
@@ -1144,27 +1135,31 @@ const wigss: ResearchProject = {
       href: "https://www.npmjs.com/package/wigss",
       primary: true,
     },
+    {
+      label: "Source repository",
+      href: "https://github.com/wigtn/wigss",
+    },
   ],
   metrics: [
     {
-      value: "60fps",
-      label: "Overlay target",
-      detail: "requestAnimationFrame tracking",
+      value: "5/10 → 10/10",
+      label: "Intended edit produced",
+      detail: "Ten React and Tailwind patterns, one edit each",
     },
     {
-      value: "4",
-      label: "Rewrite strategies",
-      detail: "Tailwind, PostCSS, Babel and CSS/SCSS",
+      value: "3% → 100%",
+      label: "Join accuracy at 32 duplicates",
+      detail: "A string search falls as 1/N; an address does not",
     },
     {
-      value: "Local",
-      label: "Execution model",
-      detail: "Single-user development workflow",
+      value: "573×",
+      label: "Fewer bytes read per save",
+      detail: "162,606 → 284 on this repository, 15-run mean",
     },
     {
-      value: "Pending",
-      label: "Controlled benchmark",
-      detail: "No comparative result is claimed",
+      value: "1",
+      label: "Data-loss path found",
+      detail: "Rollback restores whole files over concurrent edits",
     },
   ],
   sections: [
@@ -1173,8 +1168,8 @@ const wigss: ResearchProject = {
       eyebrow: "Problem",
       title: "The last ten pixels are expensive to describe",
       paragraphs: [
-        "Coding agents can produce a first layout quickly. The friction shows up later, when a ten-pixel correction becomes another round of prose, CSS edits, reloads and screenshots.",
-        "We did not want the browser to become a second source of truth. WIGSS uses it as the editing surface, then turns each manipulation back into a constrained, reviewable source change.",
+        "Coding agents produce a first layout quickly. The friction arrives later, when a ten-pixel correction becomes another round of prose, CSS edits, reloads and screenshots.",
+        "WIGSS uses the browser as the editing surface and turns each manipulation back into a constrained, reviewable source change. The repository stays the source of truth. Whether that translation lands on the element the user actually dragged is a separate question, and it is the one this report measures.",
       ],
       callout: {
         label: "Design decision",
@@ -1182,80 +1177,370 @@ const wigss: ResearchProject = {
       },
     },
     {
-      id: "architecture",
-      eyebrow: "Architecture",
-      title: "Keep the gesture in the browser and the change in source",
+      id: "join",
+      eyebrow: "Mechanism",
+      title: "The screen and the file share one value, so that value became the key",
+      lead:
+        "A DOM node does not know which file produced it, and a file does not know where it was painted. Something has to link them.",
+      paragraphs: [
+        "The browser holds class=\"flex h-48 w-64\". The file holds className=\"flex h-48 w-64\". The class string is the only value present on both sides without adding anything to the user's build, so WIGSS made it the join key. The scan copies the whole string, the server parses each source file with Babel, and the first attribute whose value matches exactly becomes the target.",
+        "The choice follows from a product constraint rather than from convenience. The original PRD required npx wigss to run with nothing installed into the project, which rules out a build-time plugin and therefore rules out a real source coordinate. Within that constraint the class string is the best available key.",
+        "It is still a guess. The rest of this report is about where the guess is wrong and what it costs.",
+      ],
+    },
+    {
+      id: "patterns",
+      eyebrow: "Pattern coverage",
+      title: "Half of the common patterns produced the wrong edit",
+      lead:
+        "Ten fixtures cover the React and Tailwind shapes a real codebase contains. Each defines one drag gesture and one correct outcome. Version A calls the shipped pipeline directly rather than reimplementing it.",
+      paragraphs: [
+        "Five of ten produced the intended change. Three wrote an edit that was wrong, which is worse than refusing: the save reports success, the file changes, and nothing signals that the wrong element moved. Two produced no diff and surfaced no reason, so the user sees only \"could not generate a code change; try a larger edit\", which is unrelated to the actual cause.",
+        "Class-string collisions across files were removed from this fixture set so that pattern handling and duplicate density are not measured together. Duplicates are measured separately in the next section.",
+      ],
+      table: {
+        caption:
+          "Ten patterns, one edit each · A = shipped v0.2.0 · B = address-based prototype",
+        headers: ["Pattern", "A", "B", "What A wrote"],
+        rows: [
+          { cells: ["Unique static className", "Correct", "Correct", "h-48 → h-64"] },
+          {
+            cells: [
+              "Two identical siblings in one file",
+              "Wrong element",
+              "Correct",
+              "Edited the first card; the target was untouched",
+            ],
+            highlight: true,
+          },
+          { cells: ["Template literal with interpolation", "No diff", "Correct", "—"] },
+          { cells: ["cn() call", "No diff", "Correct", "—"] },
+          { cells: ["Multi-line attribute", "Correct", "Correct", "h-48 → h-64"] },
+          {
+            cells: [
+              "Responsive h-32 md:h-48 lg:h-64",
+              "Wrong breakpoint",
+              "Correct",
+              "h-32 → h-80, editing base while the viewport was lg",
+            ],
+            highlight: true,
+          },
+          { cells: ["Item inside .map()", "Correct", "Correct", "h-48 → h-64"] },
+          {
+            cells: [
+              "Move a flex child by 12 px",
+              "Wrong element, arbitrary value",
+              "Correct",
+              "mt-[12px] on the preceding sibling",
+            ],
+            highlight: true,
+          },
+          { cells: ["Single-quoted className", "Correct", "Correct", "h-48 → h-64"] },
+          { cells: ["Static element beside a prop className", "Correct", "Correct", "h-48 → h-64"] },
+        ],
+      },
       figures: [
         {
-          src: "/images/carousel/wigss-npm.png",
-          width: 1698,
-          height: 1169,
-          alt: "WIGSS browser editor package",
+          src: "/images/projects/wigss-join-failures.png",
+          width: 2360,
+          height: 1786,
+          alt: "Six outcomes of searching every file for an exact class-string match, and the two token faults that remain when the search returns the right element",
           caption:
-            "WIGSS wraps the target development server with a visual editor while keeping source code as the final artifact. Published as wigss on npm.",
+            "Only the leftmost branch reaches the intended element. Two of the remaining five write into the wrong place, and the token edit can still be wrong after a correct join.",
         },
       ],
+      bullets: [
+        "The responsive case is the most damaging of the three. findTwClass matches h- without regard to a breakpoint prefix, so an edit made at lg rewrites the base token. The desktop view looks correct, the post-apply check runs at the desktop width and passes, and the mobile height changes from 128 px to 320 px with nothing on screen to indicate it.",
+        "The 12 px move is a second, smaller instance of the same shape. Twelve pixels is exactly mt-3 on the Tailwind scale, but when no top margin exists the rewriter appends a hard-coded mt-[12px] without consulting pxToTw, so a value that had a preset became an arbitrary one.",
+        "Both faults were already described in the v2.2 PRD, which notes that the Tailwind strategy replaces utility classes by guesswork without knowing the parent layout. They were deferred, not missed.",
+      ],
+    },
+    {
+      id: "duplicates",
+      eyebrow: "Duplicate density",
+      title: "Accuracy falls as one over the number of duplicates",
+      lead:
+        "Copy-pasted markup is normal. When N components carry the same class string, each of the N was made the edit target once.",
+      paragraphs: [
+        "The result is exactly 1/N, because a search that stops at the first match is correct only when the target happens to be first. An address does not depend on N.",
+        "Latency did not grow with N, because the rewriter stops iterating at the first match. That observation moved the cost measurement to the right place: the expense is not parsing but the collection step in the refactor endpoint, which reads the project on every save.",
+      ],
+      table: {
+        caption: "Duplicate density against join accuracy",
+        headers: ["Duplicates N", "A correct", "A", "B correct", "B"],
+        rows: [
+          { cells: ["1", "1/1", "100%", "1/1", "100%"] },
+          { cells: ["2", "1/2", "50%", "2/2", "100%"] },
+          { cells: ["4", "1/4", "25%", "4/4", "100%"] },
+          { cells: ["8", "1/8", "13%", "8/8", "100%"] },
+          { cells: ["16", "1/16", "6%", "16/16", "100%"] },
+          { cells: ["32", "1/32", "3%", "32/32", "100%"], highlight: true },
+        ],
+      },
+    },
+    {
+      id: "causes",
+      eyebrow: "Root causes",
+      title: "Two roots account for most of the faults",
+      lead:
+        "The failures are not independent. Almost all of them descend from one of two decisions, which is why a narrow change removes several at once.",
+      paragraphs: [
+        "The first root is the join key. Searching for a class string means duplicates resolve to whichever match comes first, dynamic class names resolve to nothing, and the project has to be read and parsed on every save. It also means the resolved position is a string rather than a coordinate, so the apply step looks the element up a second time and can disagree with the step that found it.",
+        "The second root is the translation. Converting a drag into a margin without knowing whether the parent is flow, flex or grid produces an edit that is sometimes absorbed and sometimes lands on the wrong axis. That uncertainty is what makes post-apply measurement necessary in the first place, and the measurement in turn introduced the rollback path that discards concurrent edits.",
+      ],
+      figures: [
+        {
+          src: "/images/projects/wigss-causes.png",
+          width: 2360,
+          height: 1826,
+          alt: "Two root decisions and the faults that descend from each: the searched class string above, the layout-blind translation below",
+          caption:
+            "Everything in the upper tree follows from resolving by search. The lower tree explains why verification exists, and why the rollback it depends on can lose work.",
+        },
+      ],
+      callout: {
+        label: "Consequence",
+        text: "Replacing the join removes the upper tree. It does not remove the lower one, so verification remains necessary and its rollback still has to be made safe.",
+      },
+    },
+    {
+      id: "address",
+      eyebrow: "Approach",
+      title: "The development JSX transform already knows the answer",
+      lead:
+        "React compiles JSX to jsxDEV(type, props, key, isStatic, source, self) in development, and the fifth argument carries the file, line and column. React DevTools opens a file from it. The value is already flowing; it simply never reaches the DOM.",
       steps: [
         {
           label: "01",
-          title: "Scan the live DOM",
-          body: "The editor inspects visible elements and labels reusable groups around the target development server.",
+          title: "Wrap the development runtime",
+          body: "A thirty-line module re-exports jsxDEV and adds data-wigss=\"file:line:column\" to DOM elements. Components are left alone; the attribute lands on the tag whose class literal is being edited.",
         },
         {
           label: "02",
-          title: "Track an overlay",
-          body: "Bounding boxes follow layout changes with requestAnimationFrame while selection remains outside the iframe.",
+          title: "Ask for one line of configuration",
+          body: "\"jsxImportSource\": \"wigss\" in tsconfig. No Babel plugin, so a Next project keeps its SWC pipeline and its build times. Production is unaffected because it does not use jsxDEV.",
         },
         {
           label: "03",
-          title: "Map DOM to source",
-          body: "Component metadata connects the selected node to a file and style strategy.",
+          title: "Read one file instead of the project",
+          body: "The address names the file, so the collection step reads 1 file rather than 40, and parses 1 rather than 10.",
         },
         {
           label: "04",
-          title: "Send StyleIntent",
-          body: "Drag and resize events become constrained edit intent over WebSocket.",
+          title: "Carry the character range forward",
+          body: "The resolved range travels into the apply step, so nothing is looked up a second time. The next section explains why this last step is not optional.",
+        },
+      ],
+      figures: [
+        {
+          src: "/images/projects/wigss-address-join.png",
+          width: 2360,
+          height: 1166,
+          alt: "Two paths from a screen element to a source location: a class-string search across every file, and an address read from the JSX development transform",
+          caption:
+            "The shipped path searches; the proposed path reads. Removing the search removes the duplicate-collision class of failure along with the per-save file I/O.",
+        },
+      ],
+      paragraphs: [
+        "The same package can inject the scan runtime, which resolves a second problem. The script that answers a scan request currently lives only inside the bundled demo page, so an arbitrary project returns nothing and the editor falls back to an empty component list after four seconds.",
+        "Knowing where an element is does not always mean it can be written. A cn() call is resolvable but not rewritable as a string, so the prototype edits the first string argument and escalates when there is none. The address turns a class of silent failures into a class of explicit ones.",
+      ],
+      callout: {
+        label: "Unverified",
+        text: "Whether Next passes jsxImportSource through to SWC has not been tested. The whole approach rests on it, so it is the first thing to check, and the fallbacks are a Babel plugin (which costs SWC), an SWC plugin, or proxy injection without addresses.",
+      },
+    },
+    {
+      id: "apply",
+      eyebrow: "Apply path",
+      title: "Resolving by address is not enough if apply looks the element up again",
+      lead:
+        "The first version of the prototype resolved the correct element and still failed the duplicate and move cases, exactly as the shipped pipeline did.",
+      paragraphs: [
+        "CodeDiff carries an original and a modified snippet and nothing else, and the apply route locates the edit with content.indexOf(original). An address resolved upstream is discarded at that line, and with two identical siblings the search returns the first one again.",
+        "Passing the character range through to apply made both cases pass. The type for this already exists: TargetLocation has a range field, and the dispatcher supplies { start: 0, end: 0 } with a comment saying that later locators will produce real values.",
+        "This did not appear in the design notes. It appeared when the experiment ran, which is the argument for running the experiment before writing the plan.",
+      ],
+    },
+    {
+      id: "rollback",
+      eyebrow: "Rollback safety",
+      title: "The rollback path restores whole files",
+      lead:
+        "Every save issues a rollback token so the user can undo an edit whose on-screen result drifted. The token restores the file, not the edit.",
+      figures: [
+        {
+          src: "/images/projects/wigss-save-loop.png",
+          width: 2360,
+          height: 1626,
+          alt: "A save passing through three fixed delays to a verification that ends in done, skipped or a warning, with no edge returning to the writer",
+          caption:
+            "Three fixed delays put at least 4.5 seconds between a save and its verdict, and the slowest branch is the one that gives up. Nothing returns to the writer: the automatic re-edit the first PRD specified was never built.",
+        },
+      ],
+      paragraphs: [
+        "In the simulation WIGSS changed a className, the user then edited a different line of the same file in their editor, and the fidelity check failed. Rolling back returned the file to the pre-save snapshot and removed the user's line: const total = items.filter(Boolean).length; became const total = items.length; again. A style tool reverted logic.",
+        "Reversing only the range that was written keeps the user's edit. When the written text is no longer present, because the user changed that line too, the operation has to be refused rather than performed, and the reason shown.",
+      ],
+      table: {
+        caption:
+          "Save, then a concurrent edit to another line of the same file, then a failed fidelity check",
+        headers: ["Outcome", "A · whole-file restore", "B · range reversal"],
+        rows: [
+          { cells: ["Style change reverted", "Yes", "Yes"] },
+          { cells: ["User's concurrent edit kept", "Lost", "Kept"], highlight: true },
+          {
+            cells: [
+              "User had also changed the written line",
+              "Overwritten silently",
+              "Refused, with a reason",
+            ],
+          },
+        ],
+      },
+      bullets: [
+        "The apply route also writes a .bak.<timestamp> sidecar next to every file it touches and never removes it, which leaves artefacts in a repository that already has version control.",
+      ],
+    },
+    {
+      id: "surface",
+      eyebrow: "Editing surface",
+      title: "The interface hides the one thing the user needs to see",
+      lead:
+        "The captures below come from a scan of the bundled demo page: 75 DOM elements grouped into 12 components. What follows is about how those 12 are presented, not how they were found.",
+      paragraphs: [
+        "Because the target page fills the viewport, every control was moved behind a hover reveal. On first run the screen offers a small tab at the top and another at the right edge, and nothing indicates that a scan has to be run before anything can be selected.",
+        "Overlays carry a colour per component type across ten types, plus a depth badge from L1 to L5. At twelve components the labels already collide and the colours stop separating anything. The names come from a running index, so a hero section reads as Section 12 and a card grid as Grid 10, neither of which points at a file.",
+        "Nothing on screen states which breakpoint an edit will land on. The mobile toggle narrows the viewport to 375 px and changes nothing in the edit path, so the breakpoint fault measured earlier is invisible while it happens and stays invisible afterwards.",
+      ],
+      figures: [
+        {
+          src: "/images/projects/wigss-editor-idle.jpg",
+          width: 1400,
+          height: 875,
+          alt: "The shipped editor on first run, showing only two small tabs and no visible controls",
+          caption:
+            "First run. Two tabs are the entire interface until the pointer finds them.",
         },
         {
-          label: "05",
-          title: "Apply a targeted diff",
-          body: "The matching rewriter updates source and reloads the target for verification.",
+          src: "/images/projects/wigss-editor-overlay.jpg",
+          width: 1400,
+          height: 875,
+          alt: "Overlay boxes after a scan, with labels overlapping each other and ten border colours in use",
+          caption:
+            "After a scan of 12 components. Section 12 sits under another label and cannot be read, Grid 10 and Section 10 overlap at the project list, and the depth badges scatter across the corners.",
+        },
+        {
+          src: "/images/projects/wigss-editor-panel.jpg",
+          width: 1400,
+          height: 875,
+          alt: "The agent panel sliding over the right side of the page being edited",
+          caption:
+            "The agent panel covers the region it is commenting on. Reading a suggestion and editing the element it refers to are mutually exclusive.",
+        },
+      ],
+      bullets: [
+        "A drag that produces no diff reports \"could not generate a code change; try a larger edit\". The actual causes are a template literal or a cn() call, and neither is affected by the size of the drag.",
+      ],
+      callout: {
+        label: "Design decision reversed",
+        text: "Hiding the chrome was correct while a single iframe filled the window. On a surface that pans and zooms it is not, because space is no longer the constraint.",
+      },
+    },
+    {
+      id: "prototype",
+      eyebrow: "Canvas prototype",
+      title: "A canvas makes the breakpoint fault visible while it happens",
+      lead:
+        "The second prototype is an editing surface rather than a pipeline. It runs the same scan protocol against the same demo page, and the cards hold live iframes.",
+      paragraphs: [
+        "Placing one route at three widths side by side turns the responsive fault into something a person can see. An edit made at lg shows its effect on sm and md in the same glance, which is the check that no amount of care in the pipeline can replace.",
+        "The active breakpoint is stated in the top bar and never hidden. Colour is reserved for hover and selection; component identity moves to badges that carry the hygiene score and the reuse count, so a name says which file it came from and a badge says whether an edit there is likely to fail.",
+        "A drag ends in a decision rather than a write. The insertion line shows the destination before the pointer is released, and the arbitration list names the candidates with the code each would produce. Absolute positioning is present as the last option and marked as breaking the responsive layout.",
+      ],
+      figures: [
+        {
+          src: "/images/projects/wigss-canvas-set.jpg",
+          width: 1400,
+          height: 875,
+          alt: "A pannable canvas holding the same route at 375, 768 and 1280 pixels, with the active breakpoint shown in the top bar",
+          caption:
+            "One route at three widths. The 375 card is marked stale and waiting for its update, and the top bar states that edits will land on lg.",
+        },
+        {
+          src: "/images/projects/wigss-canvas-arbitration.jpg",
+          width: 1400,
+          height: 875,
+          alt: "A drag in progress with an insertion line, a ghost following the pointer, and a list of candidate interpretations with confidence",
+          caption:
+            "Releasing a drag opens the candidate list: reorder, margin, parent gap, then absolute position with its warning. Each candidate names the code it would write.",
         },
       ],
       table: {
-        caption: "Source rewrite dispatch",
-        headers: ["Source style", "Rewrite mechanism", "Risk to verify"],
+        caption: "The same page in both surfaces",
+        headers: ["", "Shipped editor", "Canvas prototype"],
         rows: [
-          { cells: ["Tailwind utilities", "Class-token update", "Conflicting responsive variants"] },
-          { cells: ["CSS Modules", "PostCSS syntax tree", "Selector fan-out"] },
-          { cells: ["CSS / SCSS", "Rule-level edit", "Cascade and specificity"] },
-          { cells: ["Inline React", "Babel syntax tree", "Computed style expressions"] },
+          { cells: ["Controls visible on first run", "2", "12 or more"] },
+          { cells: ["Active breakpoint shown", "No", "Always"], highlight: true },
+          { cells: ["Viewports reviewable at once", "1", "3"], highlight: true },
+          { cells: ["Label collisions at 12 components", "Present", "None; labels appear on hover and selection"] },
+          { cells: ["Warning before a risky edit", "None", "Hygiene and reuse badges"] },
+          { cells: ["Panel occludes the edit target", "Yes", "No; the rail displaces the canvas"] },
         ],
+      },
+    },
+    {
+      id: "tiers",
+      eyebrow: "Escalation",
+      title: "What happens when the deterministic path cannot write",
+      lead:
+        "Today an unwritable edit falls back to an inline style attribute. The v2.2 PRD recorded that as a deliberate temporary trade-off and added a cleanup pass to convert such diffs back to classes when every property maps to a preset.",
+      paragraphs: [
+        "If the tool is not permitted to leave code that a reviewer would reject, the fallback has to go, and with it the cleanup pass that exists to repair its output. What replaces them is an escalation: a scoped model edit, then a prompt at a range the user chooses, then an explicit refusal that leaves the file alone.",
+        "A model edit is bounded by the same machinery as a deterministic one. It receives the node and its parent rather than the file, its output is spliced into a fixed range, it is re-parsed and checked for token parity, and the on-screen measurement is the last word. A plausible but wrong edit does not reach the user because the result is judged by the rendered page, not by reading the code.",
+      ],
+      figures: [
+        {
+          src: "/images/projects/wigss-edit-tiers.png",
+          width: 2360,
+          height: 1346,
+          alt: "Escalation from a deterministic AST edit to a scoped model edit to a user prompt, with every tier passing the same linter, apply guards and on-screen check before a failed check rolls back and returns the next candidate",
+          caption:
+            "Every tier writes through the same linter, the same guards and the same check. The retry edge on the right is the loop the current build does not have: verification stops at a warning and waits for a person.",
+        },
+      ],
+      callout: {
+        label: "Claim under test",
+        text: "A model may write the code as long as the result is graded on screen and reverted when it drifts. The number that would support this is the share of model edits the on-screen check rejects, and it does not exist yet.",
       },
     },
     {
       id: "evidence",
       eyebrow: "Evidence status",
-      title: "Architecture is documented; outcome quality is not yet benchmarked",
+      title: "This reproduces defects; it does not benchmark the tool",
       paragraphs: [
-        "The package documentation supports the scan-to-rewrite data flow and its source strategies. It does not support a claim that WIGSS is faster, safer or more accurate than editing through a coding agent.",
+        "The harness runs ten fixtures, a duplicate-density sweep and a rollback simulation, and calls the shipped pipeline for the A side rather than a description of it. The 340 existing unit tests pass and tsc --noEmit is clean at the measured commit.",
+        "Ten fixtures chosen for the shapes they exercise are not a sample of any codebase, and the B side implements three axes rather than a product. The figures below are what the measurements support and what they do not.",
       ],
       bullets: [
-        "Required future metric: component-to-source mapping success rate.",
-        "Required future metric: visual fidelity after save at multiple viewport sizes.",
-        "Required future metric: build and type-check pass rate after generated diffs.",
-        "Required future metric: task completion time, diff size and rollback success.",
+        "Supported: an address-based join produced the intended edit on all ten patterns and is unaffected by duplicate density; the shipped build rewrites the wrong breakpoint, emits an arbitrary value where a preset exists, and discards concurrent edits on rollback; per-save reads fall from 162,606 bytes to 284.",
+        "Not supported: coverage of the deterministic path on real projects, the share of edits a model tier would rescue, and whether the address survives Next's SWC pipeline.",
+        "Required before this becomes a measured system: a fixed set of open-source Next and Tailwind repositories with a scripted edit suite, and telemetry for tier outcome, latency and convention violations recorded from the first release rather than added later.",
       ],
       callout: {
         label: "Publication rule",
-        text: "Until the dataset, evaluator and logs ship together, WIGSS remains an engineering note rather than a benchmark report.",
+        text: "Until the fixed repository set, the scripted edit suite and the recorded outcomes ship together, WIGSS stays an engineering note rather than a benchmark report.",
       },
     },
   ],
   limitations: [
-    "The documented package targets local, single-user development.",
-    "DOM-to-source mapping becomes ambiguous across generated markup and higher-order abstractions.",
-    "No controlled speed, fidelity or code-quality benchmark has been released.",
+    "Ten fixtures were written to exercise particular code shapes. They show that each failure occurs and how, not how often any of them occurs in a given repository.",
+    "The comparison holds the px-to-Tailwind scale table and the apply-time safety guards constant across both sides, so it measures the join, the breakpoint handling and the output policy, and nothing else.",
+    "The 5/10 figure is specific to this fixture set. Removing the cross-file class collisions raised it from 2/10, which shows how strongly the number depends on how much duplication the sample contains.",
+    "The address approach is unverified end to end. jsxImportSource has not been tested against Next's SWC pipeline, and behaviour under React Server Components, where a change re-renders a route rather than a component, has not been measured at all.",
+    "The prototype implements resolution, breakpoint-aware token editing and range-based application. It does not implement structure edits, the model tiers, or the editing surface, so no claim here covers them.",
+    "Latency was measured in-process on one machine. It excludes the fixed delays the current save flow adds after writing, which dominate the wall-clock time a user experiences.",
+    "The rollback result comes from a simulation of the documented restore behaviour rather than from a running session, though the restore path it models is a single call that rewrites the file with its pre-save contents.",
   ],
 };
 
