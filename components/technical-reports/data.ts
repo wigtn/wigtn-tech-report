@@ -1547,6 +1547,7 @@ const wigss: ResearchProject = {
         "The canvas mock-ups became a route. A rail lists the routes found by a static walk of the target's app directory and, under them, the component tree of the active card; the active card's width decides which breakpoint token an edit rewrites; an insertion line is the only gesture that commits a reorder. The first sessions on it also produced the honest embarrassments: a scripted resize wrote a 1,901-pixel height into the demo because the test picked its target by geometry, and a margin written into a centred container moved nothing on screen. Both became same-day fixes, and the second became the test case below.",
         "Dragging now shows the page's answer while the pointer is still down. Each frame posts one message into the iframe and the styles land on the live DOM only — the source is never touched — so the reflow a resize will cause is visible as it happens, neighbours included. Releasing writes the code edit, and the reload that follows replaces the preview with whatever the code actually renders.",
         "The verification edge the escalation figure named as missing is closed on the canvas too: apply, rescan, verify, and on mismatch an automatic reverse-edit rollback, one scoped model repair, and a re-verify. The centred-container case shows why the screen keeps the last word. Dragging the main column sideways writes a margin class, and whether that margin beats the auto-centring depended on the order the generated stylesheet happened to take: across builds the same edit rendered as 0 pixels of movement in one run and 96 in another. Both miss the 102-pixel expectation, and both end as a clean file.",
+        "The arbitration list and the parent tier landed before this report merged. A drop now returns candidates rather than a decision: the element's own margin or size, the parent's gap, the parent's column count when a grid child is resized to a width its track cannot give, and absolute positioning last — offered only under a positioned ancestor and labelled as breaking the flow. Each candidate names the exact tokens it would write, Escape writes nothing, and a right click opens a prompt whose model edit is fenced to the same single class fragment and reversed by the same reverse-edit undo. The grid case closed the acceptance test: resizing a card until the row cannot hold three columns offers grid-cols-3 to grid-cols-1 on the lg token, and undo restores the file byte for byte.",
         "Closing the loop surfaced two failures no plan listed. A rescan can measure the page before the dev server has compiled the edit, and judging that stale render rolled back a correct edit — so the loop now waits until the class it wrote is visible in the scan before it judges. And the development server bundles API routes separately, which quietly gave apply and rollback two different in-memory backup stores; the store moved to the process global, and the canvas run is what caught it — the unit tests share one module instance and never could.",
       ],
       figures: [
@@ -1575,6 +1576,22 @@ const wigss: ResearchProject = {
             "Release plus 733 milliseconds: the edit landed on the lg token, the page was re-measured, and the toast reports the check that passed — not the write that happened.",
         },
         {
+          src: "/images/projects/wigss-canvas-arbitration-live.jpg",
+          width: 2880,
+          height: 1800,
+          alt: "The shipped arbitration panel after resizing a grid card: the element's own size, or the parent grid dropping to one column, each with the tokens it would write",
+          caption:
+            "The arbitration sketch became a panel. A grid card resized past its track offers two readings — its own width, or the parent's column count — each naming the tokens it would write; Escape writes nothing.",
+        },
+        {
+          src: "/images/projects/wigss-canvas-t2.jpg",
+          width: 2880,
+          height: 1800,
+          alt: "The right-click prompt tier: a natural-language instruction scoped to one element's class fragment",
+          caption:
+            "The prompt tier, scoped. A right click asks for an instruction, the model may answer with one line of class tokens, and the same fences, screen check and undo apply.",
+        },
+        {
           src: "/images/projects/wigss-canvas-mismatch.jpg",
           width: 2880,
           height: 1800,
@@ -1596,7 +1613,7 @@ const wigss: ResearchProject = {
         ],
       },
       bullets: [
-        "Still open, in order: the drop arbitration list this report sketched is still a silent heuristic; edits whose correct diff lives on the parent — a grid child's width — are refused rather than redirected; the prompt tier is unbuilt; React Server Components remain unmeasured.",
+        "Still open, in order: candidates are enumerated deterministically, not ranked by a model; the absolute candidate cannot yet make its parent positioned, which needs a two-address atomic apply; production builds still join by search; React Server Components remain unmeasured.",
       ],
       callout: {
         label: "Evidence status, updated",
