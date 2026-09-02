@@ -1,0 +1,71 @@
+<svg width="1600" height="960" viewBox="0 0 1600 960" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="960" fill="#F7F8FA"/>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0 0L10 5L0 10V0Z" fill="#98A2B3"/>
+    </marker>
+  </defs>
+
+  <text x="88" y="92" fill="#8B5CF6" font-family="IBM Plex Mono, monospace" font-size="21" letter-spacing="3">WIGTNOCR ARCHITECTURE</text>
+  <text x="88" y="158" fill="#111827" font-family="IBM Plex Sans, Arial, sans-serif" font-size="52" font-weight="600">Spend the large-model budget once</text>
+  <text x="88" y="204" fill="#667085" font-family="IBM Plex Sans, Arial, sans-serif" font-size="24">Generate and curate supervision offline; serve the distilled parser on one GPU.</text>
+
+  <rect x="64" y="256" width="1472" height="330" rx="28" fill="#EEF1F5"/>
+  <text x="92" y="300" fill="#667085" font-family="IBM Plex Mono, monospace" font-size="17" letter-spacing="2">OFFLINE DATA PIPELINE</text>
+
+  <g font-family="IBM Plex Sans, Arial, sans-serif">
+    <rect x="92" y="336" width="300" height="190" rx="18" fill="white" stroke="#D0D5DD" stroke-width="2"/>
+    <text x="118" y="376" fill="#8B5CF6" font-family="IBM Plex Mono, monospace" font-size="16" letter-spacing="2">01 RENDER</text>
+    <text x="118" y="425" fill="#111827" font-size="28" font-weight="600">PDF pages</text>
+    <text x="118" y="462" fill="#667085" font-size="21">PyMuPDF · 200 DPI</text>
+    <text x="118" y="496" fill="#667085" font-size="21">Korean + English</text>
+
+    <path d="M392 431H430" stroke="#98A2B3" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <rect x="442" y="336" width="300" height="190" rx="18" fill="white" stroke="#D0D5DD" stroke-width="2"/>
+    <text x="468" y="376" fill="#8B5CF6" font-family="IBM Plex Mono, monospace" font-size="16" letter-spacing="2">02 GENERATE</text>
+    <text x="468" y="425" fill="#111827" font-size="28" font-weight="600">30B teacher</text>
+    <text x="468" y="462" fill="#667085" font-size="21">Qwen3-VL Instruct</text>
+    <text x="468" y="496" fill="#667085" font-size="21">4,501 Markdown labels</text>
+
+    <path d="M742 431H780" stroke="#98A2B3" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <rect x="792" y="336" width="300" height="190" rx="18" fill="white" stroke="#D0D5DD" stroke-width="2"/>
+    <text x="818" y="376" fill="#8B5CF6" font-family="IBM Plex Mono, monospace" font-size="16" letter-spacing="2">03 VALIDATE</text>
+    <text x="818" y="425" fill="#111827" font-size="28" font-weight="600">122B judge</text>
+    <text x="818" y="462" fill="#667085" font-size="21">Text-only · five criteria</text>
+    <text x="818" y="496" fill="#667085" font-size="21">Accept at score ≥ 3</text>
+
+    <path d="M1092 431H1130" stroke="#98A2B3" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <rect x="1142" y="336" width="300" height="190" rx="18" fill="white" stroke="#D0D5DD" stroke-width="2"/>
+    <text x="1168" y="376" fill="#8B5CF6" font-family="IBM Plex Mono, monospace" font-size="16" letter-spacing="2">04 CURATE</text>
+    <text x="1168" y="425" fill="#111827" font-size="28" font-weight="600">Balance + split</text>
+    <text x="1168" y="462" fill="#667085" font-size="21">2,667 train pages</text>
+    <text x="1168" y="496" fill="#667085" font-size="21">294 held-out pages</text>
+
+    <path d="M1292 526V640" stroke="#98A2B3" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <rect x="710" y="654" width="340" height="190" rx="18" fill="white" stroke="#D0D5DD" stroke-width="2"/>
+    <text x="738" y="694" fill="#8B5CF6" font-family="IBM Plex Mono, monospace" font-size="16" letter-spacing="2">05 DISTILL</text>
+    <text x="738" y="743" fill="#111827" font-size="28" font-weight="600">2B base + LoRA</text>
+    <text x="738" y="780" fill="#667085" font-size="21">r = 8 · α = 32 · 3 epochs</text>
+    <text x="738" y="814" fill="#667085" font-size="21">8.7M trainable parameters</text>
+
+    <path d="M1050 749H1094" stroke="#98A2B3" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <rect x="1106" y="654" width="336" height="190" rx="18" fill="#111827"/>
+    <text x="1134" y="694" fill="#C4B5FD" font-family="IBM Plex Mono, monospace" font-size="16" letter-spacing="2">ONLINE SERVING</text>
+    <text x="1134" y="743" fill="white" font-size="28" font-weight="600">WigtnOCR-2B</text>
+    <text x="1134" y="780" fill="#D0D5DD" font-size="21">vLLM · single GPU</text>
+    <text x="1134" y="814" fill="#D0D5DD" font-size="21">Structured Markdown output</text>
+
+    <rect x="166" y="678" width="444" height="140" rx="18" fill="#F4F0FF" stroke="#C4B5FD" stroke-width="2"/>
+    <text x="194" y="718" fill="#6D28D9" font-family="IBM Plex Mono, monospace" font-size="16" letter-spacing="2">FIXED BASE</text>
+    <text x="194" y="765" fill="#111827" font-size="26" font-weight="600">Qwen3-VL-2B-Instruct</text>
+    <text x="194" y="798" fill="#667085" font-size="20">Vision encoder + aligner frozen</text>
+    <path d="M610 749H698" stroke="#8B5CF6" stroke-width="3" marker-end="url(#arrow)"/>
+  </g>
+
+  <circle cx="1490" cy="884" r="18" fill="#8B5CF6"/>
+</svg>
