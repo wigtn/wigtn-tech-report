@@ -399,9 +399,9 @@ const codexSelectiveHarness: ResearchProject = {
 const wigtnOcr: ResearchProject = {
   slug: "wigtnocr",
   shortTitle: "WigtnOCR",
-  title: "A 2B parser that outperforms its 30B teacher on retrieval",
-  cardTitle: "Distilled from 30B, first of six on Hit@1",
-  dek: "An engineering account of how we used a 30B teacher once, served the task with a 2B student, and checked whether parsing gains survived downstream retrieval.",
+  title: "Distilling a 30B document parser into a deployable 2B model",
+  cardTitle: "Use 30B offline, serve 2B in production",
+  dek: "A model report on turning quality-filtered 30B pseudo-labels into a 2B Korean document parser. The student led the original 564-query retrieval release; a later 663-Q–A RCPS audit placed it in a near tie with its teacher.",
   track: "Models & evaluation",
   status: "Open model",
   format: "Model report",
@@ -431,12 +431,20 @@ const wigtnOcr: ResearchProject = {
       label: "Model weights",
       href: "https://huggingface.co/Wigtn/Qwen3-VL-2B-WigtnOCR",
     },
+    {
+      label: "Peer-reviewed RCPS selection and coverage report",
+      href: "/rcps/",
+    },
+    {
+      label: "Final RCPS camera-ready paper",
+      href: "https://github.com/wigtn/WigtnOCR-RADP/blob/main/output/pdf/EMNLP2026_Industry_384_camera_ready_final.pdf",
+    },
   ],
   metrics: [
     {
-      value: "0.739",
-      label: "KoGovDoc Hit@1",
-      detail: "Highest among six released parser outputs",
+      value: "2B",
+      label: "Production parser",
+      detail: "LoRA rank 8 on a Qwen3-VL-2B base",
     },
     {
       value: "0.649",
@@ -444,14 +452,14 @@ const wigtnOcr: ResearchProject = {
       detail: "+12.6 points over the 30B teacher",
     },
     {
-      value: "4,501",
-      label: "Teacher-labeled pages",
-      detail: "49 documents before filtering and correction",
+      value: "4,501 → 2,667",
+      label: "Generated → training pages",
+      detail: "49 documents before quality and balance filters",
     },
     {
-      value: "2B",
-      label: "Student parameters",
-      detail: "LoRA rank 8, alpha 32, three epochs",
+      value: "0.583 / 0.549",
+      label: "Audited RCPS / Hit@1",
+      detail: "663 Q–A, 294 pages, three retrievers",
     },
   ],
   sections: [
@@ -460,10 +468,10 @@ const wigtnOcr: ResearchProject = {
       eyebrow: "Problem",
       title: "The output looked readable. Retrieval told a different story",
       lead:
-        "Korean public documents combine scans, multi-column layouts, forms, charts, stamps and dense tables. We learned quickly that readable text alone was not the useful output. The structure had to survive long enough for retrieval to recover it.",
+        "Korean public documents combine scans, multi-column layouts, forms, charts, stamps and dense tables. Readable text alone was not useful output: the structure had to survive long enough for retrieval to recover the evidence.",
       paragraphs: [
-        "A parser can look visually clean and still remove the value that answers a user’s question. That gap changed the evaluation plan: WigtnOCR separates intrinsic parsing quality from downstream retrieval quality instead of compressing both into one headline score.",
-        "OmniDocBench measures text, tables, formulas and reading order. KoGovDoc then holds the retriever and chunking policy fixed and measures how much answer-bearing content remains recoverable after parsing.",
+        "This report answers the model question: how a 30B vision-language teacher became a 2B production parser, what transferred, and what did not. OmniDocBench tests text, tables, formulas and reading order; the original KoGovDoc release asks whether the parsed content remains retrievable.",
+        "A later peer-reviewed study asks a different systems question: which parser–chunker pipeline should be selected under multiple retrievers, and where does coverage disappear? We include its matched WigtnOCR results as a post-release audit, while leaving the full RCPS protocol, coverage diagnosis and training experiments to the dedicated report.",
       ],
       figures: [
         {
@@ -472,21 +480,21 @@ const wigtnOcr: ResearchProject = {
           height: 1424,
           alt: "WigtnOCR benchmark highlights",
           caption:
-            "Parsing and retrieval highlights from the released WigtnOCR evaluation, shown together because the report's argument is that the two do not move together. Lower is better for NED; higher is better for TEDS and retrieval metrics.",
+            "Highlights from the original WigtnOCR v1 evaluation. Its retrieval numbers belong to the 564-query, single-retriever release frame; they are not the later RCPS audit. Lower is better for NED; higher is better for TEDS and retrieval metrics.",
           contain: true,
         },
       ],
       callout: {
         label: "What we wanted to know",
-        text: "Can a 2B student preserve the useful document behavior of a 30B teacher, and does that preservation survive all the way to retrieval?",
+        text: "Can a 2B student preserve the useful document behavior of a 30B teacher, and does that transfer survive downstream retrieval without turning one evaluation frame into a universal claim?",
       },
     },
     {
       id: "why",
       eyebrow: "Alternatives",
-      title: "Four kinds of parser, and what each one loses on a Korean government PDF",
+      title: "Why the available parser classes missed the deployment target",
       lead:
-        "The model exists because the four things you would reach for first each fail differently on this corpus.",
+        "Four plausible alternatives failed for different reasons on this corpus: structure loss, layout brittleness, domain mismatch or serving cost.",
       steps: [
         {
           label: "Plain OCR",
@@ -495,17 +503,17 @@ const wigtnOcr: ResearchProject = {
         },
         {
           label: "Rule-based",
-          title: "Fast, and structurally blind",
-          body: "PyMuPDF4LLM extracts quickly and recognises almost no structure: the article-clause-item hierarchy in a statute, and any page mixing a table with a diagram and prose, come out flat. Not the whole family, though. Marker is rule-based and leads text accuracy and reading order in the comparison two sections down.",
+          title: "Fast but structurally brittle",
+          body: "PyMuPDF4LLM extracts quickly and recognises almost no structure: the article-clause-item hierarchy in a statute, and pages that mix tables, diagrams and prose, come out flat. This is not a claim about every rule-based system; Marker leads text accuracy and reading order in the later intrinsic comparison.",
         },
         {
           label: "Recent VLM parsers",
-          title: "Trained on other people's documents",
-          body: "The current open VLM parsers are trained mostly on English and Chinese material. Korean government documents bring complex tables, forms, official seals, scanned pages mixed with digital ones, and multi-column layouts they were not tuned for.",
+          title: "Carry a domain mismatch",
+          body: "At the time of the v1 release, the available open VLM parsers were trained mostly on English and Chinese material. Korean government documents bring complex tables, forms, official seals, scanned pages mixed with digital ones, and multi-column layouts they were not tuned for.",
         },
         {
           label: "A 30B VLM",
-          title: "Good, and not deployable here",
+          title: "Exceeds the serving budget",
           body: "Parsing quality is high, but it needs two GPUs and is slow to serve. The project's constraint was the GPU budget, and a 2B model meets it: one GPU to serve, and an edge deployment that is actually realistic.",
         },
       ],
@@ -524,7 +532,7 @@ const wigtnOcr: ResearchProject = {
         {
           label: "Stage 01",
           title: "Generate",
-          body: "Qwen3-VL-30B-Instruct converts 4,501 page images from 49 documents into structured Markdown.",
+          body: "Qwen3-VL-30B-Instruct converts 4,501 page images from 49 Korean and English documents into structured Markdown.",
         },
         {
           label: "Stage 02",
@@ -534,7 +542,7 @@ const wigtnOcr: ResearchProject = {
         {
           label: "Stage 03",
           title: "Filter",
-          body: "Low-quality pages are removed, document imbalance is corrected, and 294 government pages are held out.",
+          body: "Pages scoring below three are removed, damaged generations are repaired or dropped, and per-document sampling limits the largest source. The resulting training set contains 2,667 pages; the 294-page evaluation frame is excluded from training.",
         },
         {
           label: "Stage 04",
@@ -543,23 +551,25 @@ const wigtnOcr: ResearchProject = {
         },
       ],
       table: {
-        caption: "Released training corpus",
-        headers: ["Source", "Documents", "Pages", "Role"],
+        caption: "Teacher-generation pool and resulting training set",
+        headers: ["Stage or source", "Documents", "Pages", "Role"],
         rows: [
-          { cells: ["KoGovDoc", "10", "3,637", "Domain adaptation"] },
-          { cells: ["ArXiv", "39", "864", "Layout diversity"] },
-          { cells: ["Total", "49", "4,501", "Teacher generation"], highlight: true },
+          { cells: ["KoGovDoc source", "10", "3,637", "Domain adaptation"] },
+          { cells: ["arXiv source", "39", "864", "Layout diversity"] },
+          { cells: ["Teacher-generation pool", "49", "4,501", "Before filtering"] },
+          { cells: ["Training set", "—", "2,667", "After filtering and balancing"], highlight: true },
+          { cells: ["Held-out evaluation", "—", "294", "Excluded from training"] },
         ],
       },
     },
     {
       id: "judge",
       eyebrow: "Supervision",
-      title: "The judge reads text only, and that is the point",
+      title: "A text-only judge filters usability, not visual fidelity",
       paragraphs: [
-        "A 122B text-only model scored every generated page on five dimensions: structure, table quality, completeness, hallucination and consistency. It never sees the source image, and that is deliberate rather than a shortcut.",
-        "A vision model grading a vision model's output shares its visual interpretation bias, so the two agree on the same misreading and the evaluation closes a loop instead of testing anything. Separating the judge into a text-only model asks a different question: not whether this matches the image, but whether this output is usable as training data at all. Repetition loops, truncated text and leaked reasoning are all detectable from the text alone.",
-        "Scores run one to five and anything below three was dropped. 75.1% of the Korean government pages cleared that bar, and 73.8% of the arXiv pages.",
+        "Qwen3.5-122B scored every generated page from one to five on structure, table quality, completeness, hallucination and consistency. Pages below three were removed. The v1 release reports an aggregate pass rate of roughly 74–75%; the underlying audit records 75.1% for Korean government pages and 73.8% for arXiv pages.",
+        "The judge sees only the generated Markdown. That separation helps expose text-side pathologies such as repetition loops, truncation, leaked reasoning and malformed structure without reusing the teacher's visual interpretation. It is a useful quality gate, not a fidelity oracle: because the judge never sees the source image, it cannot verify that a transcription matches the page.",
+        "The surviving outputs therefore remain pseudo-labels rather than human ground truth. The pipeline reduces weak-supervision risk through scoring, manual repair and filtering; it does not eliminate it.",
       ],
       callout: {
         label: "A finding that changed the pipeline",
@@ -569,15 +579,58 @@ const wigtnOcr: ResearchProject = {
     {
       id: "data",
       eyebrow: "Data",
-      title: "Two things wrong with the corpus before any training ran",
+      title: "Two corpus defects mattered before training",
       bullets: [
         "One document accounted for 53% of the pages. A model trained on that learns that document rather than the domain, so a per-document ratio cap of 0.25 was applied.",
         "The reasoning teacher had left English thinking traces inside some of the generated Markdown. Twenty pages were deleted outright and 257 were repaired.",
-        "What survived: 2,667 training pages and 294 held out and excluded from training. The split is at page level; the source does not establish that a held-out page never shares a document with a trained one.",
+        "What survived for training: 2,667 pages. A separate 294-page government evaluation frame was excluded from training; the available release record establishes page-level exclusion, not document-level isolation.",
       ],
       callout: {
-        label: "Why this is in the report",
+        label: "Why data audit matters",
         text: "Both problems were invisible in the aggregate quality score and would have been invisible in the final metrics too. They were found by looking at the corpus rather than at the numbers it produced.",
+      },
+    },
+    {
+      id: "frames",
+      eyebrow: "Evaluation design",
+      title: "Three frames answer three different questions",
+      lead:
+        "WigtnOCR was evaluated at model release and then re-evaluated inside a larger parser-selection study. The numbers are complementary, not interchangeable.",
+      table: {
+        caption: "Evaluation frames used in this report",
+        headers: ["Frame", "Scope", "What it supports"],
+        rows: [
+          {
+            cells: [
+              "OmniDocBench",
+              "Text, table, formula, reading-order and skip metrics",
+              "Intrinsic parsing comparison",
+            ],
+          },
+          {
+            cells: [
+              "WigtnOCR v1 release",
+              "564 queries · six parsers · semantic chunking · BGE-M3",
+              "Original single-stack retrieval ranking",
+            ],
+          },
+          {
+            cells: [
+              "Audited RCPS study",
+              "663 Q–A · 294 pages · three retrievers × depths 1, 5 and 10",
+              "Parser–chunker selection under a broader probe",
+            ],
+            highlight: true,
+          },
+        ],
+      },
+      paragraphs: [
+        "The original release applies the same semantic chunking and BGE-M3 retrieval stack to six parser outputs. It is the correct frame for the 0.739 Hit@1 result and the release ranking that follows.",
+        "The later RCPS study uses parser-native chunking, three retrievers and three retrieval depths over a frozen 663-Q–A probe. Dataset construction, chunking and aggregation all differ, so its scores cannot be read as a rerun of the 564-query table. They provide a stronger deployment audit, not a replacement denominator.",
+      ],
+      callout: {
+        label: "Reading rule",
+        text: "Every retrieval claim below names its frame. A model can lead the release comparison and be near-tied with its teacher in the later audit without either result being contradictory.",
       },
     },
     {
@@ -593,12 +646,12 @@ const wigtnOcr: ResearchProject = {
           height: 1704,
           alt: "OmniDocBench comparison chart",
           caption:
-            "OmniDocBench comparison across the 30B teacher, base 2B, Marker and WigtnOCR.",
+            "Original WigtnOCR v1 OmniDocBench comparison across the 30B teacher, base 2B, Marker and WigtnOCR.",
           contain: true,
         },
       ],
       table: {
-        caption: "OmniDocBench selected metrics",
+        caption: "Original model-release evaluation · OmniDocBench selected metrics",
         headers: ["Parser", "Text NED ↓", "Table TEDS ↑", "Formula CDM ↑", "Order NED ↓", "Skip ↓"],
         rows: [
           { cells: ["Qwen3-VL-30B", "0.289", "0.523", "0.939", "0.227", "5.5%"] },
@@ -638,10 +691,13 @@ const wigtnOcr: ResearchProject = {
     },
     {
       id: "retrieval",
-      eyebrow: "Downstream evaluation",
-      title: "Cleaner chunks do not automatically retrieve better",
+      eyebrow: "Original downstream evaluation",
+      title: "The v1 release puts the 2B student first",
       lead:
-        "MinerU produces the strongest boundary metrics but ranks fifth in retrieval. WigtnOCR preserves more answer-bearing structure and leads Hit@1, Hit@5 and MRR@10.",
+        "In the original 564-query frame, MinerU produces the strongest boundary metrics but ranks fifth in retrieval. WigtnOCR leads Hit@1, Hit@5 and MRR@10 across the six released parser outputs.",
+      paragraphs: [
+        "This is the source of the original claim that the 2B student outperformed its 30B teacher on retrieval: 0.739 versus 0.716 Hit@1 under one shared semantic-chunking and BGE-M3 pipeline. It is a valid result inside that release frame, not evidence that the student dominates every retrieval design.",
+      ],
       figures: [
         {
           src: "/images/projects/wigtnocr-bc-vs-retrieval.png",
@@ -649,7 +705,7 @@ const wigtnOcr: ResearchProject = {
           height: 1821,
           alt: "Boundary Clarity compared with retrieval Hit at 1",
           caption:
-            "Boundary quality and retrieval diverge: intrinsic chunk cleanliness is not a substitute for end-to-end evaluation.",
+            "Original 564-query release frame. Boundary quality and retrieval diverge: intrinsic chunk cleanliness is not a substitute for end-to-end evaluation.",
           contain: true,
         },
         {
@@ -658,12 +714,12 @@ const wigtnOcr: ResearchProject = {
           height: 1704,
           alt: "KoGovDoc retrieval results",
           caption:
-            "Six-parser KoGovDoc retrieval comparison using the same semantic chunking and BGE-M3 retrieval pipeline.",
+            "Original 564-query release frame: six-parser KoGovDoc comparison using the same semantic chunking and BGE-M3 retrieval pipeline.",
           contain: true,
         },
       ],
       table: {
-        caption: "KoGovDoc retrieval, 564 queries",
+        caption: "Original WigtnOCR v1 release · 564 queries · semantic chunking · BGE-M3",
         headers: ["Parser", "Hit@1 ↑", "Hit@5 ↑", "MRR@10 ↑", "nDCG@10 ↑"],
         rows: [
           { cells: ["WigtnOCR-2B", "0.739", "0.855", "0.788", "0.437"], highlight: true },
@@ -676,22 +732,86 @@ const wigtnOcr: ResearchProject = {
       },
     },
     {
+      id: "audit",
+      eyebrow: "Post-release audit",
+      title: "The broader RCPS frame turns the win into a top-tier tie",
+      lead:
+        "Under the later 663-Q–A audit, the teacher leads aggregate RCPS by 0.001 while the production student leads Hit@1 by 0.004. The practical result is parity at the top, not universal student superiority.",
+      table: {
+        caption: "Audited RCPS re-evaluation · parser-native chunking · 294 pages · 663 Q–A",
+        headers: ["Model lineage", "RCPS ↑", "Hit@1 ↑", "Interpretation"],
+        rows: [
+          {
+            cells: [
+              "Qwen3-VL-30B teacher",
+              "0.584",
+              "0.545",
+              "Highest aggregate RCPS",
+            ],
+          },
+          {
+            cells: [
+              "WigtnOCR-2B production",
+              "0.583",
+              "0.549",
+              "Highest Hit@1 in the lineage",
+            ],
+            highlight: true,
+          },
+          {
+            cells: [
+              "Qwen3-VL-2B base",
+              "0.532",
+              "0.500",
+              "Before domain fine-tuning",
+            ],
+          },
+        ],
+      },
+      paragraphs: [
+        "Fixed-seed subsampling ranks the teacher above WigtnOCR in 62.5% of samples. Together with the 0.001 RCPS gap, that makes model quality an insufficient tie-breaker; serving latency, memory and compute should decide between the two, once measured in the target deployment.",
+        "The student still shows meaningful specialization relative to its 2B base: Hit@1 rises by 4.9 percentage points on the audited frame. The durable model claim is that pseudo-label distillation creates a top-tier production candidate at one-fifteenth of the teacher's parameter count—not that 2B is categorically better than 30B.",
+        "The full study compares five complete parser outputs, measures reference-span coverage, runs an answer-generation check and evaluates retrieval-oriented adapters. Those system-level results belong to the RCPS report linked above; repeating them here would blur the boundary between a model report and a selection protocol.",
+      ],
+      callout: {
+        label: "Deployment conclusion",
+        text: "The original retrieval win survives as evidence of strong transfer, while the broader audit changes the decision rule: treat teacher and student as near peers on quality and choose with measured serving constraints.",
+      },
+    },
+    {
       id: "failures",
       eyebrow: "Failure analysis",
       title: "What did not transfer cleanly",
       bullets: [
         "Formula CDM remains below the 30B teacher, so the compact model should not be presented as uniformly better.",
-        "Five of 294 KoGovDoc validation pages failed to produce evaluable output.",
+        "WigtnOCR skips 5.8% of OmniDocBench pages, slightly more than the teacher's 5.5%, even though it improves substantially over the 2B base model's 18.8%.",
         "Qualitative examples still contain character-level OCR errors even when chart and table structure improves.",
-        "The retrieval result is specific to Korean government documents, BGE-M3 and the released chunking policy.",
+        "The 564-query release result is specific to Korean government documents, BGE-M3 and the released semantic-chunking policy.",
+        "The later RCPS frame does not reproduce the original ranking exactly; it places the production model and teacher in a near tie.",
         "No controlled throughput, energy or serving-cost comparison has been released.",
+      ],
+    },
+    {
+      id: "release",
+      eyebrow: "Artifacts",
+      title: "What is released, and what can actually be reproduced",
+      lead:
+        "The model is open, but the model release and the later evaluation package expose different layers of evidence.",
+      bullets: [
+        "The WigtnOCR v1 repository contains the English and Korean model reports, the three published result figures, citation metadata and the Apache 2.0 license.",
+        "The LoRA-tuned production weights are available on Hugging Face. The v1 repository does not include the 4,501 teacher generations, filtering records, training scripts, checkpoints or per-query retrieval outputs required to reproduce the release tables from scratch.",
+        "The separate WigtnOCR-RADP repository releases the frozen 663-Q–A probe, RCPS and coverage code, selected parser outputs, per-Q–A arrays and audit artifacts for the later evaluation frame. Its camera-ready paper was accepted to the EMNLP 2026 Industry Track.",
+        "The two repositories should be cited for different claims: wigtnOCR-v1 for the model and original 564-query release; WigtnOCR-RADP for the peer-reviewed 663-Q–A selection audit.",
       ],
     },
   ],
   limitations: [
-    "KoGovDoc represents one Korean government-document distribution and one retrieval stack.",
-    "Pseudo-label filtering reduces weak supervision but does not turn generated labels into human ground truth.",
-    "The release supports a parameter-count claim; it does not yet support a precise speed or cost-reduction claim.",
+    "KoGovDoc represents one Korean government-document distribution. The original release uses one retrieval stack; the later audit broadens retrieval but not the document domain.",
+    "Pseudo-label filtering reduces weak supervision but does not turn generated labels into human ground truth. A text-only judge can catch malformed output but cannot verify transcription against the page image.",
+    "The 564-query v1 release and 663-Q–A RCPS audit differ in query set, chunking, retrievers and aggregation. Their absolute scores and rankings are not directly comparable.",
+    "The audited 0.584 versus 0.583 RCPS result does not support a universal claim that the 2B student outperforms the 30B teacher.",
+    "The release supports a one-fifteenth parameter-count claim; it does not provide a controlled throughput, latency, energy or serving-cost comparison.",
+    "The model-release repository lacks the data and per-query artifacts needed for an independent end-to-end reproduction of its training and original retrieval table.",
   ],
 };
 
