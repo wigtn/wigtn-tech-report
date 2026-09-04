@@ -1350,8 +1350,8 @@ const wigss: ResearchProject = {
         "Knowing where an element is does not always mean it can be written. A cn() call is resolvable but not rewritable as a string, so the prototype edits the first string argument and escalates when there is none. The address turns a class of silent failures into a class of explicit ones.",
       ],
       callout: {
-        label: "Unverified",
-        text: "Whether Next passes jsxImportSource through to SWC has not been tested. The whole approach rests on it, so it is the first thing to check, and the fallbacks are a Babel plugin (which costs SWC), an SWC plugin, or proxy injection without addresses.",
+        label: "Unverified at writing",
+        text: "Whether Next passes jsxImportSource through to SWC had not been tested when this was measured; the addendum below records the check. The whole approach rests on it, and the fallbacks are a Babel plugin (which costs SWC), an SWC plugin, or proxy injection without addresses.",
       },
     },
     {
@@ -1465,16 +1465,16 @@ const wigss: ResearchProject = {
       figures: [
         {
           src: "/images/projects/wigss-canvas-set.jpg",
-          width: 1400,
-          height: 875,
+          width: 1600,
+          height: 1000,
           alt: "A pannable canvas holding the same route at 375, 768 and 1280 pixels, with the active breakpoint shown in the top bar",
           caption:
             "One route at three widths. The 375 card is marked stale and waiting for its update, and the top bar states that edits will land on lg.",
         },
         {
           src: "/images/projects/wigss-canvas-arbitration.jpg",
-          width: 1400,
-          height: 875,
+          width: 1600,
+          height: 1000,
           alt: "A drag in progress with an insertion line, a ghost following the pointer, and a list of candidate interpretations with confidence",
           caption:
             "Releasing a drag opens the candidate list: reorder, margin, parent gap, then absolute position with its warning. Each candidate names the code it would write.",
@@ -1541,13 +1541,13 @@ const wigss: ResearchProject = {
       eyebrow: "Addendum",
       title: "The roadmap ran, and the screen check now has teeth",
       lead:
-        "This report argued for an address join, a verification loop and a canvas surface. Between its measurements and pull request 5 on the repository, all three were built. This section records what shipped and what shipping surfaced, from the same test bench.",
+        "This report argued for an address join, a verification loop and a canvas surface. Between its measurements and pull request 5 on the repository, all three were built. This section records what that pull request built and what building it surfaced, from the same test bench.",
       paragraphs: [
-        "The gate at the head of the roadmap opened. Next 14's SWC honours a jsxImportSource override, so the development transform stamps file, line and column onto every element it renders: 12 of 12 detected components carry an address on the demo page. The harness columns moved with it — the shipped pipeline now lands the intended edit on 10 of 10 patterns, holds 100% at every duplicate density, and reads one file per save instead of forty. Addresses exist only in development builds; production falls back to the search join this report measured.",
+        "The gate at the head of the roadmap opened. Next 14's SWC honours a jsxImportSource override, so the development transform stamps file, line and column onto every element it renders: 12 of 12 detected components carry an address on the demo page. The harness columns moved with it — the pipeline in pull request 5 lands the intended edit on 10 of 10 patterns, holds 100% at every duplicate density, and reads one file per save instead of forty. Addresses exist only in development builds; production falls back to the search join this report measured.",
         "The canvas mock-ups became a route. A rail lists the routes found by a static walk of the target's app directory and, under them, the component tree of the active card; the active card's width decides which breakpoint token an edit rewrites; an insertion line is the only gesture that commits a reorder. The first sessions on it also produced the honest embarrassments: a scripted resize wrote a 1,901-pixel height into the demo because the test picked its target by geometry, and a margin written into a centred container moved nothing on screen. Both became same-day fixes, and the second became the test case below.",
         "Dragging now shows the page's answer while the pointer is still down. Each frame posts one message into the iframe and the styles land on the live DOM only — the source is never touched — so the reflow a resize will cause is visible as it happens, neighbours included. Releasing writes the code edit, and the reload that follows replaces the preview with whatever the code actually renders.",
         "The verification edge the escalation figure named as missing is closed on the canvas too: apply, rescan, verify, and on mismatch an automatic reverse-edit rollback, one scoped model repair, and a re-verify. The centred-container case shows why the screen keeps the last word. Dragging the main column sideways writes a margin class, and whether that margin beats the auto-centring depended on the order the generated stylesheet happened to take: across builds the same edit rendered as 0 pixels of movement in one run and 96 in another. Both miss the 102-pixel expectation, and both end as a clean file.",
-        "The arbitration list and the parent tier landed before this report merged. A drop now returns candidates rather than a decision: the element's own margin or size, the parent's gap, the parent's column count when a grid child is resized to a width its track cannot give, and absolute positioning last — offered only under a positioned ancestor and labelled as breaking the flow. Each candidate names the exact tokens it would write, Escape writes nothing, and a right click opens a prompt whose model edit is fenced to the same single class fragment and reversed by the same reverse-edit undo. The grid case closed the acceptance test: resizing a card until the row cannot hold three columns offers grid-cols-3 to grid-cols-1 on the lg token, and undo restores the file byte for byte.",
+        "The arbitration list and the parent tier followed in the same pull request. A drop now returns candidates rather than a decision: the element's own margin or size, the parent's gap, the parent's column count when a grid child is resized to a width its track cannot give, and absolute positioning last — offered only under a positioned ancestor and labelled as breaking the flow. Each candidate names the exact tokens it would write, Escape writes nothing, and a right click opens a prompt whose model edit is fenced to the same single class fragment and reversed by the same reverse-edit undo. The grid case closed the acceptance test: resizing a card until the row cannot hold three columns offers grid-cols-3 to grid-cols-1 on the lg token, and undo restores the file byte for byte.",
         "Closing the loop surfaced two failures no plan listed. A rescan can measure the page before the dev server has compiled the edit, and judging that stale render rolled back a correct edit — so the loop now waits until the class it wrote is visible in the scan before it judges. And the development server bundles API routes separately, which quietly gave apply and rollback two different in-memory backup stores; the store moved to the process global, and the canvas run is what caught it — the unit tests share one module instance and never could.",
       ],
       figures: [
@@ -1555,9 +1555,9 @@ const wigss: ResearchProject = {
           src: "/images/projects/wigss-canvas-rail.jpg",
           width: 2880,
           height: 1800,
-          alt: "The shipped canvas route: a left rail with routes and a component tree, three viewport cards, and the active breakpoint in the top bar",
+          alt: "The canvas route in pull request 5: a left rail with routes and a component tree, three viewport cards, and the active breakpoint in the top bar",
           caption:
-            "The canvas as shipped. Routes from a static walk on the left, the live component tree under them, and the breakpoint that will receive the edit always in the top bar.",
+            "The canvas as built in pull request 5. Routes from a static walk on the left, the live component tree under them, and the breakpoint that will receive the edit always in the top bar.",
         },
         {
           src: "/images/projects/wigss-canvas-preview.jpg",
@@ -1579,7 +1579,7 @@ const wigss: ResearchProject = {
           src: "/images/projects/wigss-canvas-arbitration-live.jpg",
           width: 2880,
           height: 1800,
-          alt: "The shipped arbitration panel after resizing a grid card: the element's own size, or the parent grid dropping to one column, each with the tokens it would write",
+          alt: "The arbitration panel in pull request 5 after resizing a grid card: the element's own size, or the parent grid dropping to one column, each with the tokens it would write",
           caption:
             "The arbitration sketch became a panel. A grid card resized past its track offers two readings — its own width, or the parent's column count — each naming the tokens it would write; Escape writes nothing.",
         },
@@ -1602,7 +1602,7 @@ const wigss: ResearchProject = {
       ],
       table: {
         caption: "The report's numbers, then and after pull request 5",
-        headers: ["Measurement", "At writing", "Shipped"],
+        headers: ["Measurement", "At writing", "In pull request 5"],
         rows: [
           { cells: ["Intended edit, ten patterns", "5/10", "10/10"], highlight: true },
           { cells: ["Join accuracy at 32 duplicates", "3%", "100%"], highlight: true },
@@ -1625,8 +1625,8 @@ const wigss: ResearchProject = {
     "Ten fixtures were written to exercise particular code shapes. They show that each failure occurs and how, not how often any of them occurs in a given repository.",
     "The comparison holds the px-to-Tailwind scale table and the apply-time safety guards constant across both sides, so it measures the join, the breakpoint handling and the output policy, and nothing else.",
     "The 5/10 figure is specific to this fixture set. Removing the cross-file class collisions raised it from 2/10, which shows how strongly the number depends on how much duplication the sample contains.",
-    "The address approach is unverified end to end. jsxImportSource has not been tested against Next's SWC pipeline, and behaviour under React Server Components, where a change re-renders a route rather than a component, has not been measured at all.",
-    "The prototype implements resolution, breakpoint-aware token editing and range-based application. It does not implement structure edits, the model tiers, or the editing surface, so no claim here covers them.",
+    "The address approach was unverified end to end when this was measured; the addendum records jsxImportSource working under Next 14's SWC pipeline in pull request 5. Behaviour under React Server Components, where a change re-renders a route rather than a component, has still not been measured.",
+    "The prototype measured here implements resolution, breakpoint-aware token editing and range-based application only. Structure edits, the model tiers and the editing surface came later in pull request 5, and the addendum's figures for them come from sessions on the demo page rather than from this fixture set.",
     "Latency was measured in-process on one machine. It excludes the fixed delays the current save flow adds after writing, which dominate the wall-clock time a user experiences.",
     "The rollback result comes from a simulation of the documented restore behaviour rather than from a running session, though the restore path it models is a single call that rewrites the file with its pre-save contents.",
   ],
