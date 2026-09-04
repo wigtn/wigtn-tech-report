@@ -31,16 +31,22 @@ WIGTN 테크 리포트 사이트. Next.js static export → GitHub Pages.
 ```bash
 npx tsc --noEmit       # 타입 + authorId 누락 검출
 npm run check:authors  # 작성자 직함이 wigtn-webpage 로스터와 일치하는지
-bash .wigtn/checks.sh  # 위 둘 + EN/KO 정합 (data-ko.ts 있을 때만)
+bash .wigtn/checks.sh  # 로컬 훅 전용 — 아래 참고
 npm run build          # static export
 ```
+
+`.wigtn/checks.sh`는 저장소에 없다. wigtn 플러그인의 커밋 훅이 개발자 머신에 만들어
+두는 로컬 스크립트(`.git/info/exclude`)로, 위의 `tsc`와 `check:authors`를 커밋 직전에
+강제한다. 새 클론에는 그 파일이 없으니 위 두 명령을 직접 돌리면 같은 검사다. 이
+스크립트의 EN/KO 정합 검사는 경고만 낸다(한국어판 중단, 아래 참고).
 
 `check:authors`는 `authors.ts`가 로스터의 **복사본**이라서 필요하다. 원본이
 바뀌어도 자동으로 따라오지 않는다 — 실제로 로스터 정정 뒤 두 명의 직함이
 어긋난 채 남아 있었고, 그중 한 명만 사람 눈에 띄었다. 옆 레포(`../wigtn-webpage`)가
 없으면 건너뛰므로 CI에서는 항상 통과한다. **개발자 머신에서 도는 검사다.**
 
-ESLint 설정이 없다. `npm run lint`는 대화형 프롬프트로 빠지므로 게이트로 쓰지 않는다.
+ESLint 설정은 `.eslintrc.json`에 있다(#24). 그래도 `npm run lint`는 `next lint` 마이그레이션
+코드모드의 대화형 프롬프트로 빠지므로 게이트로 쓰지 않는다.
 CI(`.github/workflows/deploy-pages.yml`)는 `npm run build`만 돌린다.
 
 ## 이미지
@@ -50,5 +56,8 @@ CI(`.github/workflows/deploy-pages.yml`)는 `npm run build`만 돌린다.
 
 ## 한국어
 
-사이트는 영어 전용이다. `components/technical-reports/data-ko.ts`는 gitignore되고
-`ko-translation` 브랜치(PR #4)에 보관된다. 복원 방법은 `localized-data.ts` 헤더 주석에 있다.
+사이트는 영어 전용이고, 한국어판은 2026-09-04부로 유지하지 않는다.
+`components/technical-reports/data-ko.ts`는 gitignore된 로컬 파일이며 `ko-translation`
+브랜치(PR #4)의 사본은 RCPS·WIGSS 재작성 이전 상태다. 둘 다 EN과 어긋나 있고 다시
+맞추지 않는다. 로컬 훅 스크립트의 EN/KO 정합 검사는 그래서 차단이 아니라 경고다.
+되살릴 일이 생기면 `localized-data.ts` 헤더 주석의 복원 방법부터 다시 읽는다.
