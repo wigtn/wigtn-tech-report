@@ -1186,16 +1186,10 @@ const wigss: ResearchProject = {
   date: "2026.09.02",
   authorId: "jinmo-kim",
   /* Brand banner, same treatment as the other reports: no caption, no
-   * `heroSectionId`, so it runs on the hub card and above section 01.
-   *
-   * ⚠ THE ART IS STILL WRONG AND IS STILL LEGIBLE. It shows `npm i
-   * @wigtn/wigss`; the published package is `wigss`, which is what every link
-   * here points at. The debt was taken knowingly on 2026-08-09 rather than
-   * holding a report back, and it survives this revision for the same reason.
-   * Re-export the art with `npm i wigss` and replace the file. The fix belongs
-   * in the image, not in a caption apologising for it. */
+   * `heroSectionId`, so it runs on the hub card and above section 01. The art
+   * uses the published npm package name and the executable CLI invocation. */
   heroFigure: {
-    src: "/images/projects/wigss_image_v1.jpg",
+    src: "/images/projects/wigss_image_v2.jpg",
     width: 1536,
     height: 1024,
     alt: "WIGSS, WIGTN Style Sync Studio",
