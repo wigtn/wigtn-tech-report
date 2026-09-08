@@ -2,12 +2,12 @@
 import type { ResearchProject } from "../data";
 
 export const codexScopedInspect: ResearchProject = {
-  authorId: "hyeonsang-kim",
+  "authorId": "hyeonsang-kim",
   "slug": "codex-scoped-inspect",
-  "shortTitle": "WIGTN Codex state inspection",
-  "title": "Querying two tasks without returning the entire plan",
-  "cardTitle": "Eight state queries, 56.2% less input",
-  "dek": "We changed the records returned by a saved-plan inspection tool and the instructions for using it. Across eight internal synthetic state-query cases with GPT-6 Astra, both implementations returned every required field correctly. Aggregate session input fell from 696,334 to 304,669 tokens, a 56.2% reduction. These are CLI input counts including cached input, not a measured reduction in billing or an improvement in general coding performance.",
+  "shortTitle": "WIGTN Codex",
+  "title": "Harness design for GPT-6: what to remove and what to preserve",
+  "cardTitle": "Harness design for GPT-6: what to remove and what to preserve",
+  "dek": "GPT-6 Astra prompted us to revisit the prompts, review rules and tool responses in a Codex plugin built during GPT-5.6. We describe what we removed, what we kept, and how we tested one change: scoped WorkGraph inspection. Across eight synthetic state-query cases, both implementations answered correctly; aggregate input fell 56.2%, including cached input. That measurement applies to this query path, not to the whole plugin or general coding performance.",
   "language": "en",
   "track": "Agentic engineering",
   "status": "Engineering note",
@@ -81,6 +81,10 @@ export const codexScopedInspect: ResearchProject = {
     {
       "label": "Release validation scope",
       "href": "https://github.com/wigtn/wigtn-plugins-codex/blob/10f284f9e13b77916cf7768dae59357b3443d4d3/docs/RELEASE-v0.5.5-KO.md"
+    },
+    {
+      "label": "GPT-6 adaptation and v0.5.4 validation scope (Korean)",
+      "href": "https://github.com/wigtn/wigtn-plugins-codex/blob/10f284f9e13b77916cf7768dae59357b3443d4d3/docs/RELEASE-v0.5.4-KO.md"
     }
   ],
   "metrics": [
@@ -103,23 +107,78 @@ export const codexScopedInspect: ResearchProject = {
   "sections": [
     {
       "id": "problem",
-      "eyebrow": "Problem",
-      "title": "A selectively invoked tool can still return unnecessary context",
-      "lead": "Our previous Codex report asked whether an older, heavier implementation workflow added value to ordinary coding. This study starts after a user has chosen to save and resume a work plan. Deciding when to invoke a tool and deciding what the tool returns are separate design decisions.",
+      "eyebrow": "Starting point",
+      "title": "Revisit the harness when the model changes",
+      "lead": "When GPT-6 Astra became available, we revisited the WIGTN Codex plugin we had built during GPT-5.6. The question was which parts of its harness still helped the model complete the requested work, and which parts made it repeat instructions or read unrelated information.",
       "paragraphs": [
-        "WIGTN WorkGraph stores task states, dependencies, requirements and check records. Its inspect command validates saved files, detects source changes and reports tasks eligible to resume.",
-        "In v0.5.4, inspection returned all tasks, requirements and checks, then repeated some task records in the list of next tasks. A request about two tasks received the remaining records too. Some traces show a full inspection followed by another read of the saved JSON to extract fields for the two requested tasks.",
-        "GPT-6 prompted the review, but the experiment does not compare GPT-5.6 with GPT-6. It cannot establish that stronger models universally need less harnessing."
+        "Here, harness means the prompts, skill invocation rules, tool interfaces and validation around Codex. Our previous report examined when the full implementation workflow should run. This revision also examines what happens after an optional skill is invoked.",
+        "We reviewed three areas: fixed procedures and repeated references, review rules that did not fit the supplied document, and saved-work tools that returned more records than the request needed. The aim was to give the model useful context while keeping checks that protect saved work and expose errors.",
+        "This is an account of adapting the plugin for GPT-6, followed by a measured study of one revised path. It does not compare GPT-5.6 against GPT-6."
+      ],
+      "callout": {
+        "label": "Design question",
+        "text": "Which parts of the harness help the model do the work, and which add reading or repeated steps without changing the required result?"
+      }
+    },
+    {
+      "id": "design-review",
+      "eyebrow": "Design decisions",
+      "title": "Reduce repeated guidance and keep checks with a concrete purpose",
+      "lead": "The v0.5.4 revision covered more than prompt length. It changed how optional workflows were described, how reviews treated different documents, and how WorkGraph handled saved state.",
+      "table": {
+        "caption": "Changes leading into v0.5.4 and the checks retained",
+        "headers": [
+          "Area",
+          "What changed",
+          "What remained"
+        ],
+        "rows": [
+          {
+            "cells": [
+              "Prompts and workflow entry",
+              "Reduced fixed procedures and duplicate references in optional workflows.",
+              "Verified Delivery still requires explicit invocation; verification stays proportional to the requested work."
+            ]
+          },
+          {
+            "cells": [
+              "Document and acceptance review",
+              "Applied Compact and external PRD contracts; removed fixed caps on serious findings; distinguished observed violations from unverifiable requirements.",
+              "Requirements and evidence remain review criteria; conflicts between stored evidence and reports remain visible."
+            ]
+          },
+          {
+            "cells": [
+              "Saved work",
+              "Protected concurrent writes with locking and revision checks; rejected invalid project settings before saving.",
+              "Saved plans are preserved or stale writes are rejected; inspection remains read-only."
+            ]
+          }
+        ]
+      },
+      "paragraphs": [
+        "Further prompt shortening was explored during that work but was not adopted. The published v0.5.4 release record documents the decision and the regression checks, while its raw model-study material remains local. It does not provide an independently reproducible performance estimate for the final v0.5.4 runtime.",
+        "Those changes explain the starting point for the next experiment. The baseline below is already v0.5.4. Its earlier revisions must not be credited with the input reduction measured between v0.5.4 and the final scoped-inspection candidate."
+      ]
+    },
+    {
+      "id": "query-path",
+      "eyebrow": "Measured target",
+      "title": "A request about two tasks still returned the entire plan",
+      "lead": "WorkGraph stores task states, dependencies, requirements and check records so that work can be resumed later. Its inspect command validates saved files, detects source changes and reports tasks eligible to resume.",
+      "paragraphs": [
+        "In v0.5.4, inspection returned all tasks, requirements and checks, then repeated some task records in the list of next tasks. A request about two tasks received the remaining records too. Some traces show a full inspection followed by another read of the saved JSON to extract the requested fields.",
+        "This gave us a specific change to evaluate: select the records returned to the model while continuing to validate the whole graph. We fixed the required answer first so that a shorter response could not pass by omitting information."
       ],
       "callout": {
         "label": "Evaluation question",
-        "text": "Can we retain whole-graph validation while returning a narrower task view, preserve answer correctness and reduce session input?"
+        "text": "Can scoped inspection preserve every required answer field and whole-graph validation while reducing session input?"
       }
     },
     {
       "id": "mechanism",
       "eyebrow": "Mechanism",
-      "title": "Validate globally, then select records for the response",
+      "title": "Return the requested records after validating the whole graph",
       "lead": "The new inspect --task TASK-ID option includes the requested task and its transitive dependencies. Linked checks, artifacts, requirements and sources remain complete records. Repeat the option to request two tasks.",
       "paragraphs": [
         "Selection happens after validation, so a source change or invalid setting outside the requested task view remains visible. Unknown task IDs fail. Omitting the option retains full inspection. Inspection neither writes files nor executes saved check commands.",
@@ -178,7 +237,7 @@ export const codexScopedInspect: ResearchProject = {
     {
       "id": "development",
       "eyebrow": "Development result",
-      "title": "Providing an option did not ensure its use",
+      "title": "An available option was not always a used option",
       "lead": "The first study ran eight synthetic cases under three conditions: no plugin, v0.5.4 and an initial candidate, for 24 sessions. All three conditions answered 8/8 correctly. The candidate used 39.26% less aggregate input than v0.5.4, but input increased in two cases.",
       "paragraphs": [
         "In the 120-task case, the candidate omitted --task, inspected the whole graph and then read and filtered the JSON again. Its answer was correct, but input rose from 86,764 to 90,299 tokens, or 4.07%. We retained this run rather than dropping it or replacing it with a retry.",
@@ -189,7 +248,7 @@ export const codexScopedInspect: ResearchProject = {
     {
       "id": "protocol",
       "eyebrow": "Protocol",
-      "title": "Fix the answer before comparing input",
+      "title": "Compare both implementations on the same saved state",
       "lead": "The follow-up contains eight paired cases, one run per condition per case: 16 sessions in total. It does not estimate within-case variation from repeated trials.",
       "paragraphs": [
         "The 20% gate is a practical adoption threshold, not a statistical significance level.",
@@ -441,11 +500,12 @@ export const codexScopedInspect: ResearchProject = {
     {
       "id": "interpretation",
       "eyebrow": "Interpretation",
-      "title": "Document size is not session input",
-      "lead": "The final skill document was 2,324 bytes, larger than the baseline's 2,194 bytes. Session input nevertheless fell. Skill-file size alone is therefore an insufficient proxy for execution efficiency in this comparison.",
+      "title": "A thinner harness is not simply a shorter prompt",
+      "lead": "The final skill document was 2,324 bytes, longer than the baseline’s 2,194 bytes. Yet session input fell. In this comparison, file length alone did not describe the amount of reading across an execution.",
       "paragraphs": [
-        "The supported result is narrow: on eight saved-plan queries, scoped retrieval and revised guidance preserved answer correctness while reducing input. Correctness did not improve. The experiment did not evaluate the complete plugin or GPT-6's coding ability.",
-        "The reusable questions concern the interface: Does each returned record help answer the current request? Does narrowing the response preserve global error detection? Does the model use the new option? Does it still return the correct answer? Other systems can apply those questions, but must measure their own effect size."
+        "The broader plugin review and the measured result answer different questions. We revised prompts, review contracts and state handling for use with GPT-6. The paired experiment then tested scoped inspection together with its usage guidance. Both conditions already returned correct answers, so the observed improvement was lower input for the same state-query result.",
+        "That suggests a practical way to review a harness: inspect what the model reads, identify repeated work, and preserve the checks that establish whether the answer is complete. An option also needs an example the model can find when it needs it. We did not isolate the contribution of each change, so these are design lessons from the traces rather than separate causal estimates.",
+        "For the next revision, we would repeat paired runs and move from reading saved state to resuming implementation work in real repositories. That would test whether the reduction persists and whether the completed code still meets its requirements."
       ]
     },
     {
