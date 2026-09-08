@@ -1,5 +1,6 @@
 // Shared content model for the technical report index and detail routes.
 import type { ReportAuthorId } from "./authors";
+import { codexScopedInspect } from "./reports/codex-scoped-inspect";
 
 export type ResearchStatus =
   | "Peer reviewed"
@@ -2329,6 +2330,7 @@ const rcps: ResearchProject = {
  * bottom. The series numbering in the titles is what carries the reading order;
  * the sort does not. */
 export const RESEARCH_PROJECTS: ResearchProject[] = [
+  codexScopedInspect,
   rcps,
   codexSelectiveHarness,
   wigtnOcr,
