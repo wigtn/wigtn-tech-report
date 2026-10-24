@@ -1953,7 +1953,7 @@ const wigtnCoding: ResearchProject = {
   limitations: [
     "Agent and skill counts describe the package surface, not developer productivity.",
     "The surface figures count lines of Markdown under agents, commands and skills. They measure how much instruction text ships, not how much of it the model reads on a given turn, and a smaller file is not evidence that what remains is correct.",
-    "The reductions are decisions this team made about its own tool, not a controlled comparison of harness sizes. The one controlled result we have is in part 2, and it covers two tasks on one model.",
+    "The reductions are decisions this team made about its own tool, not a controlled comparison of harness sizes. Two controlled results now exist: part 2, on two tasks and one model, and part 3, seven experiments and 390 runs on Sonnet 5.5 and Opus 5.5. Neither varies the instruction surface this report measures.",
     "Operational timing observations are not a controlled single-agent comparison.",
     "The current benchmark matrix is incomplete and must not be summarized as a result.",
   ],
@@ -2315,6 +2315,269 @@ const rcps: ResearchProject = {
   ],
 };
 
+/* Part 3 of the harness series. Mirrors TR-2026-01 v1.2 (2026-10-05): seven
+ * experiments, 390 valid runs on Sonnet 5.5 and Opus 5.5. Figures are taken from
+ * the experiment records (`final.jsonl` per experiment), not from the narrative. */
+const skillPackContribution: ResearchProject = {
+  slug: "skill-pack-contribution",
+  shortTitle: "Skill packs",
+  title: "Running a harness on frontier models, part 3: skill packs",
+  cardTitle: "A pack that fires once in ten runs, and one sentence that matches it",
+  dek:
+    "Part 1 noted that our only controlled result was part 2, on two tasks and one model. This is the second, grown to seven experiments and 390 runs on Sonnet 5.5 and Opus 5.5. A third-party hygiene pack did not separate from the base model on defect-finding on any of three models, and on its own axis, removing noise, it beat the base model on one point that a single appended sentence also delivers. Our own pipeline did separate, and the transcripts show where: it read the codebase before writing a PRD; the base model never did. The cost problem we reported in the first draft did not reproduce.",
+  language: "en",
+  track: "Agentic engineering",
+  status: "Measured system",
+  format: "Evaluation report",
+  date: "2026.10.05",
+  authorId: "hyunwoo-cho",
+  heroFigure: {
+    src: "/images/projects/skill-packs_image_v1.jpg",
+    alt: "Skill Packs banner: a terminal card showing how much each arm grew clean documents, a results card with hidden-test scores, and four findings: no lift on defects, procedure wins, loop bounded, one sentence equals the pack",
+    caption: "",
+    width: 1586,
+    height: 992,
+  },
+  links: [
+    {
+      label: "Source repository",
+      href: "https://github.com/wigtn/wigtn-plugins",
+      primary: true,
+    },
+    {
+      label: "Hygiene pack under test",
+      href: "https://github.com/LilMGenius/paperthin",
+    },
+  ],
+  metrics: [
+    {
+      value: "1 / 30",
+      label: "Hygiene-pack invocations",
+      detail: "When merely installed, Sonnet 5.5 and Opus 5.5",
+    },
+    {
+      value: "10 / 10",
+      label: "Hidden tests passed",
+      detail: "Ten of ten implementations from pipeline PRDs, both models",
+    },
+    {
+      value: "2 / 2",
+      label: "Failures from base-model PRDs that skipped the repo",
+      detail: "The only two PRDs written without reading it, one per model",
+    },
+    {
+      value: "+56% vs +15%",
+      label: "Clean documents grown when told to tidy",
+      detail: "Opus 5.5: base model vs the pack's skill",
+    },
+  ],
+  sections: [
+    {
+      id: "problem",
+      eyebrow: "Problem",
+      title: "A skill pack is a claim nobody has measured",
+      paragraphs: [
+        "A skill pack is markdown injected into a coding agent at runtime. It has no runtime of its own; it rides on the host harness as a prompt layer. The ecosystem is growing and validation is largely author self-certification. Stars measure an idea's appeal, not its effect.",
+        "Part 1 traced seven months of our own plugin and ended on an admission: the reductions were decisions this team made about its own tool, not a controlled comparison. This report is the controlled comparison, extended after a first draft turned out to rest on an unreadable contract file and a single expensive run.",
+      ],
+      callout: {
+        label: "Evaluation question",
+        text: "What does a skill pack add over the base model, on which models, and does the pipeline's PRD change what gets built from it?",
+      },
+    },
+    {
+      id: "method",
+      eyebrow: "Method",
+      title: "Seven experiments, one rule: verify by output, then audit the run",
+      lead:
+        "Two packs of opposite character: our domain pipeline, which runs PRD to screen spec to build to commit with hook enforcement, and a third-party hygiene pack of 28 domain-free skills whose README promises to remove noise rather than add features. Every experiment fixed its markers before the first run and verified isolation by asking the control arm whether a named skill existed.",
+      steps: [
+        {
+          label: "Exp 1 · 2",
+          title: "Invocation lock and the four-arm comparison",
+          body: "First run on Opus 5, where the pipeline could not read its contract file; rerun on Sonnet 5.5 and Opus 5.5 with that fixed. The figures below are from the rerun.",
+        },
+        {
+          label: "Exp 3",
+          title: "Where is the headroom?",
+          body: "Base model only, three models, a harder sandbox with ten planted defects.",
+        },
+        {
+          label: "Exp 4",
+          title: "Hygiene pack on Haiku 4.5",
+          body: "No pack, installed, instructed. Five trials per cell, pre-registered.",
+        },
+        {
+          label: "Exp 5",
+          title: "A three-round cap on the review loop",
+          body: "Control and treatment differ in one file. Natural runs plus a reviewer that never passes.",
+        },
+        {
+          label: "Exp 6",
+          title: "Does the PRD change the implementation?",
+          body: "PRDs from the base model and the pipeline, each built by a fresh session with no pack, scored on ten hidden tests. Sonnet 5.5 and Opus 5.5.",
+        },
+        {
+          label: "Exp 7",
+          title: "The hygiene pack on its own axis",
+          body: "Bloated and clean documents, Sonnet 5.5 and Opus 5.5, four arms including one that appends a single sentence.",
+        },
+      ],
+      paragraphs: [
+        "Runs were audited from the inside: denied tool calls, interrupted subagents, calls aimed outside the sandbox, and review rounds counted from harness events rather than from the model's own account. That audit, not the exit status, found most of what changed our conclusions.",
+      ],
+    },
+    {
+      id: "headroom",
+      eyebrow: "Headroom",
+      title: "On frontier models there was nothing to measure",
+      lead:
+        "Ten planted defects with code as ground truth: a stale command, a renamed variable, a removed endpoint, a seconds-versus-milliseconds unit error, a cross-document contradiction, a figure derived from a wrong count. Two prompts, tidy the documents and cold-read the repository.",
+      table: {
+        caption: "Base model alone, defects found out of ten",
+        headers: ["Model", "Tidy (fixed)", "Cold read (found)", "Cost per run"],
+        rows: [
+          { cells: ["Fable 5.1", "10, 10, 10", "10, 10", "$0.87 to $1.36"] },
+          { cells: ["Sonnet 5.5", "10", "9", "$0.10 to $0.19"] },
+          { cells: ["Haiku 4.5", "0", "3", "$0.05 to $0.06"], highlight: true },
+        ],
+      },
+      paragraphs: [
+        "Fable's first run was checked by reading the diff: all ten fixes were correct, including the unit error and the derived figure. A pack's contribution can only be measured where the base model falls short, and for this family of task that place was Haiku.",
+      ],
+    },
+    {
+      id: "hygiene",
+      eyebrow: "Hygiene pack",
+      title: "No lift on defects, one confirmed property, one risk",
+      lead:
+        "On Haiku, none of the four pre-registered comparisons showed a difference (p 0.44 to 1.00). Merely installed, the pack fired in one of ten runs on Haiku, in five of sixteen home-turf runs on the 5.5 models (only its cold-read skill; its tidying skill never), and in one of thirty on the bloat task. Its cold-read skill, when forced, scored lower than nothing: it spawns a zero-context subagent that reads the README and reports what a newcomer would find confusing, and never opens the code.",
+      paragraphs: [
+        "The pack's README does not claim to find defects. It claims that its skills remove: \"every one of them removes\", \"a pass that finds nothing changes nothing\". So we bloated a clean documentation set with duplicated blocks, restated rules, filler and date scars, every fact still correct, and asked each arm to tidy it; then asked each arm to tidy the clean original.",
+      ],
+      table: {
+        caption: "Documents, size after tidying divided by size before",
+        headers: ["Arm", "Bloated, Sonnet 5.5", "Clean, Sonnet 5.5", "Bloated, Opus 5.5", "Clean, Opus 5.5"],
+        rows: [
+          { cells: ["No pack", "0.77", "1.13", "0.88", "1.56"] },
+          { cells: ["Pack installed", "0.74", "1.15", "0.79", "1.32"] },
+          { cells: ["Pack, skill instructed", "0.74", "1.03", "0.77", "1.15"], highlight: true },
+          { cells: ["No pack, one sentence appended", "0.75", "1.00", "0.76", "0.96"] },
+        ],
+      },
+      bullets: [
+        "Removing noise: the same as the base model, on both models.",
+        "Changing nothing when nothing is wrong: no arm managed it. Told to tidy clean documents, every run rewrote three to five files, the pack's skill included.",
+        "Not adding noise: here the pack separated. The base model, told to tidy clean documents, added tables and restated rules, growing them 13% on Sonnet and 56% on Opus; the pack's skill grew them 3% and 15%, a complete separation at five versus five on both models.",
+        "One sentence did the same. Appending \"cut duplication and filler; drop no fact or rule\" to the prompt held clean documents at 1.00 and 0.96, at lower cost, though it was less thorough on bloated documents and on Opus it over-cut once.",
+        "The pack's rewrite can drop rules. On Opus 5.5 it removed the 60-second cap on retry back-off in four of five bloated runs, against its own principle of \"cut words, never a rule\".",
+      ],
+      callout: {
+        label: "Working principle",
+        text: "A pack that is not reached for contributes only its description tokens. Ours fires because its triggers are enumerated; theirs is written to be reached for on its own, and on this evidence it is not.",
+      },
+    },
+    {
+      id: "prd",
+      eyebrow: "The PRD",
+      title: "The pipeline's advantage was procedural, not textual",
+      lead:
+        "Ten PRDs for a login feature per model, five from the base model and five from the pipeline. Each was handed to a fresh session with no pack and built against a fixed four-function interface. A third arm built from the interface alone. Ten hidden tests scored the code. The whole design ran on Sonnet 5.5 and again on Opus 5.5.",
+      table: {
+        caption: "Hidden tests passed out of ten",
+        headers: ["Built from", "Sonnet 5.5, per run", "Opus 5.5, per run", "Brute-force test", "Cost per feature (Sonnet / Opus)"],
+        rows: [
+          { cells: ["Pipeline PRD", "10, 10, 10, 10, 10", "10, 10, 10, 10, 10", "10 of 10", "$1.50 / $3.83"], highlight: true },
+          { cells: ["Base-model PRD", "10, 10, 5, 10, 10", "10, 10, 5, 10, 10", "10 of 10", "$0.29 / $0.79"] },
+          { cells: ["No PRD", "9, 9, 9, 9, 9", "9, 9, 9, 9, 9", "0 of 10", "$0.13 / $0.23"] },
+        ],
+      },
+      paragraphs: [
+        "Two things separated, identically on both models. Without a PRD the brute-force protection was dropped every time; with any PRD it was implemented every time. And on each model exactly one base-model PRD was written without reading the repository: Sonnet never read it, Opus read it in four of five. That one PRD, on each model, specified email login without seeing the interface and produced the one failure. The pipeline read the repository in ten of ten because its procedure says to. The other eight base-model PRDs produced the same 10/10 as the pipeline's.",
+        "Nothing here shows the pipeline's prose is better. What it shows is that reading the codebase and saving in a fixed place prevented the only failure that occurred, at five times the cost.",
+      ],
+    },
+    {
+      id: "loop",
+      eyebrow: "The loop",
+      title: "A three-round cap held every time it was needed",
+      lead:
+        "The pipeline's adversarial reviewer revises until no critical finding remains. We added a cap: three rounds, then stop, edit nothing further, and hand the human the per-round counts, the open findings, what each revision relocated, and the options.",
+      table: {
+        caption: "Review rounds",
+        headers: ["Condition", "No cap", "Cap"],
+        rows: [
+          { cells: ["Natural runs, Sonnet 5.5, five each", "1, 1, 1, 1, 1", "1, 1, 3, 1, 1"] },
+          { cells: ["Natural runs, Opus 5.5, five each", "2, 1, 1, 1, 2", "1, 1, 2, 2, 3"] },
+          { cells: ["Reviewer that never passes, Sonnet 5.5, three each", "6, 5, 7", "3, 3, 3"], highlight: true },
+          { cells: ["Unverified edits left after the last review, Sonnet 5.5", "4 of 12 runs", "0 of 11 runs"] },
+        ],
+      },
+      paragraphs: [
+        "Nineteen of twenty natural runs passed within two rounds; the cap triggered once, on Sonnet, and was followed clause by clause. Against a reviewer that never passes, the uncapped Sonnet runs went to five, six, and seven rounds before stopping on their own judgment. That reviewer could not be used on Opus 5.5: it read the reviewer's definition through the plugin directory, recognised the test mode, and overrode it. A dollar cap could not be set at the prompt layer, since a prompt cannot see its own spend.",
+      ],
+    },
+    {
+      id: "cost",
+      eyebrow: "Cost",
+      title: "The cost problem was real once and could not be found again",
+      lead:
+        "The first draft named cost the most actionable finding: one prompt ran between $1.17 and $18.73. The audit reduced that to four runs, one of them with no review at all, and every one of them denied its own contract file.",
+      table: {
+        caption: "One login PRD through the pipeline",
+        headers: ["When", "Model", "Contract readable", "Rounds", "Cost"],
+        rows: [
+          { cells: ["First draft, three reviewed runs", "Opus 5", "No", "2 to 5", "$6.28 to $18.73"] },
+          { cells: ["This draft, fourteen runs", "Sonnet 5.5", "Yes", "1 to 3", "$0.38 to $1.14"], highlight: true },
+          { cells: ["This draft, fifteen runs", "Opus 5.5", "Yes", "1 to 3", "$1.12 to $3.17"] },
+        ],
+      },
+      paragraphs: [
+        "Model version, harness version, and contract readability all changed between the two, and we did not isolate which one mattered. The claim that the loop is unbounded in practice is withdrawn until reproduced. The cap stays: it cost nothing in the common case and held in every run that needed it. All dollar figures are the CLI's API-equivalent usage; the runs were made on a subscription and nothing was billed.",
+      ],
+    },
+    {
+      id: "decision",
+      eyebrow: "Decision",
+      title: "Keep the procedure, describe it as procedure",
+      lead:
+        "The evaluation did not send us looking for more skills. It narrowed what we claim for the ones we have.",
+      steps: [
+        {
+          label: "Pack",
+          title: "The hygiene pack is not installed",
+          body: "Not in the plugin and not on the agent runtime. Its one confirmed effect, not growing clean documents, is available as one sentence; its rewrite dropped a rule in four of five Opus runs. Four of its human-invoked skills may be tried as a separate toolbox and judged by usage; the document compressor is held back, since it shares its principle with the skill that dropped a rule.",
+        },
+        {
+          label: "Cap",
+          title: "The three-round cap stays in /prd",
+          body: "Hook-level enforcement waits for an observed violation. There were none.",
+        },
+        {
+          label: "Claim",
+          title: "The pipeline's value is procedure and enforcement",
+          body: "Reading the codebase, a fixed structure, an adversarial review that stops. Not better prose, until an experiment shows it.",
+        },
+        {
+          label: "Next",
+          title: "One sentence versus one pipeline",
+          body: "The base-model PRD arm with \"read the repository first\" appended, about $2. If it closes the gap, the pipeline's advantage on this task is a sentence.",
+        },
+      ],
+    },
+  ],
+  limitations: [
+    "Two to five runs per cell throughout. Complete separations at five versus five reach p = 0.008; single-run differences are invisible to a permutation test.",
+    "Twelve of the hygiene pack's 28 skills are human-invocation-only and were unreachable headless in every experiment. Every result about that pack covers the sixteen model-invoked skills.",
+    "One task per experiment, one sandbox each. The hidden tests of experiment 6 sit at the function-interface level; most of a PRD never reaches them. The bloat in experiment 7 was ours.",
+    "Every treatment experiment ran on both Sonnet 5.5 and Opus 5.5; the Opus 5 originals of experiments 1 and 2 are kept but not used. The fault-injection part of experiment 5 could not be run on Opus. The control arm of two experiments had the user's MCP connectors attached. Nothing is pooled across experiments or models.",
+    "Twenty-three Opus runs were lost to machine sleep, network loss, and a temporary-directory purge that emptied the plugin copy; they were quarantined and rerun.",
+    "Headless single-shot prompts. Haiku's floor on the tidying task and the base model's unread repository may both dissolve with one interactive turn.",
+    "The same party designed the experiments, wrote the scorer and interpreted the results. Scoring is automated from experiment 3 on; marker and test design are not independent.",
+    "The raw run records are held in a gitignored directory of the plugin repository, so this is not a complete third-party reproduction package.",
+  ],
+};
+
 
 /* Ordered by date, newest first, rather than by hand. `date` is zero-padded
  * "YYYY.MM" or "YYYY.MM.DD", so a plain string compare is already chronological;
@@ -2329,6 +2592,7 @@ const rcps: ResearchProject = {
  * bottom. The series numbering in the titles is what carries the reading order;
  * the sort does not. */
 export const RESEARCH_PROJECTS: ResearchProject[] = [
+  skillPackContribution,
   rcps,
   codexSelectiveHarness,
   wigtnOcr,
