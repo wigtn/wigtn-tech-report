@@ -2012,8 +2012,8 @@ const rcps: ResearchProject = {
       primary: true,
     },
     {
-      label: "Final camera-ready paper",
-      href: "https://github.com/wigtn/WigtnOCR-RADP/blob/main/output/pdf/EMNLP2026_Industry_384_camera_ready_final.pdf",
+      label: "EMNLP paper",
+      href: "https://aclanthology.org/2026.emnlp-industry.90/",
     },
     {
       label: "KoGovDoc-Bench source dataset",
